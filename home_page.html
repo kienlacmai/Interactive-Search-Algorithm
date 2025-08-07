@@ -11,23 +11,42 @@
 </head>
 <body>
     <div class="container">
-        <h1>🧠 Interactive DFS Tutorial</h1>
+        <button id="theme-toggle" aria-label="Toggle Theme">
+        <img src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
+        </button>  
+      <h1>🧠 Interactive DFS Tutorial</h1>
         
         <div class="controls">
-            <button onclick="startDFS()">Run Auto DFS</button>
+            <button onclick="startDFS()">Run Example DFS</button>
             <button onclick="startInteractiveDFS()">Start Interactive DFS</button>
             <button onclick="resetGraph()">Reset Graph</button>
         </div>
-
-        <p class="instructions">
+        <!-- <p class="instructions">
             Click the nodes in the correct DFS order starting from node A.
-        </p>
+        </p> -->
             <div id="visualization"></div>
             <div id="dfs-feedback" class="feedback"></div>
 
     </div>
     <script src="js/dfs.js"></script>
     <script src="js/visualization.js"></script> 
-    <script src="js/interactive.js"></script>   
+    <script src="js/interactive.js"></script> 
+    <script>
+  const toggle = document.getElementById("theme-toggle");
+  toggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+
+    // Optional: Save to localStorage
+    const isDark = document.body.classList.contains("dark-mode");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  });
+
+  // Optional: Load saved theme on page load
+  window.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark-mode");
+    }
+  });
+</script>  
 </body>
 </html>
