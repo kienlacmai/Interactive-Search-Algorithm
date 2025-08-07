@@ -14,7 +14,6 @@ function getRandomGraph() {
   const idx = getRandomInt(0, N - 1);
   return randomGraphs[idx];
 }
-
 // Render on-screen feedback instead of alert()
 function renderResult(success) {
   const fb = document.getElementById('dfs-feedback');
