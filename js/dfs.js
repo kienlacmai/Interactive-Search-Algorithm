@@ -71,8 +71,8 @@ const sampleGraph1 = {
     'A': ['B', 'C'],  // Component 1: A→B,C→D
     'B': ['D'],
     'C': [],
-    'D': [],
-    'E': ['F'],       // Component 2: E→F→G,H
+    'D': ['E','F'],
+    'E': [],       // Component 2: E→F→G,H
     'F': ['G', 'H'],
     'G': [],
     'H': []
