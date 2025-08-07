@@ -66,7 +66,7 @@ const sampleGraph1 = {
     'H': []
   };
   
-  // 4. Disconnected graph (two separate components)
+  // 4. Disconnected graph (two separate components) /// FIX THIS GRAPH ITS BAD
   const sampleGraph4 = {
     'A': ['B', 'C'],  // Component 1: A→B,C→D
     'B': ['D'],

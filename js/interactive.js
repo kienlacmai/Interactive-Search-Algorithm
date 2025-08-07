@@ -5,12 +5,29 @@ let interactiveActive = false;
 let userInput = [];
 let correctAnswer = [];
 
-function checkDFSTraversal(userInput, correctAnswer) {
-    if (userInput.join('') === correctAnswer.join('')) {
-        alert('✅ Correct DFS Traversal!');
-    } else {
-        alert('❌ Try Again!');
-    }
+// Array of random graphs
+const randomGraphs = randomgraphgenerator;
+const N = randomGraphs.length;
+
+// Utility: pick a random graph from the array
+function getRandomGraph() {
+  const idx = getRandomInt(0, N - 1);
+  return randomGraphs[idx];
+}
+
+// Render on-screen feedback instead of alert()
+function renderResult(success) {
+  const fb = document.getElementById('dfs-feedback');
+  if (success === true) {
+    fb.textContent = '✅ You did it!';
+    fb.className = 'feedback correct';
+  } else if (success === false) {
+    fb.textContent = '❌ Wrong step—try again.';
+    fb.className = 'feedback wrong';
+  } else {
+    fb.textContent = '';
+    fb.className = 'feedback';
+  }
 }
 
 // Highlight a node with green/red on user tap
