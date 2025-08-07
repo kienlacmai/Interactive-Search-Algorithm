@@ -1,93 +1,111 @@
 // interactive.js
 
-// Function to check if the user's traversal is correct
+// State variables
+let interactiveActive = false;
 let userInput = [];
 let correctAnswer = [];
 
-function checkDFSTraversal(userInput, correctAnswer) {
-    if (userInput.join('') === correctAnswer.join('')) {
-        alert('✅ Correct DFS Traversal!');
-    } else {
-        alert('❌ Try Again!');
-    }
+// Array of random graphs
+const randomGraphs = randomgraphgenerator;
+const N = randomGraphs.length;
+
+// Utility: pick a random graph from the array
+function getRandomGraph() {
+  const idx = getRandomInt(0, N - 1);
+  return randomGraphs[idx];
 }
 
-// Highlight user click
+// Render on-screen feedback instead of alert()
+function renderResult(success) {
+  const fb = document.getElementById('dfs-feedback');
+  if (success === true) {
+    fb.textContent = '✅ You did it!';
+    fb.className = 'feedback correct';
+  } else if (success === false) {
+    fb.textContent = '❌ Wrong step—try again.';
+    fb.className = 'feedback wrong';
+  } else {
+    fb.textContent = '';
+    fb.className = 'feedback';
+  }
+}
+
+// Highlight a node with green/red on user tap
 function highlightNode(nodeId, correct) {
-    cy.getElementById(nodeId).animate({
-        style: {
-            'background-color': correct ? '#28a745' : '#dc3545' // green or red
-        }
-    }, { duration: 300 });
+  cy.getElementById(nodeId).animate({
+    style: { 'background-color': correct ? '#28a745' : '#dc3545' }
+  }, { duration: 300 });
 }
 
-// Start interactive DFS session
+// Start a new interactive DFS session
 function startInteractiveDFS() {
-    resetGraph(); // optional: reset graph before starting
+  interactiveActive = true;
+  renderResult(null);                // Clear previous feedback
 
-    userInput = [];
-    correctAnswer = dfs(sampleGraph, 'A'); // Get correct order from your DFS
-    console.log("Correct DFS Order:", correctAnswer);
+  const graph = getRandomGraph();
+  loadGraph(graph);                  // Rebuilds the graph visualization
+  resetGraph();                      // Reset all node styles to default
 
-    // Enable user interaction
-    cy.nodes().on('tap', function(evt) {
-        const clickedId = evt.target.id();
+  cy.off('tap');                     // Remove any old handlers
 
-        // Ignore if already clicked
-        if (userInput.includes(clickedId)) return;
+  userInput     = [];
+  correctAnswer = dfs(graph, 'A');   // Compute correct DFS order
+  console.log('Correct DFS Order:', correctAnswer);
 
-        const nextCorrect = correctAnswer[userInput.length];
+  // Attach a single tap handler for this session
+  cy.on('tap', 'node', (evt) => {
+    if (!interactiveActive) return;
+    const clicked = evt.target.id();
+    if (userInput.includes(clicked)) return;
 
-        if (clickedId === nextCorrect) {
-            userInput.push(clickedId);
-            highlightNode(clickedId, true);
-
-            // If complete, check final result
-            if (userInput.length === correctAnswer.length) {
-                checkDFSTraversal(userInput, correctAnswer);
-            }
-        } else {
-            highlightNode(clickedId, false);
-            alert('Incorrect node! That’s not the next DFS step.');
-        }
-    });
+    const expected = correctAnswer[userInput.length];
+    if (clicked === expected) {
+      userInput.push(clicked);
+      highlightNode(clicked, true);
+      if (userInput.length === correctAnswer.length) {
+        renderResult(true);
+        interactiveActive = false;
+      }
+    } else {
+      highlightNode(clicked, false);
+      renderResult(false);
+    }
+  });
 }
 
-
-// Animate the DFS traversal by highlighting nodes
-function animateDFSTraversal(order) {
-    const delay = 600;
-
-    order.forEach((nodeId, index) => {
-        setTimeout(() => {
-            cy.getElementById(nodeId).animate({
-                style: { 'background-color': 'orange' }
-            }, { duration: 300 });
-        }, index * delay);
-    });
-}
-
-// Run DFS and visualize the result
+// Simple DFS animation (non-interactive)
 function startDFS() {
-    const traversalOrder = dfs(sampleGraph, 'A');
-    animateDFSTraversal(traversalOrder);
+  const graph = sampleGraph;
+  loadGraph(graph);
+  const order = dfs(graph, 'A');
+  animateDFSTraversal(order);
 }
 
-// Hook into DOMContentLoaded to optionally auto-run DFS for testing
-document.addEventListener("DOMContentLoaded", () => {
-    // Uncomment to auto-run DFS on page load
-    // startDFS();
-});
+// Animate the DFS traversal by coloring nodes orange sequentially
+function animateDFSTraversal(order) {
+  const delay = 600;
+  order.forEach((nodeId, i) => {
+    setTimeout(() => {
+      cy.getElementById(nodeId).animate({
+        style: { 'background-color': 'orange' }
+      }, { duration: 300 });
+    }, i * delay);
+  });
+}
 
-// Reset the graph to its original state
+// Reset all nodes to the default style
 function resetGraph() {
-    cy.nodes().forEach(node => {
-        node.animate({
-            style: {
-                'background-color': '#007BFF',
-                'color': '#fff',
-                'text-outline-color': '#007BFF'
-            }
-        }, { duration: 300 });
-    });
+  cy.nodes().forEach(node => {
+    node.animate({
+      style: {
+        'background-color': '#007BFF',
+        'color': '#fff',
+        'text-outline-color': '#007BFF'
+      }
+    }, { duration: 300 });
+  });
 }
+
+// Expose functions globally for HTML buttons
+window.startInteractiveDFS = startInteractiveDFS;
+window.startDFS            = startDFS;

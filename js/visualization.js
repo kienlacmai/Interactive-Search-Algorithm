@@ -1,6 +1,23 @@
 // visualization.js using Cytoscape.js
 let cy; // make cy global so interactive.js can access it
+let currentGraph = sampleGraph;
 
+function loadGraph(graph) {
+    // 1) remove everything
+    cy.elements().remove();
+    // 2) add nodes & edges for the new graph
+    cy.add( generateElementsFromGraph(graph) );
+    // 3) re‐run the layout (adjust options as you like)
+    cy.layout({
+      name: 'breadthfirst',
+      directed: true,
+      roots: ['A'],               // always start from 'A' (or change to graph’s real root)
+      orientation: 'vertical',
+      spacingFactor: 1.75,
+      padding: 10
+    }).run();
+  }
+  
 document.addEventListener("DOMContentLoaded", function () {
     cy = cytoscape({
         userZoomingEnabled: false,
