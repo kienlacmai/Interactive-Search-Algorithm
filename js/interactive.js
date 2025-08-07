@@ -7,6 +7,7 @@ let correctAnswer = [];
 function checkDFSTraversal(userInput, correctAnswer) {
     if (userInput.join('') === correctAnswer.join('')) {
         alert('✅ Correct DFS Traversal!');
+        resetGraph();
     } else {
         alert('❌ Try Again!');
     }
