@@ -1,18 +1,14 @@
-// visualization.js using Cytoscape.js example
+// visualization.js using Cytoscape.js
+let cy; // make cy global so interactive.js can access it
+
 document.addEventListener("DOMContentLoaded", function () {
-    var cy = cytoscape({
+    cy = cytoscape({
+        userZoomingEnabled: false,
+        userPanningEnabled: false,
+        boxSelectionEnabled: false,
+        autoungrabify: true,
         container: document.getElementById('visualization'),
-        elements: [
-            { data: { id: 'A' } },
-            { data: { id: 'B' } },
-            { data: { id: 'C' } },
-            { data: { id: 'D' } },
-            { data: { id: 'E' } },
-            { data: { source: 'A', target: 'B' } },
-            { data: { source: 'A', target: 'C' } },
-            { data: { source: 'B', target: 'D' } },
-            { data: { source: 'C', target: 'E' } }
-        ],
+        elements: generateElementsFromGraph(sampleGraph),
         style: [
             {
                 selector: 'node',
@@ -20,7 +16,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     'background-color': '#007BFF',
                     'label': 'data(id)',
                     'text-valign': 'center',
-                    'color': '#fff'
+                    'color': '#fff',
+                    'text-outline-color': '#000000ff',
+                    'text-outline-width': 2
                 }
             },
             {
@@ -32,7 +30,39 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         ],
         layout: {
-            name: 'breadthfirst'
-        }
+        name: 'breadthfirst',
+            directed: true,
+            padding: 10,
+            spacingFactor: 1.75,
+            animate: false,
+            avoidOverlap: true,
+            roots: ['A'], // starting node of your DFS
+            orientation: 'vertical' // or 'horizontal'
+}
     });
 });
+
+function generateElementsFromGraph(graph) {
+    const elements = [];
+    const addedNodes = new Set();
+
+    for (const node in graph) {
+        if (!addedNodes.has(node)) {
+            elements.push({ data: { id: node } });
+            addedNodes.add(node);
+        }
+
+        graph[node].forEach(neighbor => {
+            // Add neighbor node if not already added
+            if (!addedNodes.has(neighbor)) {
+                elements.push({ data: { id: neighbor } });
+                addedNodes.add(neighbor);
+            }
+
+            // Add edge
+            elements.push({ data: { source: node, target: neighbor } });
+        });
+    }
+
+    return elements;
+}

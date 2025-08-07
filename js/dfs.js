@@ -21,10 +21,10 @@ function dfs(graph, startNode) {
 // Example usage
 const sampleGraph = {
     'A': ['B', 'C'],
-    'B': ['D'],
-    'C': ['E'],
+    'B': ['D','F'],
+    'C': ['E', 'G'],
     'D': [],
-    'E': []
+    'E': [],
+    'F': [],
+    'G': []
 };
-
-console.log(dfs(sampleGraph, 'A')); // ['A', 'B', 'D', 'C', 'E']
