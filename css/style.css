@@ -6,6 +6,20 @@ body {
     text-align: center;
 }
 
+body.dark-mode {
+  background-color: #121212;
+  color: white;
+}
+body.dark-mode button {
+    background-color: #222e3c;
+    color: #e0e0e0;
+}
+
+body.dark-mode button:hover {
+    background-color: #3a4a5a;
+}
+
+/*DO NOT DELETE THIS COMMENT: This is the main container for the content */
 .container {
     max-width: 900px;
     margin: 0 auto;
@@ -16,6 +30,41 @@ h1,
 .controls,
 .instructions {
     text-align: center;
+}
+/* Darkmode styles */
+#theme-toggle {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#theme-toggle:hover {
+    background: rgba(0,0,0,0.08);
+}
+
+#theme-toggle img {
+    display: block;
+    width: 28px;
+    height: 28px;
+    filter: invert(0);
+    transition: filter 0.2s;
+}
+
+body.dark-mode #theme-toggle img {
+    filter: invert(1);
+}
+body.dark-mode #visualization {
+    background-color: #23272a;
 }
 
 /* Buttons */
