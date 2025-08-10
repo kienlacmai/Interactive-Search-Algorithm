@@ -5,6 +5,7 @@ let interactiveActive = false;   // whether we are in an interactive attempt rig
 let uiMode = 'example';          // 'example' | 'interactive'
 let userInput = [];
 let correctAnswer = [];
+let exampleCompleted = false;
 
 // Expect these to be defined in dfs.js
 //   - sampleGraph
@@ -29,7 +30,7 @@ function setUIMode(mode) {
   if (mode === 'interactive') {
     // Hide reset; rename the other two
     if (resetBtn) resetBtn.style.display = 'none';
-    if (runExampleBtn) runExampleBtn.textContent = 'Return to DFS Example';
+    if (runExampleBtn) runExampleBtn.textContent = 'Re-Run Example DFS';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Try another DFS';
   } else {
     // Example mode: show reset; restore names
@@ -37,6 +38,18 @@ function setUIMode(mode) {
     if (runExampleBtn) runExampleBtn.textContent = 'Run Example DFS';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
   }
+}
+
+function revealStartInteractive() {
+  exampleCompleted = true;
+  const btn = document.getElementById('start-interactive-btn');
+  if (btn) btn.classList.add('revealed');
+}
+
+function hideStartInteractive() {
+  exampleCompleted = false;
+  const btn = document.getElementById('start-interactive-btn');
+  if (btn) btn.classList.remove('revealed');
 }
 
 // Display on-screen feedback instead of alert()
@@ -124,7 +137,8 @@ function startDFS() {
   resetGraph();
 
   const order = dfs(graph, 'A');
-  animateDFSTraversal(order);
+  animateDFSTraversal(order)
+  setTimeout(revealStartInteractive, 4700 + 20)
 }
 
 // Animate a DFS traversal (orange sequence)
