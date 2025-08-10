@@ -44,7 +44,7 @@ function renderResult(success) {
   const fb = document.getElementById('dfs-feedback');
   if (!fb) return;
   if (success === true) {
-    fb.textContent = '✅ You did it!';
+    fb.textContent = '✅ Nice work!';
     fb.className = 'feedback correct';
   } else if (success === false) {
     fb.textContent = '❌ Wrong step—try again.';
