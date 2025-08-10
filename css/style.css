@@ -103,3 +103,243 @@ button:hover {
     border-radius: 8px;
     background-color: #ffffff;
 }
+
+
+
+
+/* ===== DFS Pseudocode Panel Styles ===== */
+.pseudo-toggle .seg { color: #111827; }    /* unselected tab = black text */
+.pseudo-toggle .seg.selected { color: #fff; }  /* selected tab stays white on blue */
+
+.controls {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn,
+.icon-btn {
+  padding: .55rem .9rem;
+  border: 1px solid #e4e4e7;
+  border-radius: .75rem;
+  background: #fff;
+  cursor: pointer;
+  font: 500 14px/1.1 system-ui, sans-serif;
+}
+
+.btn[aria-pressed="true"] { background: #f4f4f5; }
+
+/* Primary style so the pseudocode toggle button is visible in light mode */
+.btn.primary {
+  background: #0b61d8;
+  color: #ffffff;
+  border-color: #0b61d8;
+}
+.btn.primary[aria-pressed="true"] { background: #0a51b5; border-color: #0a51b5; }
+.btn.primary:focus { outline: 2px solid #93c5fd; outline-offset: 2px; }
+
+/* Slide-over panel */
+#pseudocodePanel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: min(560px, 90vw);
+  background: #ffffff;
+  border-left: 1px solid #e4e4e7;
+  box-shadow: -8px 0 24px rgba(0,0,0,.08);
+  transform: translateX(100%);
+  transition: transform .24s ease;
+  z-index: 1000;
+  padding: 16px 18px;
+
+  /* Use flex to avoid big empty space */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  visibility: hidden;
+}
+#pseudocodePanel.show { transform: translateX(0); visibility: visible; }
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#pseudocodePanel .note {
+  font-family: system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+}
+
+pre.code {
+  background: #0b1020;
+  color: #e6edf3;
+  padding: 12px 14px;
+  border-radius: .75rem;
+  overflow: auto;
+  font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+/* Segmented control */
+.pseudo-toggle {
+  display: inline-flex;
+  border: 1px solid #e4e4e7;
+  border-radius: .75rem;
+  overflow: hidden;
+  margin: 6px 0 10px;
+  align-items: center;
+}
+
+.pseudo-toggle .seg {
+  padding: .45rem .8rem;
+  background: #f8fafc;
+  border: 0;
+  font: 600 13px/1 system-ui, sans-serif;
+  cursor: pointer;
+
+  /* Normal-sized buttons */
+  height: 36px;
+  line-height: 1.1;
+  width: auto;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Light mode: unselected tab text should be dark on light bg */
+.pseudo-toggle .seg { color: #111827; }       /* << light-mode fix */
+.pseudo-toggle .seg.selected { background: #0b61d8; color: #fff; }
+
+.pseudo-toggle .seg + .seg { border-left: 1px solid #e4e4e7; }
+
+pre.pseudo { display: none; margin-top: 8px; }
+pre.pseudo.show { display: block; }
+
+/* Dark mode */
+body.dark-mode #pseudocodePanel { background: #0b0f1a; border-left-color: #1f2937; }
+body.dark-mode pre.code { background: #0a0f1a; color: #e6edf3; }
+body.dark-mode .btn,
+body.dark-mode .icon-btn { background: #0f172a; color: #e5e7eb; border-color: #1f2937; }
+body.dark-mode .btn[aria-pressed="true"] { background: #111827; }
+body.dark-mode .btn.primary { background: #2563eb; border-color: #2563eb; }
+
+body.dark-mode .pseudo-toggle { border-color: #1f2937; }
+body.dark-mode .pseudo-toggle .seg { background: #0f172a; color: #e5e7eb; }
+body.dark-mode .pseudo-toggle .seg + .seg { border-left-color: #1f2937; }
+body.dark-mode .pseudo-toggle .seg.selected { background: #2563eb; color: #fff; }
+
+body:not(.dark-mode) #pseudocodePanel .icon-btn {
+  color: #111827; /* dark text for light mode */
+}
+
+body:not(.dark-mode) #pseudocodePanel .icon-btn:hover {
+  background: #f1f5f9;
+}
+
+body:not(.dark-mode) #pseudocodePanel .icon-btn:focus {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+/* Light mode pseudocode text changes */
+body:not(.dark-mode) #pseudocodePanel pre.code {
+  background: #ffffff;
+  color: #111827;
+}
+
+/* Pin "Show pseudocode" to the right edge of the controls row */
+.controls {
+  justify-content: flex-start;   /* keep the first 3 buttons on the left */
+}
+#togglePseudocodeBtn {
+  margin-left: auto;             /* pushes it to the far right of the container */
+  order: 999;                    /* ensures it stays last even if DOM order changes */
+}
+
+/* === Uniform styling for all action buttons in the controls row === */
+/* Applies to: Run Example DFS, Start Interactive DFS, Reset Graph, Show pseudocode */
+.controls > button {
+  padding: .55rem .9rem;
+  border-radius: .75rem;
+  border: 1px solid #0b61d8;
+  background: #0b61d8;
+  color: #ffffff;
+  font: 500 14px/1.1 system-ui, sans-serif;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+
+.controls > button:hover {
+  background: #0a51b5;
+  border-color: #0a51b5;
+}
+
+.controls > button:focus {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+/* If a button uses aria-pressed (e.g., Show pseudocode), keep the pressed look consistent */
+.controls > button[aria-pressed="true"] {
+  background: #0a51b5;
+  border-color: #0a51b5;
+}
+
+/* Dark mode parity */
+body.dark-mode .controls > button {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+body.dark-mode .controls > button:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+/* Show Interactive button is hidden by default; fades in when example completes */
+#start-interactive-btn {           /* initially hidden */
+  display: none;
+}
+
+#start-interactive-btn.revealed {  /* becomes visible + fades in */
+  display: inline-block;
+  animation: dfsFadeIn .28s ease-out both;
+}
+
+@keyframes dfsFadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#example-instructions,
+#interactive-instructions {
+  display: none;                /* JS will toggle this */
+  margin: 6px 0 8px;
+  color: #374151;
+  font: 500 16px/1.35 system-ui, sans-serif;  /* match buttons/title */
+  text-align: center;
+}
+body.dark-mode #example-instructions,
+body.dark-mode #interactive-instructions {
+  color: #e5e7eb;               /* readable on dark background */
+}
+
+#dfs-feedback {
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 8px;
+}

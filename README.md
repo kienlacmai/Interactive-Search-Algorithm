@@ -1,1 +1,2 @@
 # DFS-visualization
+"We will incorporate simple animations and pseudocode scripts, allowing users to toggle between visual and coded representations. Additionally, a quiz-style conceptual activity will have users predict DFS traversal orders on small, predefined graphs to reinforce their understanding."

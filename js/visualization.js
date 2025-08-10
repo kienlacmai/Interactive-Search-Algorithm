@@ -35,7 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     'text-valign': 'center',
                     'color': '#fff',
                     'text-outline-color': '#000000ff',
-                    'text-outline-width': 2
+                    'text-outline-width': 2,
+                    'font-family': 'system-ui, sans-serif',
                 }
             },
             {
