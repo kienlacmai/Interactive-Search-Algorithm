@@ -252,3 +252,53 @@ body:not(.dark-mode) #pseudocodePanel pre.code {
   background: #ffffff;
   color: #111827;
 }
+
+/* Pin "Show pseudocode" to the right edge of the controls row */
+.controls {
+  justify-content: flex-start;   /* keep the first 3 buttons on the left */
+}
+#togglePseudocodeBtn {
+  margin-left: auto;             /* pushes it to the far right of the container */
+  order: 999;                    /* ensures it stays last even if DOM order changes */
+}
+
+/* === Uniform styling for all action buttons in the controls row === */
+/* Applies to: Run Example DFS, Start Interactive DFS, Reset Graph, Show pseudocode */
+.controls > button {
+  padding: .55rem .9rem;
+  border-radius: .75rem;
+  border: 1px solid #0b61d8;
+  background: #0b61d8;
+  color: #ffffff;
+  font: 500 14px/1.1 system-ui, sans-serif;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+
+.controls > button:hover {
+  background: #0a51b5;
+  border-color: #0a51b5;
+}
+
+.controls > button:focus {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+/* If a button uses aria-pressed (e.g., Show pseudocode), keep the pressed look consistent */
+.controls > button[aria-pressed="true"] {
+  background: #0a51b5;
+  border-color: #0a51b5;
+}
+
+/* Dark mode parity */
+body.dark-mode .controls > button {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+body.dark-mode .controls > button:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
