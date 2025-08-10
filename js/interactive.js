@@ -68,19 +68,32 @@ function renderResult(state) {
   const fb = document.getElementById('dfs-feedback');
   if (!fb) return;
 
-  if (state === 'step-correct') {
-    fb.textContent = '✅ Correct node selected!';
-    fb.className = 'feedback correct';
-  } else if (state === true) {
-    fb.textContent = '✅ Traversal complete!';
-    fb.className = 'feedback correct';
-  } else if (state === false) {
-    fb.textContent = '❌ Wrong step—try again.';
+  const modal = document.getElementById('dfs-modal');
+  const modalMsg = document.getElementById('dfs-modal-message');
+  const modalClose = document.getElementById('dfs-modal-close');
+
+  // Only show modal for wrong step or traversal complete
+  if (state === false) {
     fb.className = 'feedback wrong';
-  } else {
-    fb.textContent = '';
-    fb.className = 'feedback';
-  }
+    if (modal && modalMsg && modalClose) {
+      modalMsg.textContent = '❌ Incorrect choice!';
+      modalClose.textContent = 'Try Again';
+      modal.style.display = 'flex';
+      modalClose.onclick = () => {
+        modal.style.display = 'none';
+      };
+    }
+  } else if (state === true) {
+    fb.className = 'feedback correct';
+    if (modal && modalMsg && modalClose) {
+      modalMsg.textContent = '🎉 Traversal complete!';
+      modalClose.textContent = 'Close';
+      modal.style.display = 'flex';
+      modalClose.onclick = () => {
+        modal.style.display = 'none';
+      };
+    }
+  } 
 }
 
 // Pick a random graph from the pool
@@ -145,7 +158,7 @@ function startInteractiveDFS() {
 function startDFS() {
   // When returning to example from interactive, restore UI and stop interactive taps
   setUIMode('example');
-  renderResult(null);
+  //renderResult(null);
   endInteractiveSession();
 
   const graph = typeof sampleGraph !== 'undefined' ? sampleGraph : getRandomGraph();
@@ -206,7 +219,7 @@ function resetGraph() {
 
   // ADDED: reset interactive attempt and feedback
   userInput = [];
-  renderResult(null);
+  //renderResult(null);
 
   // ADDED: gate interactive button again (only matters if you use the CSS gate)
   //hideStartInteractive();

@@ -9,6 +9,13 @@
   <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
+<!-- onscreen interative DFS feedback -->
+<div id="dfs-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span id="dfs-modal-message"></span>
+    <button id="dfs-modal-close">Try Again</button>
+  </div>
+</div>
 <body>
   <div class="container">
     <button id="theme-toggle" aria-label="Toggle Theme">
@@ -30,6 +37,7 @@
       Click on the <strong>correct nodes</strong> that follow the DFS traversal path. Complete the traversal and test your knowledge with a quiz!
       </p>
     <div id="visualization"></div>
+    <!-- WIP more explicit feedback -->
     <div id="dfs-feedback" class="feedback"></div>
 
     <aside id="pseudocodePanel" aria-hidden="true">
