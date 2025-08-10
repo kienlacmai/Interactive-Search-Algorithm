@@ -9,7 +9,7 @@
   <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
-<!-- onscreen interative DFS feedback -->
+<!-- onscreen interative feedback -->
 <div id="dfs-modal" class="modal" style="display:none;">
   <div class="modal-content">
     <span id="dfs-modal-message"></span>
@@ -19,7 +19,7 @@
 <body>
   <div class="container">
     <button id="theme-toggle" aria-label="Toggle Theme">
-      <img src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
+    <img src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
     </button>
     <h1>🧠 Interactive DFS Tutorial</h1>
 
@@ -27,6 +27,7 @@
       <button id="run-example-btn" onclick="startDFS()">Run example DFS</button>
       <button id="start-interactive-btn" onclick="startInteractiveDFS()">Start Interactive DFS</button>
       <button id="reset-btn" onclick="resetGraph()">Reset graph</button>
+      <button id="take-quiz-btn">Take a Quiz</button>
       <!-- single, visible pseudocode toggle button -->
       <button id="togglePseudocodeBtn" class="btn primary" aria-pressed="false">Show pseudocode</button>
     </div>
@@ -37,9 +38,7 @@
       Click on the <strong>correct nodes</strong> that follow the DFS traversal path. Complete the traversal and test your knowledge with a quiz!
       </p>
     <div id="visualization"></div>
-    <!-- WIP more explicit feedback -->
-    <div id="dfs-feedback" class="feedback"></div>
-
+<div id="dfs-feedback" class="feedback"></div>
     <aside id="pseudocodePanel" aria-hidden="true">
       <div class="panel-header">
         <h2>Depth-First Search (DFS) — Pseudocode</h2>
@@ -87,9 +86,12 @@
     </aside>
   </div>
 
+  <section id="dfs-quiz" style="display:none;"></section>
+
   <script src="js/dfs.js"></script>
   <script src="js/visualization.js"></script>
   <script src="js/interactive.js"></script>
+  <script src="js/quiz.js"></script>
 
   <script>
     // theme toggle
