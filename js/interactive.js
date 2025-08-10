@@ -5,7 +5,6 @@ let interactiveActive = false;   // whether we are in an interactive attempt rig
 let uiMode = 'example';          // 'example' | 'interactive'
 let userInput = [];
 let correctAnswer = [];
-let exampleCompleted = false;
 
 // Expect these to be defined in dfs.js
 //   - sampleGraph
@@ -22,34 +21,42 @@ function cacheButtons() {
   resetBtn            = document.getElementById('reset-btn');
 }
 
+// --- scheduling for example animation (ADDED) ---
+let _animTimers = []; // ADDED: store all timeouts used by the example animation
+function trackTimeout(fn, ms) { // ADDED
+  const id = setTimeout(fn, ms);
+  _animTimers.push(id);
+  return id;
+}
+function clearAnimTimers() { // ADDED
+  _animTimers.forEach(clearTimeout);
+  _animTimers = [];
+}
+
+// --- reveal/hide "Start Interactive DFS" gate (ADDED) ---
+function revealStartInteractive() { // ADDED
+  const btn = document.getElementById('start-interactive-btn');
+  if (btn) btn.classList.add('revealed'); // relies on CSS gate you added earlier
+}
+function hideStartInteractive() { // ADDED
+  const btn = document.getElementById('start-interactive-btn');
+  if (btn) btn.classList.remove('revealed');
+}
+
 // --- UI helpers ---
 function setUIMode(mode) {
   uiMode = mode;
   if (!runExampleBtn || !startInteractiveBtn || !resetBtn) cacheButtons();
 
   if (mode === 'interactive') {
-    // Hide reset; rename the other two
-    if (resetBtn) resetBtn.style.display = 'none';
-    if (runExampleBtn) runExampleBtn.textContent = 'Re-Run Example DFS';
+    // CHANGED: keep Reset visible in interactive mode (was hidden before)
+    if (runExampleBtn) runExampleBtn.textContent = 'Return to DFS Example';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Try another DFS';
   } else {
-    // Example mode: show reset; restore names
-    if (resetBtn) resetBtn.style.display = '';
+    // Example mode: restore names
     if (runExampleBtn) runExampleBtn.textContent = 'Run Example DFS';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
   }
-}
-
-function revealStartInteractive() {
-  exampleCompleted = true;
-  const btn = document.getElementById('start-interactive-btn');
-  if (btn) btn.classList.add('revealed');
-}
-
-function hideStartInteractive() {
-  exampleCompleted = false;
-  const btn = document.getElementById('start-interactive-btn');
-  if (btn) btn.classList.remove('revealed');
 }
 
 // Display on-screen feedback instead of alert()
@@ -137,33 +144,63 @@ function startDFS() {
   resetGraph();
 
   const order = dfs(graph, 'A');
-  animateDFSTraversal(order)
-  setTimeout(revealStartInteractive, 4700 + 20)
+  animateDFSTraversal(order);
 }
 
 // Animate a DFS traversal (orange sequence)
 function animateDFSTraversal(order) {
   const delay = 600;
   order.forEach((nodeId, i) => {
-    setTimeout(() => {
+    trackTimeout(() => { // CHANGED: track timeouts so Reset can cancel them
       cy.getElementById(nodeId).animate({
         style: { 'background-color': 'orange' }
       }, { duration: 300 });
     }, i * delay);
   });
+
+  // Reveal “Start Interactive DFS” just after the last step finishes (ADDED)
+  trackTimeout(revealStartInteractive, order.length * delay + 20); // ADDED
 }
 
-// Reset all nodes to default style
+// Reset all nodes to default style AND cancel any running animation/timers
 function resetGraph() {
-  cy.nodes().forEach(node => {
-    node.animate({
-      style: {
-        'background-color': '#007BFF',
-        'color': '#fff',
-        'text-outline-color': '#007BFF'
-      }
-    }, { duration: 300 });
-  });
+  clearAnimTimers();                 // ADDED: cancel any pending example steps
+
+  if (typeof cy !== 'undefined') {
+    cy.stop();                       // ADDED: stop queued animations
+
+    // ADDED: clear traversal classes and inline styles
+    const cls = 'visited active current highlighted correct wrong clicked done';
+    cy.nodes().removeClass(cls);
+    cy.edges().removeClass(cls);
+
+    cy.nodes().forEach(node => {
+      node.stop();
+      node.removeStyle('background-color');
+      node.removeStyle('color');
+      node.removeStyle('text-outline-color');
+      node.animate({
+        style: {
+          'background-color': '#007BFF',
+          'color': '#fff',
+          'text-outline-color': '#007BFF'
+        }
+      }, { duration: 200 });
+    });
+
+    cy.edges().forEach(e => {
+      e.removeStyle('line-color');
+      e.removeStyle('target-arrow-color');
+      e.removeStyle('width');
+    });
+  }
+
+  // ADDED: reset interactive attempt and feedback
+  userInput = [];
+  renderResult(null);
+
+  // ADDED: gate interactive button again (only matters if you use the CSS gate)
+  //hideStartInteractive();
 }
 
 // Make controls callable from inline HTML handlers (if used)
