@@ -71,12 +71,11 @@ function renderQuiz(questions) {
 
 // "Take a Quiz" button logic
 document.getElementById('take-quiz-btn').onclick = function() {
-  const viz = document.getElementById('visualization');
-  const fb  = document.getElementById('dfs-feedback');
   const quizSection = document.getElementById('dfs-quiz');
 
-  if (viz) viz.style.display = 'none';
-  if (fb)  fb.style.display  = 'none';
+  // Remove these lines so graph/buttons remain active
+  // if (viz) viz.style.display = 'none';
+  // if (fb)  fb.style.display  = 'none';
 
   quizSection.style.display = 'block';
   document.querySelector('h1').textContent = 'DFS Quiz';
