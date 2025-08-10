@@ -37,6 +37,7 @@ function clearAnimTimers() { // ADDED
 function revealStartInteractive() { // ADDED
   const btn = document.getElementById('start-interactive-btn');
   if (btn) btn.classList.add('revealed'); // relies on CSS gate you added earlier
+  localStorage.setItem('dfsInteractiveRevealed', '1');
 }
 function hideStartInteractive() { // ADDED
   const btn = document.getElementById('start-interactive-btn');
@@ -212,4 +213,9 @@ window.resetGraph = resetGraph;
 document.addEventListener('DOMContentLoaded', () => {
   cacheButtons();
   setUIMode('example');
+
+  if (localStorage.getItem('dfsInteractiveRevealed') === '1') {
+    const btn = document.getElementById('start-interactive-btn');
+    if (btn) btn.classList.add('revealed');
+  }
 });
