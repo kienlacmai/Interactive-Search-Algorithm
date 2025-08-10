@@ -1,25 +1,63 @@
 // interactive.js
 
-// State variables
-let interactiveActive = false;
+// --- Global state ---
+let interactiveActive = false;   // whether we are in an interactive attempt right now
+let uiMode = 'example';          // 'example' | 'interactive'
 let userInput = [];
 let correctAnswer = [];
+let exampleCompleted = false;
 
-// Array of random graphs
-const randomGraphs = randomgraphgenerator;
+// Expect these to be defined in dfs.js
+//   - sampleGraph
+//   - randomgraphgenerator (array of graphs)
+//   - getRandomInt(min,max)
+const randomGraphs = typeof randomgraphgenerator !== 'undefined' ? randomgraphgenerator : [];
 const N = randomGraphs.length;
 
-// Utility: pick a random graph from the array
-function getRandomGraph() {
-  const idx = getRandomInt(0, N - 1);
-  return randomGraphs[idx];
+// --- Button cache ---
+let runExampleBtn, startInteractiveBtn, resetBtn;
+function cacheButtons() {
+  runExampleBtn       = document.getElementById('run-example-btn');
+  startInteractiveBtn = document.getElementById('start-interactive-btn');
+  resetBtn            = document.getElementById('reset-btn');
 }
 
-// Render on-screen feedback instead of alert()
+// --- UI helpers ---
+function setUIMode(mode) {
+  uiMode = mode;
+  if (!runExampleBtn || !startInteractiveBtn || !resetBtn) cacheButtons();
+
+  if (mode === 'interactive') {
+    // Hide reset; rename the other two
+    if (resetBtn) resetBtn.style.display = 'none';
+    if (runExampleBtn) runExampleBtn.textContent = 'Re-Run Example DFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Try another DFS';
+  } else {
+    // Example mode: show reset; restore names
+    if (resetBtn) resetBtn.style.display = '';
+    if (runExampleBtn) runExampleBtn.textContent = 'Run Example DFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+  }
+}
+
+function revealStartInteractive() {
+  exampleCompleted = true;
+  const btn = document.getElementById('start-interactive-btn');
+  if (btn) btn.classList.add('revealed');
+}
+
+function hideStartInteractive() {
+  exampleCompleted = false;
+  const btn = document.getElementById('start-interactive-btn');
+  if (btn) btn.classList.remove('revealed');
+}
+
+// Display on-screen feedback instead of alert()
 function renderResult(success) {
   const fb = document.getElementById('dfs-feedback');
+  if (!fb) return;
   if (success === true) {
-    fb.textContent = '✅ You did it!';
+    fb.textContent = '✅ Nice work!';
     fb.className = 'feedback correct';
   } else if (success === false) {
     fb.textContent = '❌ Wrong step—try again.';
@@ -30,6 +68,13 @@ function renderResult(success) {
   }
 }
 
+// Pick a random graph from the pool
+function getRandomGraph() {
+  if (!N) return typeof sampleGraph !== 'undefined' ? sampleGraph : {};
+  const idx = getRandomInt(0, N - 1);
+  return randomGraphs[idx];
+}
+
 // Highlight a node with green/red on user tap
 function highlightNode(nodeId, correct) {
   cy.getElementById(nodeId).animate({
@@ -37,22 +82,29 @@ function highlightNode(nodeId, correct) {
   }, { duration: 300 });
 }
 
-// Start a new interactive DFS session
+// Remove interactive handlers and flags
+function endInteractiveSession() {
+  interactiveActive = false;
+  if (typeof cy !== 'undefined') cy.off('tap');
+}
+
+// Start a new interactive DFS session (new random graph each time)
 function startInteractiveDFS() {
+  setUIMode('interactive');
   interactiveActive = true;
-  renderResult(null);                // Clear previous feedback
+  renderResult(null); // clear feedback
 
   const graph = getRandomGraph();
-  loadGraph(graph);                  // Rebuilds the graph visualization
-  resetGraph();                      // Reset all node styles to default
+  loadGraph(graph);   // from visualization.js
+  resetGraph();       // reset styles
 
-  cy.off('tap');                     // Remove any old handlers
+  if (typeof cy !== 'undefined') cy.off('tap'); // clear any old handlers
 
   userInput     = [];
-  correctAnswer = dfs(graph, 'A');   // Compute correct DFS order
+  correctAnswer = dfs(graph, 'A');
   console.log('Correct DFS Order:', correctAnswer);
 
-  // Attach a single tap handler for this session
+  // Single tap handler for this session
   cy.on('tap', 'node', (evt) => {
     if (!interactiveActive) return;
     const clicked = evt.target.id();
@@ -64,7 +116,7 @@ function startInteractiveDFS() {
       highlightNode(clicked, true);
       if (userInput.length === correctAnswer.length) {
         renderResult(true);
-        interactiveActive = false;
+        endInteractiveSession();
       }
     } else {
       highlightNode(clicked, false);
@@ -73,15 +125,23 @@ function startInteractiveDFS() {
   });
 }
 
-// Simple DFS animation (non-interactive)
+// Non-interactive example: run DFS on the sample graph and animate
 function startDFS() {
-  const graph = sampleGraph;
+  // When returning to example from interactive, restore UI and stop interactive taps
+  setUIMode('example');
+  renderResult(null);
+  endInteractiveSession();
+
+  const graph = typeof sampleGraph !== 'undefined' ? sampleGraph : getRandomGraph();
   loadGraph(graph);
+  resetGraph();
+
   const order = dfs(graph, 'A');
-  animateDFSTraversal(order);
+  animateDFSTraversal(order)
+  setTimeout(revealStartInteractive, 4700 + 20)
 }
 
-// Animate the DFS traversal by coloring nodes orange sequentially
+// Animate a DFS traversal (orange sequence)
 function animateDFSTraversal(order) {
   const delay = 600;
   order.forEach((nodeId, i) => {
@@ -93,7 +153,7 @@ function animateDFSTraversal(order) {
   });
 }
 
-// Reset all nodes to the default style
+// Reset all nodes to default style
 function resetGraph() {
   cy.nodes().forEach(node => {
     node.animate({
@@ -106,6 +166,13 @@ function resetGraph() {
   });
 }
 
-// Expose functions globally for HTML buttons
+// Make controls callable from inline HTML handlers (if used)
 window.startInteractiveDFS = startInteractiveDFS;
-window.startDFS            = startDFS;
+window.startDFS = startDFS;
+window.resetGraph = resetGraph;
+
+// Initialize UI text on load
+document.addEventListener('DOMContentLoaded', () => {
+  cacheButtons();
+  setUIMode('example');
+});
