@@ -1,3 +1,4 @@
+/*
 const dfsQuestions = [
   {
     question: "Which data structure is commonly used to implement DFS?",
@@ -53,18 +54,33 @@ function renderQuiz(questions) {
       <p>You scored ${score} out of ${questions.length}.</p>
       <button id="retake-quiz-btn">Retake Quiz</button>
       <button id="exit-quiz-btn">Exit Quiz</button>`;
+
     document.getElementById('retake-quiz-btn').onclick = () => {
       renderQuiz(getRandomQuestions(dfsQuestions, 5));
     };
-    document.getElementById('exit-quiz-btn').onclick = () => {
-        const quizSection = document.getElementById('dfs-quiz');
-  const viz = document.getElementById('visualization');
-  const fb  = document.getElementById('dfs-feedback');
 
-  quizSection.style.display = 'none';
-  if (viz) viz.style.display = '';   // show the graph again
-  if (fb)  fb.style.display  = '';   // show feedback area again
-  document.querySelector('h1').textContent = '🧠 Interactive DFS Tutorial';
+    // CHANGED: exit quiz restores graph, feedback, and activity buttons (keeps Show Pseudocode visible)
+    document.getElementById('exit-quiz-btn').onclick = () => {
+      const quizSection = document.getElementById('dfs-quiz');
+      const viz = document.getElementById('visualization');
+      const fb  = document.getElementById('dfs-feedback');
+
+      // Hide quiz, show graph + feedback again
+      quizSection.style.display = 'none';
+      if (viz) viz.style.display = '';
+      if (fb)  fb.style.display  = '';
+
+      // Restore activity control buttons (leave Show Pseudocode alone)
+      ['run-example-btn', 'reset-btn', 'take-quiz-btn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = '';
+      });
+      // start-interactive respects your CSS gate (.revealed shows it)
+      const startBtn = document.getElementById('start-interactive-btn');
+      if (startBtn) startBtn.style.display = '';
+
+      // Restore title
+      document.querySelector('h1').textContent = '🧠 Interactive DFS Tutorial';
     };
   };
 }
@@ -75,12 +91,21 @@ document.getElementById('take-quiz-btn').onclick = function() {
   const fb  = document.getElementById('dfs-feedback');
   const quizSection = document.getElementById('dfs-quiz');
 
+  // CHANGED: do NOT hide the whole container; keep Show Pseudocode available
   if (viz) viz.style.display = 'none';
   if (fb)  fb.style.display  = 'none';
 
+  // CHANGED: Hide activity control buttons (keep Show Pseudocode visible)
+  ['run-example-btn', 'start-interactive-btn', 'reset-btn', 'take-quiz-btn'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  // Show quiz container
   quizSection.style.display = 'block';
   document.querySelector('h1').textContent = 'DFS Quiz';
 
   const selectedQuestions = getRandomQuestions(dfsQuestions, 5);
   renderQuiz(selectedQuestions);
 };
+*/

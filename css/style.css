@@ -386,3 +386,43 @@ body.dark-mode #dfs-modal-close {
 body.dark-mode #dfs-modal-close:hover {
   background: #1d4ed8;
 }
+
+/* === DFS Quiz Panel (left-aligned, same width as graph) === */
+.quiz-panel {
+  width: 900px;                 /* matches #visualization */
+  margin: 30px auto;            /* same vertical rhythm/centering in the page */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 16px 20px;
+  text-align: left;             /* left-align the text */
+}
+
+.quiz-panel h2 {
+  margin: 0 0 12px;
+  font-family: system-ui, sans-serif;
+  font-weight: 700;
+}
+
+.quiz-question {
+  margin-bottom: 14px;
+}
+
+.quiz-question p {
+  margin: 0 0 6px;
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.quiz-question label {
+  display: block;               /* one option per line */
+  margin: 4px 0;
+  font-family: system-ui, sans-serif;
+  cursor: pointer;
+}
+
+/* Dark mode */
+body.dark-mode .quiz-panel {
+  background: #0f172a;
+  border-color: #1f2937;
+}
