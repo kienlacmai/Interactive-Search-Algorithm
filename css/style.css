@@ -317,3 +317,14 @@ body.dark-mode .controls > button:hover {
   from { opacity: 0; transform: translateY(-2px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+#interactive-instructions {
+  display: none;                /* JS will toggle this */
+  margin: 6px 0 8px;
+  color: #374151;
+  font: 500 14px/1.35 system-ui, sans-serif;  /* match buttons/title */
+  text-align: center;
+}
+body.dark-mode #interactive-instructions {
+  color: #e5e7eb;               /* readable on dark background */
+}

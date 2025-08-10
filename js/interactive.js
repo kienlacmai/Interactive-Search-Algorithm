@@ -48,7 +48,8 @@ function hideStartInteractive() { // ADDED
 function setUIMode(mode) {
   uiMode = mode;
   if (!runExampleBtn || !startInteractiveBtn || !resetBtn) cacheButtons();
-
+  const instr = document.getElementById('interactive-instructions');
+  if (instr) instr.style.display = (mode === 'interactive' ? 'block' : 'none');
   if (mode === 'interactive') {
     // CHANGED: keep Reset visible in interactive mode (was hidden before)
     if (runExampleBtn) runExampleBtn.textContent = 'Return to DFS Example';
