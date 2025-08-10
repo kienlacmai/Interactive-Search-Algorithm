@@ -328,3 +328,10 @@ body.dark-mode .controls > button:hover {
 body.dark-mode #interactive-instructions {
   color: #e5e7eb;               /* readable on dark background */
 }
+
+#dfs-feedback {
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 8px;
+}

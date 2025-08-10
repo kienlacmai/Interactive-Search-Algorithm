@@ -62,13 +62,17 @@ function setUIMode(mode) {
 }
 
 // Display on-screen feedback instead of alert()
-function renderResult(success) {
+function renderResult(state) {
   const fb = document.getElementById('dfs-feedback');
   if (!fb) return;
-  if (success === true) {
-    fb.textContent = '✅ Nice work!';
+
+  if (state === 'step-correct') {
+    fb.textContent = '✅ Correct node selected!';
     fb.className = 'feedback correct';
-  } else if (success === false) {
+  } else if (state === true) {
+    fb.textContent = '✅ Traversal complete!';
+    fb.className = 'feedback correct';
+  } else if (state === false) {
     fb.textContent = '❌ Wrong step—try again.';
     fb.className = 'feedback wrong';
   } else {
@@ -123,6 +127,7 @@ function startInteractiveDFS() {
     if (clicked === expected) {
       userInput.push(clicked);
       highlightNode(clicked, true);
+      renderResult('step-correct');
       if (userInput.length === correctAnswer.length) {
         renderResult(true);
         endInteractiveSession();
