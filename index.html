@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Algo Visualizer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); padding: 2rem; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 1.25rem; text-decoration: none; }
+    .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+    h1 { text-align: center; margin: 1.25rem 0; }
+    .muted { color: #555; font-size: .95rem; }
+  </style>
+</head>
+<body>
+  <h1>Interactive Algorithm Visualizer</h1>
+  <div class="grid">
+    <a class="card" href="pages/dfs.html">
+      <h2>Depth-First Search (DFS)</h2>
+      <p class="muted">Explore recursive and stack-based DFS with step-by-step highlighting.</p>
+    </a>
+    <a class="card" href="pages/bfs.html">
+      <h2>Breadth-First Search (BFS)</h2>
+      <p class="muted">Level-order exploration using a queue (coming soon).</p>
+    </a>
+    <a class="card" href="pages/astar.html">
+      <h2>A* Pathfinding</h2>
+      <p class="muted">Heuristics, open/closed sets, and shortest paths (coming soon).</p>
+    </a>
+  </div>
+</body>
+</html>
