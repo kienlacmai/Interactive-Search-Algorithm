@@ -48,7 +48,9 @@ function hideStartInteractive() { // ADDED
 function setUIMode(mode) {
   uiMode = mode;
   if (!runExampleBtn || !startInteractiveBtn || !resetBtn) cacheButtons();
+  const exInstr  = document.getElementById('example-instructions');
   const instr = document.getElementById('interactive-instructions');
+  if (exInstr) exInstr.style.display = (mode === 'example' ? 'block' : 'none');
   if (instr) instr.style.display = (mode === 'interactive' ? 'block' : 'none');
   if (mode === 'interactive') {
     // CHANGED: keep Reset visible in interactive mode (was hidden before)
