@@ -57,6 +57,12 @@ const dfsQuestions = [
 ];
 
 
+// Helper: pick n random questions from the pool
+function getRandomQuestions(allQuestions, n) {
+  const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, n);
+}
+
 // Render quiz to the DOM
 function renderQuiz() {
   // Hide graph + instructions
@@ -76,7 +82,10 @@ function renderQuiz() {
 
   const form = quizSection.querySelector('#quiz-form');
 
-  dfsQuestions.forEach((q, i) => {
+  // Get 5 random questions
+  const selectedQuestions = getRandomQuestions(dfsQuestions, 5);
+
+  selectedQuestions.forEach((q, i) => {
     const qDiv = document.createElement('div');
     qDiv.className = 'quiz-question';
     qDiv.innerHTML = `
@@ -118,6 +127,7 @@ function renderQuiz() {
     });
   });
 }
+
 
 
 // --- helpers to toggle quiz vs activity UI ---
