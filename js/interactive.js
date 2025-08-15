@@ -52,16 +52,22 @@ function setUIMode(mode) {
   const instr = document.getElementById('interactive-instructions');
   if (exInstr) exInstr.style.display = (mode === 'example' ? 'block' : 'none');
   if (instr) instr.style.display = (mode === 'interactive' ? 'block' : 'none');
+
+  const quizBtn = document.getElementById('take-quiz-btn');
+
   if (mode === 'interactive') {
-    // CHANGED: keep Reset visible in interactive mode (was hidden before)
     if (runExampleBtn) runExampleBtn.textContent = 'Return to DFS Example';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Try another DFS';
-  } else {
-    // Example mode: restore names
+    if (quizBtn) quizBtn.textContent = 'Take a Quiz'; // back to normal in interactive
+  } else if (mode === 'example') {
     if (runExampleBtn) runExampleBtn.textContent = 'Run Example DFS';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+    if (quizBtn) quizBtn.textContent = 'Take a Quiz'; // back to normal in example
+  } else if (mode === 'quiz') {
+    if (quizBtn) quizBtn.textContent = 'Retake Quiz';
   }
 }
+
 
 // Display on-screen feedback instead of alert()
 function renderResult(state) {
