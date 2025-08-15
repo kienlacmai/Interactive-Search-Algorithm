@@ -118,6 +118,7 @@ function endInteractiveSession() {
 
 // Start a new interactive DFS session (new random graph each time)
 function startInteractiveDFS() {
+  if (typeof window.hideQuizUI === 'function') window.hideQuizUI();
   setUIMode('interactive');
   interactiveActive = true;
   renderResult(null); // clear feedback
@@ -125,6 +126,18 @@ function startInteractiveDFS() {
   const graph = getRandomGraph();
   loadGraph(graph);   // from visualization.js
   resetGraph();       // reset styles
+
+  if (typeof cy !== 'undefined') {
+  cy.resize();
+  cy.layout({
+    name: 'breadthfirst',
+    directed: true,
+    roots: ['A'],
+    orientation: 'vertical',
+    spacingFactor: 1.75,
+    padding: 10
+  }).run();
+}
 
   if (typeof cy !== 'undefined') cy.off('tap'); // clear any old handlers
 
@@ -156,6 +169,7 @@ function startInteractiveDFS() {
 
 // Non-interactive example: run DFS on the sample graph and animate
 function startDFS() {
+  if (typeof window.hideQuizUI === 'function') window.hideQuizUI();
   // When returning to example from interactive, restore UI and stop interactive taps
   setUIMode('example');
   //renderResult(null);
@@ -164,6 +178,18 @@ function startDFS() {
   const graph = typeof sampleGraph !== 'undefined' ? sampleGraph : getRandomGraph();
   loadGraph(graph);
   resetGraph();
+
+  if (typeof cy !== 'undefined') {
+  cy.resize();
+  cy.layout({
+    name: 'breadthfirst',
+    directed: true,
+    roots: ['A'],
+    orientation: 'vertical',
+    spacingFactor: 1.75,
+    padding: 10
+  }).run();
+}
 
   const order = dfs(graph, 'A');
   animateDFSTraversal(order);

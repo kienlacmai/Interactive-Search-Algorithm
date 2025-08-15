@@ -27,7 +27,7 @@
       <button id="run-example-btn" onclick="startDFS()">Run example DFS</button>
       <button id="start-interactive-btn" onclick="startInteractiveDFS()">Start Interactive DFS</button>
       <button id="reset-btn" onclick="resetGraph()">Reset graph</button>
-      <button id="take-quiz-btn">Take a Quiz</button>
+      <button id="take-quiz-btn" onclick="renderQuiz()">Take a Quiz</button>
       <!-- single, visible pseudocode toggle button -->
       <button id="togglePseudocodeBtn" class="btn primary" aria-pressed="false">Show pseudocode</button>
     </div>
@@ -85,9 +85,7 @@
       <p class="note">Mentally trace the code to understand the algorithm's traversal pathing!</p>
     </aside>
   </div>
-
-  <section id="dfs-quiz" class="quiz-panel" style="display: none;"></section>
-
+  <section id="dfs-quiz" class="quiz-panel" style="display:none;"></section>
   <script src="js/dfs.js"></script>
   <script src="js/visualization.js"></script>
   <script src="js/interactive.js"></script>

@@ -420,6 +420,8 @@ body.dark-mode #dfs-modal-close:hover {
   font-family: system-ui, sans-serif;
   cursor: pointer;
 }
+.quiz-question.correct { outline: 2px solid #2ecc71; border-radius: 8px; }
+.quiz-question.incorrect { outline: 2px dashed #e74c3c; border-radius: 8px; }
 
 /* Dark mode */
 body.dark-mode .quiz-panel {
