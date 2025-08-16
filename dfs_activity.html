@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<!-- HEAD -->
+<head>
+  <meta charset="UTF-8">
+  <title>DFS Interactive Tutorial</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- CYTOSCAPE TO GENERATE GRAPH -->
+  <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<!-- FEEDBACK SCREEN FOR INTERACTIVE ACTIVITIES -- ERRORS/COMPLETION -->
+<div id="dfs-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span id="dfs-modal-message"></span>
+    <button id="dfs-modal-close">Try Again</button>
+  </div>
+</div>
+
+<!-- BODY -->
+<body>
+  <div class="container">
+    <!-- TOGGLE BUTTON -->
+    <button id="theme-toggle" aria-label="Toggle Theme">
+    <img src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
+    </button>
+    <!-- PAGE HEADER -->
+    <h1>🧠 Interactive DFS Tutorial</h1>
+
+    <!-- BUTTONS -->
+    <div class="controls">
+      <button id="run-example-btn" onclick="startDFS()">Run example DFS</button>
+      <button id="start-interactive-btn" onclick="startInteractiveDFS()">Start Interactive DFS</button>
+      <button id="take-quiz-btn" onclick="renderQuiz()">Take a Quiz</button>
+      <button id="togglePseudocodeBtn" class="btn primary" aria-pressed="false">Show pseudocode</button>
+      <!-- THIS IS THE RESET BUTTON FOR DEBUGGING<button id="reset-btn" onclick="resetGraph()">Reset graph</button> -->
+    </div>
+
+    <!-- TEXT INSTRUCTIONS UNDER EACH ACTIVITY WHEN CLICKED -->
+    <p id="example-instructions" class="activity-instructions" style="display: none;">
+      Click on <strong>Run Example DFS</strong> to see the algorithm traversal. Start the <strong>Interactive DFS</strong> after the example has completed!
+    </p>
+    <p id="interactive-instructions" class="instructions">
+      Click on the <strong>correct nodes</strong> that follow the DFS traversal path. Complete the traversal and test your knowledge with a quiz!
+    </p>
+
+    <!-- LOAD GRAPH -->
+    <div id="visualization"></div>
+
+    <!-- LOAD FEEDBACK POPUP -->
+    <div id="dfs-feedback" class="feedback"></div>
+
+<!-------------------- PSEUDOCODE SIDE PANEL -------------------- -->
+    <aside id="pseudocodePanel" aria-hidden="true">
+      <div class="panel-header">
+        <h2>Depth-First Search (DFS) — Pseudocode</h2>
+        <button id="closePseudocodeBtn" class="icon-btn" aria-label="Close">✕</button>
+      </div>
+
+      <div class="pseudo-toggle" role="tablist" aria-label="Pseudocode variant">
+        <button class="seg selected" role="tab" aria-selected="true" data-target="recursive">Recursive</button>
+        <button class="seg" role="tab" aria-selected="false" data-target="iterative">Iterative</button>
+      </div>
+
+<pre id="pseudo-recursive" class="code pseudo show">procedure DFS(G, start):
+    visited ← set()
+    parent  ← map()
+    time    ← 0
+
+    function visit(u):
+        visited.add(u)
+        time ← time + 1
+        for v in G.neighbors(u):
+            if v ∉ visited:
+                parent[v] ← u
+                visit(v)
+        time ← time + 1
+
+    visit(start)
+    return parent
+  </pre>
+
+<pre id="pseudo-iterative" class="code pseudo">procedure DFS_iter(G, start):
+    visited ← set()
+    parent  ← map()
+    S ← stack([start])
+
+    while S not empty:
+        u ← S.pop()
+        if u ∉ visited:
+            visited.add(u)
+            for v in reverse(G.neighbors(u)):
+                if v ∉ visited:
+                    parent[v] ← u
+                    S.push(v)
+    return parent
+  </pre>
+
+      <p class="note">Mentally trace the code to understand the algorithm's traversal pathing!</p>
+    </aside>
+  </div>
+  <!-- END OF PSEUDOCODE PANEL -->
+  
+  <!-- JAVASCRIPT FILE INJECTIONS -->
+  <section id="dfs-quiz" class="quiz-panel" style="display:none;"></section>
+  <script src="js/dfs.js"></script> <!-- THIS LINE WOULD BE DIFFERENT FOR OTHER SEARCH ALGORITHMS -->
+  <script src="js/visualization.js"></script>
+  <script src="js/interactive.js"></script>
+  <script src="js/quiz.js"></script>
+
+  <!-- HTML SCRIPT BLOCKS -->
+  <script>
+    // LIGHT/DARK THEME TOGGLE
+    const toggle = document.getElementById("theme-toggle");
+    toggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      const isDark = document.body.classList.contains("dark-mode");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
+    window.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark-mode");
+      }
+    });
+  </script>
+
+  <script>
+    // PSEUCODE PANEL OPEN/CLOSE
+    (function () {
+      const btn = document.getElementById('togglePseudocodeBtn');
+      const panel = document.getElementById('pseudocodePanel');
+      const close = document.getElementById('closePseudocodeBtn');
+
+      function showPanel() {
+        panel.classList.add('show');
+        panel.setAttribute('aria-hidden', 'false');
+        btn.setAttribute('aria-pressed', 'true');
+        btn.textContent = 'Back to activity';
+      }
+      function hidePanel() {
+        panel.classList.remove('show');
+        panel.setAttribute('aria-hidden', 'true');
+        btn.setAttribute('aria-pressed', 'false');
+        btn.textContent = 'Show pseudocode';
+      }
+
+      btn.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-pressed') === 'true';
+        open ? hidePanel() : showPanel();
+      });
+      close.addEventListener('click', hidePanel);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && btn.getAttribute('aria-pressed') === 'true') hidePanel();
+      });
+    })();
+  </script>
+
+  <script>
+    // RECURSIVE TO ITERATIVE TOGGLE
+    (function () {
+      const segs = document.querySelectorAll('.pseudo-toggle .seg');
+      const recursive = document.getElementById('pseudo-recursive');
+      const iterative = document.getElementById('pseudo-iterative');
+
+      function setVariant(which) {
+        segs.forEach(b => {
+          const on = b.dataset.target === which;
+          b.classList.toggle('selected', on);
+          b.setAttribute('aria-selected', String(on));
+        });
+        recursive.classList.toggle('show', which === 'recursive');
+        iterative.classList.toggle('show', which === 'iterative');
+      }
+
+      segs.forEach(b => b.addEventListener('click', () => setVariant(b.dataset.target)));
+      setVariant('recursive');
+    })();
+  </script>
+</body>
+</html>

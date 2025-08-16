@@ -1,4 +1,4 @@
-// Simple DFS Implementation
+// DFS ALGORITHM CODE TO RUN
 function dfs(graph, startNode) {
     let visited = new Set();
     let order = [];
@@ -18,7 +18,7 @@ function dfs(graph, startNode) {
     return order;
 }
 
-// Example usage
+// EXAMPLE ACTIVITIY GRAPH
 const sampleGraph = {
     'A': ['B', 'C'],
     'B': ['D','F'],
@@ -29,7 +29,7 @@ const sampleGraph = {
     'G': []
 };
 
-// 1. Balanced binary‐tree–like graph (depth 3)
+// GRAPHS AND RANDOM GRAPH GENERATOR FOR INTERACTIVE DFS
 const sampleGraph1 = {
     'A': ['B', 'C'],
     'B': ['D', 'E'],
@@ -40,12 +40,10 @@ const sampleGraph1 = {
     'G': [],
     'H': []
   };
-  
-  // 2. Unbalanced graph with branches of different lengths
   const sampleGraph2 = {
     'A': ['B', 'C'],
-    'B': ['D'],        // B→D→G→H
-    'C': ['E', 'F'],   // C→E→I
+    'B': ['D'],        
+    'C': ['E', 'F'],   
     'D': ['G'],
     'E': ['I'],
     'F': [],
@@ -53,26 +51,22 @@ const sampleGraph1 = {
     'H': [],
     'I': []
   };
-  
-  // 3. Graph containing a small cycle (to illustrate backtracking / cycle detection)
   const sampleGraph3 = {
     'A': ['B', 'C'],
     'B': ['D', 'E'],
     'C': ['F'],
-    'D': ['B'],   // cycle: B→D→B
+    'D': ['B'], 
     'E': [],
     'F': ['G', 'H'],
     'G': [],
     'H': []
   };
-  
-  // 4. Disconnected graph (two separate components) /// FIX THIS GRAPH ITS BAD
   const sampleGraph4 = {
-    'A': ['B', 'C'],  // Component 1: A→B,C→D
+    'A': ['B', 'C'],
     'B': ['D'],
     'C': [],
     'D': ['E','F'],
-    'E': [],       // Component 2: E→F→G,H
+    'E': [],      
     'F': ['G', 'H'],
     'G': [],
     'H': []
