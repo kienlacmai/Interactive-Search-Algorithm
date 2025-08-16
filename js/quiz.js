@@ -84,6 +84,7 @@ function hideQuizUI() {
 
 // COMPLETE BUTTON LOGIC
 document.getElementById('take-quiz-btn').onclick = function() {
+  setUIMode('quiz');
   const viz = document.getElementById('visualization');
   const fb  = document.getElementById('dfs-feedback');
   const quizSection = document.getElementById('dfs-quiz');

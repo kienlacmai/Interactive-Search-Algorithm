@@ -45,13 +45,44 @@ let runExampleBtn, startInteractiveBtn, startQuizBtn;
 function cacheButtons() {
   runExampleBtn       = document.getElementById('run-example-btn');
   startInteractiveBtn = document.getElementById('start-interactive-btn');
-  // startQuizBtn        = document.getElementById('take-quiz-btn');
+  startQuizBtn        = document.getElementById('take-quiz-btn');
 }
+
+//HIDING AND REVEALING BUTTONS HELPERS
+function revealStartInteractive() {
+  const btn = document.getElementById('start-interactive-btn');
+  if (btn) btn.classList.add('revealed');
+  //localStorage.setItem('InteractiveRevealed', '1'); // COMMENT OUT TO SEE INITIAL USER FLOW
+}
+
+function revealQuiz() {
+  const btn = document.getElementById('take-quiz-btn');
+  if (btn) btn.classList.add('revealed');
+  //localStorage.setItem('QuizRevealed', '1'); 
+}
+
+//DISPLAYING USER BUTTON FLOW
+document.addEventListener('DOMContentLoaded', () => {
+  cacheButtons();
+  setUIMode('example');
+
+  if (localStorage.getItem('InteractiveRevealed') === '1') {
+    const btn = document.getElementById('start-interactive-btn');
+    // ADD LOGIC FOR TAKE QUIZ BUTTON
+    //if (btn) btn.classList.add('revealed'); // STORES THE BUTTON INTO LOCAL MEMORY SO ONCE UNLOCKED ALWAYS UNLOCKED
+  }
+
+  if (localStorage.getItem('QuizRevealed') === '1') {
+    const btn = document.getElementById('take-quiz-btn');
+    // ADD LOGIC FOR TAKE QUIZ BUTTON
+    //if (btn) btn.classList.add('revealed'); // STORES THE BUTTON INTO LOCAL MEMORY SO ONCE UNLOCKED ALWAYS UNLOCKED
+  }
+});
 
 // --- UI MODE ---
 function setUIMode(mode) {
   uiMode = mode; //MODE = EXAMPLE, WHICH IS THE DEFAULT
-  if (!runExampleBtn || !startInteractiveBtn) cacheButtons();
+  if (!runExampleBtn || !startInteractiveBtn || !startQuizBtn) cacheButtons();
   const exInstr  = document.getElementById('example-instructions');
   const instr = document.getElementById('interactive-instructions');
   const quizBtn = document.getElementById('take-quiz-btn');
@@ -65,7 +96,11 @@ function setUIMode(mode) {
     if (runExampleBtn) runExampleBtn.textContent = 'Run Example DFS';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
     if (quizBtn) quizBtn.textContent = 'Take a Quiz';
-  } 
+  } else if (mode === 'quiz') {
+    if (runExampleBtn) runExampleBtn.textContent = 'Run Example DFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+    if (quizBtn) quizBtn.textContent = 'Retake Quiz';
+  }
 }
 
 // --- EXAMPLE ACTIVITY ---
@@ -167,17 +202,6 @@ function startInteractiveDFS() {
   });
 }
 
-function revealStartInteractive() {
-  const btn = document.getElementById('start-interactive-btn');
-  if (btn) btn.classList.add('revealed');
-  localStorage.setItem('dfsInteractiveRevealed', '1'); // COMMENT OUT TO SEE INITIAL USER FLOW
-}
-
-function hideStartInteractive() {
-  const btn = document.getElementById('start-interactive-btn');
-  if (btn) btn.classList.remove('revealed');
-}
-
 // TEXT BOX FOR FEEDBACK
 function renderResult(state) {
   const fb = document.getElementById('dfs-feedback');
@@ -205,6 +229,7 @@ function renderResult(state) {
         modal.style.display = 'none';
       };
     }
+    trackTimeout(revealQuiz(), order.length * delay + 20);
   } 
 }
 
@@ -221,14 +246,4 @@ window.startInteractiveDFS = startInteractiveDFS;
 window.startDFS = startDFS;
 window.resetGraph = resetGraph;
 
-// INITIALIZE ITEMS ON PAGE
-document.addEventListener('DOMContentLoaded', () => {
-  cacheButtons();
-  setUIMode('example');
 
-  if (localStorage.getItem('dfsInteractiveRevealed') === '1') {
-    const btn = document.getElementById('start-interactive-btn');
-    // ADD LOGIC FOR TAKE QUIZ BUTTON
-    if (btn) btn.classList.add('revealed'); // STORES THE BUTTON INTO LOCAL MEMORY SO ONCE UNLOCKED ALWAYS UNLOCKED
-  }
-});
