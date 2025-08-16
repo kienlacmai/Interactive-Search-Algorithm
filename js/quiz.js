@@ -82,6 +82,24 @@ function hideQuizUI() {
   document.querySelector('h1').textContent = '🧠 Interactive DFS Tutorial';
 }
 
+// COMPLETE BUTTON LOGIC
+document.getElementById('take-quiz-btn').onclick = function() {
+  setUIMode('quiz');
+  const viz = document.getElementById('visualization');
+  const fb  = document.getElementById('dfs-feedback');
+  const quizSection = document.getElementById('dfs-quiz');
+  const quizBtn = document.getElementById('take-quiz-btn');
+
+  if (viz) viz.style.display = 'none';
+  if (fb)  fb.style.display  = 'none';
+
+  quizSection.style.display = 'block';
+  //quizBtn.textContent = 'Retake Quiz';
+
+  const selectedQuestions = getRandomQuestions(dfsQuestions, 5);
+  renderQuiz(selectedQuestions);
+};
+
 // QUIZ RENDER FORMATTING AND FEEDBACK
 function renderQuiz() {
   // QUIZ FORMATTING - DEFAULT QUIZ TYPE

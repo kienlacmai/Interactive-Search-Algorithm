@@ -45,21 +45,46 @@ let runExampleBtn, startInteractiveBtn;
 function cacheButtons() {
   runExampleBtn       = document.getElementById('run-example-btn');
   startInteractiveBtn = document.getElementById('start-interactive-btn');
-  // NOTE: quiz & coding buttons are fetched inline where needed
+  startQuizBtn        = document.getElementById('take-quiz-btn');
 }
+
+//HIDING AND REVEALING BUTTONS HELPERS
+function revealStartInteractive() {
+  const btn = document.getElementById('start-interactive-btn');
+  if (btn) btn.classList.add('revealed');
+  //localStorage.setItem('InteractiveRevealed', '1'); // COMMENT OUT TO SEE INITIAL USER FLOW
+}
+
+function revealQuiz() {
+  const btn = document.getElementById('take-quiz-btn');
+  if (btn) btn.classList.add('revealed');
+  //localStorage.setItem('QuizRevealed', '1'); 
+}
+
+//DISPLAYING USER BUTTON FLOW
+document.addEventListener('DOMContentLoaded', () => {
+  cacheButtons();
+  setUIMode('example');
+
+  if (localStorage.getItem('InteractiveRevealed') === '1') {
+    const btn = document.getElementById('start-interactive-btn');
+    // ADD LOGIC FOR TAKE QUIZ BUTTON
+    //if (btn) btn.classList.add('revealed'); // STORES THE BUTTON INTO LOCAL MEMORY SO ONCE UNLOCKED ALWAYS UNLOCKED
+  }
+
+  if (localStorage.getItem('QuizRevealed') === '1') {
+    const btn = document.getElementById('take-quiz-btn');
+    // ADD LOGIC FOR TAKE QUIZ BUTTON
+    //if (btn) btn.classList.add('revealed'); // STORES THE BUTTON INTO LOCAL MEMORY SO ONCE UNLOCKED ALWAYS UNLOCKED
+  }
+});
 
 // --- UI MODE ---
 function setUIMode(mode) {
-  uiMode = mode;
-
-  if (!runExampleBtn || !startInteractiveBtn) cacheButtons();
-
-  const exInstr = document.getElementById('example-instructions');
-  const itInstr = document.getElementById('interactive-instructions');
-  const viz     = document.getElementById('visualization');
-  const fb      = document.getElementById('dfs-feedback');
-  const quiz    = document.getElementById('dfs-quiz');
-  const coding  = document.getElementById('coding-activity');
+  uiMode = mode; //MODE = EXAMPLE, WHICH IS THE DEFAULT
+  if (!runExampleBtn || !startInteractiveBtn || !startQuizBtn) cacheButtons();
+  const exInstr  = document.getElementById('example-instructions');
+  const instr = document.getElementById('interactive-instructions');
   const quizBtn = document.getElementById('take-quiz-btn');
   const h1      = document.querySelector('h1');
   const pseudo  = document.getElementById('pseudocodePanel');
@@ -101,8 +126,11 @@ function setUIMode(mode) {
     show(coding);
     if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
-    if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
-    if (h1) h1.textContent = '🧠 DFS Coding Activity';
+    if (quizBtn) quizBtn.textContent = 'Take a Quiz';
+  } else if (mode === 'quiz') {
+    if (runExampleBtn) runExampleBtn.textContent = 'Run Example DFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+    if (quizBtn) quizBtn.textContent = 'Retake Quiz';
   }
 }
 
@@ -206,17 +234,6 @@ function startInteractiveDFS() {
   });
 }
 
-function revealStartInteractive() {
-  const btn = document.getElementById('start-interactive-btn');
-  if (btn) btn.classList.add('revealed');
-  localStorage.setItem('dfsInteractiveRevealed', '1'); // COMMENT OUT TO SEE INITIAL USER FLOW
-}
-
-function hideStartInteractive() {
-  const btn = document.getElementById('start-interactive-btn');
-  if (btn) btn.classList.remove('revealed');
-}
-
 // TEXT BOX FOR FEEDBACK
 function renderResult(state) {
   const fb = document.getElementById('dfs-feedback');
@@ -242,10 +259,8 @@ function renderResult(state) {
       modal.style.display = 'flex';
       modalClose.onclick = () => { modal.style.display = 'none'; };
     }
-  } else {
-    // neutral / step-correct: keep fb visible but don't modal
-    fb.className = 'feedback';
-  }
+    trackTimeout(revealQuiz(), order.length * delay + 20);
+  } 
 }
 
 // ENDING INTERACTIVE ACTIVITY
@@ -261,44 +276,4 @@ window.startInteractiveDFS = startInteractiveDFS;
 window.startDFS = startDFS;
 window.resetGraph = resetGraph;
 
-// INITIALIZE ITEMS ON PAGE
-document.addEventListener('DOMContentLoaded', () => {
-  cacheButtons();
-  setUIMode('example');
 
-  // unify top buttons via the single state machine
-  const codingBtn = document.getElementById('start-coding-btn');
-  const quizBtn   = document.getElementById('take-quiz-btn');
-
-  if (runExampleBtn) {
-    runExampleBtn.addEventListener('click', () => {
-      setUIMode('example');
-      startDFS();
-    });
-  }
-  if (startInteractiveBtn) {
-    startInteractiveBtn.addEventListener('click', () => {
-      setUIMode('interactive');
-      startInteractiveDFS();
-    });
-  }
-  if (quizBtn) {
-    quizBtn.addEventListener('click', () => {
-      setUIMode('quiz');
-      const selected = getRandomQuestions(dfsQuestions, 5);
-      renderQuiz(selected);
-    });
-  }
-  if (codingBtn) {
-    codingBtn.addEventListener('click', () => {
-      setUIMode('coding');
-      const panel = document.getElementById('coding-activity');
-      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  }
-
-  if (localStorage.getItem('dfsInteractiveRevealed') === '1') {
-    const btn = document.getElementById('start-interactive-btn');
-    if (btn) btn.classList.add('revealed'); // STORES THE BUTTON INTO LOCAL MEMORY SO ONCE UNLOCKED ALWAYS UNLOCKED
-  }
-});
