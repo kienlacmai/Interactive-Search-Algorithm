@@ -122,10 +122,13 @@ button:hover {
 .icon-btn {
   padding: .55rem .9rem;
   border: 1px solid #e4e4e7;
-  border-radius: .75rem;
+  border-radius: 50%;             /* circle */
   background: #fff;
   cursor: pointer;
-  font: 500 14px/1.1 system-ui, sans-serif;
+  font: 500 14px/1 system-ui, sans-serif;
+  display: flex;                  /* centers the X inside */
+  align-items: center;
+  justify-content: center;
 }
 
 .btn[aria-pressed="true"] { background: #f4f4f5; }

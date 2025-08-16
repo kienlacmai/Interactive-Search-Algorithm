@@ -1,3 +1,6 @@
+// MODULE: QUIZ FORMATTING AND QUESTIONS
+// QUIZ ACTIVITY QUESTIONS
+//TODO: EXPLAIN WHY ANSWERS ARE WRONG
 const dfsQuestions = [
   {
     question: "Which data structure is commonly used to implement DFS?",
@@ -57,15 +60,48 @@ const dfsQuestions = [
 ];
 
 
-// Helper: pick n random questions from the pool
+// HELPERS -------------------->
+
 function getRandomQuestions(allQuestions, n) {
   const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, n);
 }
 
-// Render quiz to the DOM
+function hideQuizUI() {
+  const viz = document.getElementById('visualization');
+  const fb  = document.getElementById('dfs-feedback');
+  const ex  = document.getElementById('example-instructions');
+  const it  = document.getElementById('interactive-instructions');
+  const quiz = document.getElementById('dfs-quiz');
+
+  if (quiz) quiz.style.display = 'none';
+  if (viz)  viz.style.display  = '';
+  if (fb)   fb.style.display   = '';
+  if (ex)   ex.style.display   = 'block';
+  if (it)   it.style.display   = 'none';
+  document.querySelector('h1').textContent = '🧠 Interactive DFS Tutorial';
+}
+
+// COMPLETE BUTTON LOGIC
+document.getElementById('take-quiz-btn').onclick = function() {
+  const viz = document.getElementById('visualization');
+  const fb  = document.getElementById('dfs-feedback');
+  const quizSection = document.getElementById('dfs-quiz');
+  const quizBtn = document.getElementById('take-quiz-btn');
+
+  if (viz) viz.style.display = 'none';
+  if (fb)  fb.style.display  = 'none';
+
+  quizSection.style.display = 'block';
+  //quizBtn.textContent = 'Retake Quiz';
+
+  const selectedQuestions = getRandomQuestions(dfsQuestions, 5);
+  renderQuiz(selectedQuestions);
+};
+
+// QUIZ RENDER FORMATTING AND FEEDBACK
 function renderQuiz() {
-  // Hide graph + instructions
+  // HIDING BUTTONS WHEN TAKING QUIZ
   const viz = document.getElementById('visualization');
   const fb  = document.getElementById('dfs-feedback');
   const ex  = document.getElementById('example-instructions');
@@ -75,16 +111,13 @@ function renderQuiz() {
   if (ex)  ex.style.display  = 'none';
   if (it)  it.style.display  = 'none';
 
-  // Quiz container
+  // QUIZ FORMATTING - DEFAULT QUIZ TYPE
   const quizSection = document.getElementById('dfs-quiz');
   quizSection.style.display = 'block';
   quizSection.innerHTML = '<h2>DFS Quiz</h2><form id="quiz-form"></form>';
-
   const form = quizSection.querySelector('#quiz-form');
-
-  // Get 5 random questions
+  // GENERATING 5 RANDOM QUESTIONS FROM SET OF QUESTIONS WITH FORMATTING
   const selectedQuestions = getRandomQuestions(dfsQuestions, 5);
-
   selectedQuestions.forEach((q, i) => {
     const qDiv = document.createElement('div');
     qDiv.className = 'quiz-question';
@@ -101,7 +134,8 @@ function renderQuiz() {
     `;
     form.appendChild(qDiv);
 
-    // LIVE feedback per question
+    // LIVE FEEDBACK WHEN ANSWER IS CLICKED
+    // TODO: ADD CONCEPTUAL FEEDBACK TO EACH ANSWER SELECTION -- LATER IMPLEMENTATION
     const radios = Array.from(qDiv.querySelectorAll(`input[name="q${i}"]`));
     const fbNode = qDiv.querySelector('.q-feedback');
 
@@ -128,56 +162,23 @@ function renderQuiz() {
   });
 }
 
-
-
-// --- helpers to toggle quiz vs activity UI ---
-function showQuizUI() {
-  const viz = document.getElementById('visualization');
-  const fb  = document.getElementById('dfs-feedback');
-  const ex  = document.getElementById('example-instructions');
-  const it  = document.getElementById('interactive-instructions');
-  if (viz) viz.style.display = 'none';
-  if (fb)  fb.style.display  = 'none';
-  if (ex)  ex.style.display  = 'none';
-  if (it)  it.style.display  = 'none';
-
-  const quiz = document.getElementById('dfs-quiz');
-  if (quiz) quiz.style.display = 'block';
-  document.querySelector('h1').textContent = 'DFS Quiz';
-}
-
-function hideQuizUI() {
-  const viz = document.getElementById('visualization');
-  const fb  = document.getElementById('dfs-feedback');
-  const ex  = document.getElementById('example-instructions');
-  const it  = document.getElementById('interactive-instructions');
-  const quiz = document.getElementById('dfs-quiz');
-
-  if (quiz) quiz.style.display = 'none';
-  if (viz)  viz.style.display  = '';
-  if (fb)   fb.style.display   = '';
-  if (ex)   ex.style.display   = 'block';
-  if (it)   it.style.display   = 'none';   // default state on load
-  document.querySelector('h1').textContent = '🧠 Interactive DFS Tutorial';
-}
-// "Take a Quiz" button logic
-document.getElementById('take-quiz-btn').onclick = function() {
-  const viz = document.getElementById('visualization');
-  const fb  = document.getElementById('dfs-feedback');
-  const quizSection = document.getElementById('dfs-quiz');
-  const quizBtn = document.getElementById('take-quiz-btn');
-
-  if (viz) viz.style.display = 'none';
-  if (fb)  fb.style.display  = 'none';
-
-  quizSection.style.display = 'block';
-  quizBtn.textContent = 'Retake Quiz'; // change button text
-
-  const selectedQuestions = getRandomQuestions(dfsQuestions, 5);
-  renderQuiz(selectedQuestions);
-};
-
 // make available to other files
-window.hideQuizUI = hideQuizUI;
 
 
+//window.hideQuizUI = hideQuizUI;
+
+
+// function showQuizUI() {
+//   const viz = document.getElementById('visualization');
+//   const fb  = document.getElementById('dfs-feedback');
+//   const ex  = document.getElementById('example-instructions');
+//   const it  = document.getElementById('interactive-instructions');
+//   if (viz) viz.style.display = 'none';
+//   if (fb)  fb.style.display  = 'none';
+//   if (ex)  ex.style.display  = 'none';
+//   if (it)  it.style.display  = 'none';
+
+//   const quiz = document.getElementById('dfs-quiz');
+//   if (quiz) quiz.style.display = 'block';
+//   document.querySelector('h1').textContent = 'DFS Quiz';
+// }

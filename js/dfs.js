@@ -1,3 +1,5 @@
+// MODULE: DFS ALGORITHM RUN AND GRAPH GENERATION
+
 // DFS ALGORITHM CODE TO RUN
 function dfs(graph, startNode) {
     let visited = new Set();
@@ -72,7 +74,7 @@ const sampleGraph1 = {
     'H': []
   };
   
-  const randomgraphgenerator = [sampleGraph1, sampleGraph2, sampleGraph3, sampleGraph4];
+  const graphs = [sampleGraph1, sampleGraph2, sampleGraph3, sampleGraph4];
 
   function getRandomInt(min, max) {
     min = Math.ceil(min);

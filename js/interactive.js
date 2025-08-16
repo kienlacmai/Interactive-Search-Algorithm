@@ -1,84 +1,190 @@
-// interactive.js
+// MODULE: EXAMPLE AND INTERACTIVE ACTIVITY LOGISTICS
 
-// --- Global state ---
-let interactiveActive = false;   // whether we are in an interactive attempt right now
-let uiMode = 'example';          // 'example' | 'interactive'
+let interactiveActive = false;   // WHETHER WE ARE IN AN INTERACTIVE ATTEMPT RIGHT NOW
+let uiMode = 'example';          // 'EXAMPLE' | 'INTERACTIVE'
 let userInput = [];
 let correctAnswer = [];
 
-// Expect these to be defined in dfs.js
-//   - sampleGraph
-//   - randomgraphgenerator (array of graphs)
-//   - getRandomInt(min,max)
-const randomGraphs = typeof randomgraphgenerator !== 'undefined' ? randomgraphgenerator : [];
-const N = randomGraphs.length;
+// --- HELPERS ---
+function getRandomGraph() {
+  const idx = getRandomInt(0, graphs.length - 1);
+  return graphs[idx];
+}
 
-// --- Button cache ---
-let runExampleBtn, startInteractiveBtn, resetBtn;
+function resetGraph() {
+  clearAnimTimers();
+  if (typeof cy !== 'undefined') {
+    cy.stop();
+    const cls = 'visited active current highlighted correct wrong clicked done';
+    cy.nodes().removeClass(cls);
+    cy.edges().removeClass(cls);
+    cy.nodes().forEach(node => {
+      node.stop();
+      node.removeStyle('background-color');
+      node.removeStyle('color');
+      node.removeStyle('text-outline-color');
+      node.animate({
+        style: {
+          'background-color': '#007BFF',
+          'color': '#fff',
+          'text-outline-color': '#007BFF'
+        }
+      }, { duration: 200 });
+    });
+    cy.edges().forEach(e => {
+      e.removeStyle('line-color');
+      e.removeStyle('target-arrow-color');
+      e.removeStyle('width');
+    });
+  }
+  userInput = [];
+}
+
+// --- BUTTONS ---
+let runExampleBtn, startInteractiveBtn, startQuizBtn;
 function cacheButtons() {
   runExampleBtn       = document.getElementById('run-example-btn');
   startInteractiveBtn = document.getElementById('start-interactive-btn');
-  resetBtn            = document.getElementById('reset-btn');
+  // startQuizBtn        = document.getElementById('take-quiz-btn');
 }
 
-// --- scheduling for example animation (ADDED) ---
-let _animTimers = []; // ADDED: store all timeouts used by the example animation
-function trackTimeout(fn, ms) { // ADDED
+// --- UI MODE ---
+function setUIMode(mode) {
+  uiMode = mode; //MODE = EXAMPLE, WHICH IS THE DEFAULT
+  if (!runExampleBtn || !startInteractiveBtn) cacheButtons();
+  const exInstr  = document.getElementById('example-instructions');
+  const instr = document.getElementById('interactive-instructions');
+  const quizBtn = document.getElementById('take-quiz-btn');
+  if (exInstr) exInstr.style.display = (mode === 'example' ? 'block' : 'none');
+  if (instr) instr.style.display = (mode === 'interactive' ? 'block' : 'none');
+  if (mode === 'interactive') {
+    if (runExampleBtn) runExampleBtn.textContent = 'Return to DFS Example';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Try another DFS';
+    if (quizBtn) quizBtn.textContent = 'Take a Quiz';
+  } else if (mode === 'example') {
+    if (runExampleBtn) runExampleBtn.textContent = 'Run Example DFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+    if (quizBtn) quizBtn.textContent = 'Take a Quiz';
+  } 
+}
+
+// --- EXAMPLE ACTIVITY ---
+// RUN DFS AND ANIMATE ON GRAPH
+function startDFS() {
+  if (typeof window.hideQuizUI === 'function') window.hideQuizUI();
+  setUIMode('example');
+  endInteractiveSession();
+  const graph = typeof sampleGraph !== 'undefined' ? sampleGraph : getRandomGraph();
+  loadGraph(graph);
+  resetGraph();
+  if (typeof cy !== 'undefined') {
+  cy.resize();
+  cy.layout({
+    name: 'breadthfirst',
+    directed: true,
+    roots: ['A'],
+    orientation: 'vertical',
+    spacingFactor: 1.75,
+    padding: 10
+  }).run();
+}
+  const order = dfs(graph, 'A');
+  animateDFSTraversal(order);
+}
+// EXAMPLE TRAVERSAL ANIMATION
+function animateDFSTraversal(order) {
+  const delay = 600;
+  order.forEach((nodeId, i) => {
+    trackTimeout(() => {
+      cy.getElementById(nodeId).animate({
+        style: { 'background-color': 'orange' }
+      }, { duration: 300 });
+    }, i * delay);
+  });
+  trackTimeout(revealStartInteractive, order.length * delay + 20);
+}
+// TRAVERSAL VISUALIZED VIA HIGHLIGHTING
+function highlightNode(nodeId, correct) {
+  cy.getElementById(nodeId).animate({
+    style: { 'background-color': correct ? '#28a745' : '#dc3545' }
+  }, { duration: 300 });
+}
+// HIGHLIGHT TIMING AND DISPLAY
+let _animTimers = [];
+function trackTimeout(fn, ms) {
   const id = setTimeout(fn, ms);
   _animTimers.push(id);
   return id;
 }
-function clearAnimTimers() { // ADDED
+
+function clearAnimTimers() {
   _animTimers.forEach(clearTimeout);
   _animTimers = [];
 }
 
-// --- reveal/hide "Start Interactive DFS" gate (ADDED) ---
-function revealStartInteractive() { // ADDED
-  const btn = document.getElementById('start-interactive-btn');
-  if (btn) btn.classList.add('revealed'); // relies on CSS gate you added earlier
-  localStorage.setItem('dfsInteractiveRevealed', '1');
+// --- INTERACTIVE ACTIVITY ---
+// START ACTIVITY
+function startInteractiveDFS() {
+  if (typeof window.hideQuizUI === 'function') window.hideQuizUI();
+  setUIMode('interactive');
+  interactiveActive = true;
+  renderResult(null);
+  const graph = getRandomGraph();
+  loadGraph(graph);
+  resetGraph();
+  if (typeof cy !== 'undefined') {
+  cy.resize();
+  cy.layout({
+    name: 'breadthfirst',
+    directed: true,
+    roots: ['A'],
+    orientation: 'vertical',
+    spacingFactor: 1.75,
+    padding: 10
+  }).run();
 }
-function hideStartInteractive() { // ADDED
+  if (typeof cy !== 'undefined') cy.off('tap');
+  userInput     = [];
+  correctAnswer = dfs(graph, 'A');
+  console.log('Correct DFS Order:', correctAnswer);
+  cy.on('tap', 'node', (evt) => {
+    if (!interactiveActive) return;
+    const clicked = evt.target.id();
+    if (userInput.includes(clicked)) return;
+    const expected = correctAnswer[userInput.length];
+    if (clicked === expected) {
+      userInput.push(clicked);
+      highlightNode(clicked, true);
+      renderResult('step-correct');
+      if (userInput.length === correctAnswer.length) {
+        renderResult(true);
+        endInteractiveSession();
+      }
+    } else {
+      highlightNode(clicked, false);
+      renderResult(false);
+    }
+  });
+}
+
+function revealStartInteractive() {
+  const btn = document.getElementById('start-interactive-btn');
+  if (btn) btn.classList.add('revealed');
+  localStorage.setItem('dfsInteractiveRevealed', '1'); // COMMENT OUT TO SEE INITIAL USER FLOW
+}
+
+function hideStartInteractive() {
   const btn = document.getElementById('start-interactive-btn');
   if (btn) btn.classList.remove('revealed');
 }
 
-// --- UI helpers ---
-function setUIMode(mode) {
-  uiMode = mode;
-  if (!runExampleBtn || !startInteractiveBtn || !resetBtn) cacheButtons();
-  const exInstr  = document.getElementById('example-instructions');
-  const instr = document.getElementById('interactive-instructions');
-  if (exInstr) exInstr.style.display = (mode === 'example' ? 'block' : 'none');
-  if (instr) instr.style.display = (mode === 'interactive' ? 'block' : 'none');
-
-  const quizBtn = document.getElementById('take-quiz-btn');
-
-  if (mode === 'interactive') {
-    if (runExampleBtn) runExampleBtn.textContent = 'Return to DFS Example';
-    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Try another DFS';
-    if (quizBtn) quizBtn.textContent = 'Take a Quiz'; // back to normal in interactive
-  } else if (mode === 'example') {
-    if (runExampleBtn) runExampleBtn.textContent = 'Run Example DFS';
-    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
-    if (quizBtn) quizBtn.textContent = 'Take a Quiz'; // back to normal in example
-  } else if (mode === 'quiz') {
-    if (quizBtn) quizBtn.textContent = 'Retake Quiz';
-  }
-}
-
-
-// Display on-screen feedback instead of alert()
+// TEXT BOX FOR FEEDBACK
 function renderResult(state) {
   const fb = document.getElementById('dfs-feedback');
   if (!fb) return;
-
   const modal = document.getElementById('dfs-modal');
   const modalMsg = document.getElementById('dfs-modal-message');
   const modalClose = document.getElementById('dfs-modal-close');
-
-  // Only show modal for wrong step or traversal complete
   if (state === false) {
     fb.className = 'feedback wrong';
     if (modal && modalMsg && modalClose) {
@@ -102,173 +208,27 @@ function renderResult(state) {
   } 
 }
 
-// Pick a random graph from the pool
-function getRandomGraph() {
-  if (!N) return typeof sampleGraph !== 'undefined' ? sampleGraph : {};
-  const idx = getRandomInt(0, N - 1);
-  return randomGraphs[idx];
-}
-
-// Highlight a node with green/red on user tap
-function highlightNode(nodeId, correct) {
-  cy.getElementById(nodeId).animate({
-    style: { 'background-color': correct ? '#28a745' : '#dc3545' }
-  }, { duration: 300 });
-}
-
-// Remove interactive handlers and flags
+// ENDING INTERACTIVE ACTIVITY
 function endInteractiveSession() {
   interactiveActive = false;
   if (typeof cy !== 'undefined') cy.off('tap');
 }
 
-// Start a new interactive DFS session (new random graph each time)
-function startInteractiveDFS() {
-  if (typeof window.hideQuizUI === 'function') window.hideQuizUI();
-  setUIMode('interactive');
-  interactiveActive = true;
-  renderResult(null); // clear feedback
+// --- PAGE LOGISTICS ---
 
-  const graph = getRandomGraph();
-  loadGraph(graph);   // from visualization.js
-  resetGraph();       // reset styles
-
-  if (typeof cy !== 'undefined') {
-  cy.resize();
-  cy.layout({
-    name: 'breadthfirst',
-    directed: true,
-    roots: ['A'],
-    orientation: 'vertical',
-    spacingFactor: 1.75,
-    padding: 10
-  }).run();
-}
-
-  if (typeof cy !== 'undefined') cy.off('tap'); // clear any old handlers
-
-  userInput     = [];
-  correctAnswer = dfs(graph, 'A');
-  console.log('Correct DFS Order:', correctAnswer);
-
-  // Single tap handler for this session
-  cy.on('tap', 'node', (evt) => {
-    if (!interactiveActive) return;
-    const clicked = evt.target.id();
-    if (userInput.includes(clicked)) return;
-
-    const expected = correctAnswer[userInput.length];
-    if (clicked === expected) {
-      userInput.push(clicked);
-      highlightNode(clicked, true);
-      renderResult('step-correct');
-      if (userInput.length === correctAnswer.length) {
-        renderResult(true);
-        endInteractiveSession();
-      }
-    } else {
-      highlightNode(clicked, false);
-      renderResult(false);
-    }
-  });
-}
-
-// Non-interactive example: run DFS on the sample graph and animate
-function startDFS() {
-  if (typeof window.hideQuizUI === 'function') window.hideQuizUI();
-  // When returning to example from interactive, restore UI and stop interactive taps
-  setUIMode('example');
-  //renderResult(null);
-  endInteractiveSession();
-
-  const graph = typeof sampleGraph !== 'undefined' ? sampleGraph : getRandomGraph();
-  loadGraph(graph);
-  resetGraph();
-
-  if (typeof cy !== 'undefined') {
-  cy.resize();
-  cy.layout({
-    name: 'breadthfirst',
-    directed: true,
-    roots: ['A'],
-    orientation: 'vertical',
-    spacingFactor: 1.75,
-    padding: 10
-  }).run();
-}
-
-  const order = dfs(graph, 'A');
-  animateDFSTraversal(order);
-}
-
-// Animate a DFS traversal (orange sequence)
-function animateDFSTraversal(order) {
-  const delay = 600;
-  order.forEach((nodeId, i) => {
-    trackTimeout(() => { // CHANGED: track timeouts so Reset can cancel them
-      cy.getElementById(nodeId).animate({
-        style: { 'background-color': 'orange' }
-      }, { duration: 300 });
-    }, i * delay);
-  });
-
-  // Reveal “Start Interactive DFS” just after the last step finishes (ADDED)
-  trackTimeout(revealStartInteractive, order.length * delay + 20); // ADDED
-}
-
-// Reset all nodes to default style AND cancel any running animation/timers
-function resetGraph() {
-  clearAnimTimers();                 // ADDED: cancel any pending example steps
-
-  if (typeof cy !== 'undefined') {
-    cy.stop();                       // ADDED: stop queued animations
-
-    // ADDED: clear traversal classes and inline styles
-    const cls = 'visited active current highlighted correct wrong clicked done';
-    cy.nodes().removeClass(cls);
-    cy.edges().removeClass(cls);
-
-    cy.nodes().forEach(node => {
-      node.stop();
-      node.removeStyle('background-color');
-      node.removeStyle('color');
-      node.removeStyle('text-outline-color');
-      node.animate({
-        style: {
-          'background-color': '#007BFF',
-          'color': '#fff',
-          'text-outline-color': '#007BFF'
-        }
-      }, { duration: 200 });
-    });
-
-    cy.edges().forEach(e => {
-      e.removeStyle('line-color');
-      e.removeStyle('target-arrow-color');
-      e.removeStyle('width');
-    });
-  }
-
-  // ADDED: reset interactive attempt and feedback
-  userInput = [];
-  //renderResult(null);
-
-  // ADDED: gate interactive button again (only matters if you use the CSS gate)
-  //hideStartInteractive();
-}
-
-// Make controls callable from inline HTML handlers (if used)
+// ALLOW BUTTONS TO CALL ACTIVITY FUNCTIONS
 window.startInteractiveDFS = startInteractiveDFS;
 window.startDFS = startDFS;
 window.resetGraph = resetGraph;
 
-// Initialize UI text on load
+// INITIALIZE ITEMS ON PAGE
 document.addEventListener('DOMContentLoaded', () => {
   cacheButtons();
   setUIMode('example');
 
   if (localStorage.getItem('dfsInteractiveRevealed') === '1') {
     const btn = document.getElementById('start-interactive-btn');
-    if (btn) btn.classList.add('revealed');
+    // ADD LOGIC FOR TAKE QUIZ BUTTON
+    if (btn) btn.classList.add('revealed'); // STORES THE BUTTON INTO LOCAL MEMORY SO ONCE UNLOCKED ALWAYS UNLOCKED
   }
 });

@@ -1,5 +1,5 @@
-// visualization.js using Cytoscape.js
-let cy; // make cy global so interactive.js can access it
+// MODULE: GENERATING THE VISUAL GRAPHS
+let cy;
 let currentGraph = sampleGraph;
 
 function loadGraph(graph) {
@@ -9,37 +9,34 @@ function loadGraph(graph) {
     cy.layout({
       name: 'breadthfirst',
       directed: true,
-      roots: ['A'],               // always start from 'A' (or change to graph’s real root)
+      roots: ['A'],
       orientation: 'vertical',
       spacingFactor: 1.75,
       padding: 10
     }).run();
   }
 
+// FUNCTION CREATING NODES AND EDGES IN VISUAL GRAPH
 function generateElementsFromGraph(graph) {
     const elements = [];
     const addedNodes = new Set();
-
     for (const node in graph) {
         if (!addedNodes.has(node)) {
             elements.push({ data: { id: node } });
             addedNodes.add(node);
         }
-
         graph[node].forEach(neighbor => {
-            // Add neighbor node if not already added
             if (!addedNodes.has(neighbor)) {
                 elements.push({ data: { id: neighbor } });
                 addedNodes.add(neighbor);
             }
-
-            // Add edge
             elements.push({ data: { source: node, target: neighbor } });
         });
     }
-
     return elements;
 }
+
+//DISPLAYING THE EXAMPLE DFS GRAPH WHEN BUTTON IS CLICKED
 document.addEventListener("DOMContentLoaded", function () {
     cy = cytoscape({
         userZoomingEnabled: false,
@@ -76,10 +73,8 @@ document.addEventListener("DOMContentLoaded", function () {
             spacingFactor: 1.75,
             animate: false,
             avoidOverlap: true,
-            roots: ['A'], // starting node of your DFS
-            orientation: 'vertical' // or 'horizontal'
+            roots: ['A'], 
+            orientation: 'vertical'
 }
     });
 });
-
-

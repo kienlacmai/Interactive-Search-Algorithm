@@ -56,6 +56,7 @@
 <!-------------------- PSEUDOCODE SIDE PANEL -------------------- -->
     <aside id="pseudocodePanel" aria-hidden="true">
       <div class="panel-header">
+        <!-- PANEL HEADER/TITLE -->
         <h2>Depth-First Search (DFS) — Pseudocode</h2>
         <button id="closePseudocodeBtn" class="icon-btn" aria-label="Close">✕</button>
       </div>
@@ -64,8 +65,9 @@
         <button class="seg selected" role="tab" aria-selected="true" data-target="recursive">Recursive</button>
         <button class="seg" role="tab" aria-selected="false" data-target="iterative">Iterative</button>
       </div>
-
-<pre id="pseudo-recursive" class="code pseudo show">procedure DFS(G, start):
+<!-- RECURSIVE PSEUDOCODE IN PANEL -->
+<pre id="pseudo-recursive" class="code pseudo show">
+  procedure DFS(G, start):
     visited ← set()
     parent  ← map()
     time    ← 0
@@ -82,8 +84,9 @@
     visit(start)
     return parent
   </pre>
-
-<pre id="pseudo-iterative" class="code pseudo">procedure DFS_iter(G, start):
+<!-- ITERATIVE PSEUDOCODE IN PANEL -->
+<pre id="pseudo-iterative" class="code pseudo">
+  procedure DFS_iter(G, start):
     visited ← set()
     parent  ← map()
     S ← stack([start])
@@ -104,80 +107,13 @@
   </div>
   <!-- END OF PSEUDOCODE PANEL -->
   
-  <!-- JAVASCRIPT FILE INJECTIONS -->
+  <!-- JAVASCRIPT FILE IMPORTS -->
   <section id="dfs-quiz" class="quiz-panel" style="display:none;"></section>
-  <script src="js/dfs.js"></script> <!-- THIS LINE WOULD BE DIFFERENT FOR OTHER SEARCH ALGORITHMS -->
+  <script src="js/dfs.js"></script> 
   <script src="js/visualization.js"></script>
   <script src="js/interactive.js"></script>
   <script src="js/quiz.js"></script>
+  <script src="js/dfs_ui.js"></script>
 
-  <!-- HTML SCRIPT BLOCKS -->
-  <script>
-    // LIGHT/DARK THEME TOGGLE
-    const toggle = document.getElementById("theme-toggle");
-    toggle.addEventListener("click", () => {
-      document.body.classList.toggle("dark-mode");
-      const isDark = document.body.classList.contains("dark-mode");
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-    });
-    window.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("theme") === "dark") {
-        document.body.classList.add("dark-mode");
-      }
-    });
-  </script>
-
-  <script>
-    // PSEUCODE PANEL OPEN/CLOSE
-    (function () {
-      const btn = document.getElementById('togglePseudocodeBtn');
-      const panel = document.getElementById('pseudocodePanel');
-      const close = document.getElementById('closePseudocodeBtn');
-
-      function showPanel() {
-        panel.classList.add('show');
-        panel.setAttribute('aria-hidden', 'false');
-        btn.setAttribute('aria-pressed', 'true');
-        btn.textContent = 'Back to activity';
-      }
-      function hidePanel() {
-        panel.classList.remove('show');
-        panel.setAttribute('aria-hidden', 'true');
-        btn.setAttribute('aria-pressed', 'false');
-        btn.textContent = 'Show pseudocode';
-      }
-
-      btn.addEventListener('click', () => {
-        const open = btn.getAttribute('aria-pressed') === 'true';
-        open ? hidePanel() : showPanel();
-      });
-      close.addEventListener('click', hidePanel);
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && btn.getAttribute('aria-pressed') === 'true') hidePanel();
-      });
-    })();
-  </script>
-
-  <script>
-    // RECURSIVE TO ITERATIVE TOGGLE
-    (function () {
-      const segs = document.querySelectorAll('.pseudo-toggle .seg');
-      const recursive = document.getElementById('pseudo-recursive');
-      const iterative = document.getElementById('pseudo-iterative');
-
-      function setVariant(which) {
-        segs.forEach(b => {
-          const on = b.dataset.target === which;
-          b.classList.toggle('selected', on);
-          b.setAttribute('aria-selected', String(on));
-        });
-        recursive.classList.toggle('show', which === 'recursive');
-        iterative.classList.toggle('show', which === 'iterative');
-      }
-
-      segs.forEach(b => b.addEventListener('click', () => setVariant(b.dataset.target)));
-      setVariant('recursive');
-    })();
-  </script>
 </body>
 </html>
