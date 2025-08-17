@@ -102,16 +102,6 @@ document.getElementById('take-quiz-btn').onclick = function() {
 
 // QUIZ RENDER FORMATTING AND FEEDBACK
 function renderQuiz() {
-  // HIDING BUTTONS WHEN TAKING QUIZ
-  const viz = document.getElementById('visualization');
-  const fb  = document.getElementById('dfs-feedback');
-  const ex  = document.getElementById('example-instructions');
-  const it  = document.getElementById('interactive-instructions');
-  if (viz) viz.style.display = 'none';
-  if (fb)  fb.style.display  = 'none';
-  if (ex)  ex.style.display  = 'none';
-  if (it)  it.style.display  = 'none';
-
   // QUIZ FORMATTING - DEFAULT QUIZ TYPE
   const quizSection = document.getElementById('dfs-quiz');
   quizSection.style.display = 'block';
@@ -164,22 +154,3 @@ function renderQuiz() {
 }
 
 // make available to other files
-
-
-//window.hideQuizUI = hideQuizUI;
-
-
-// function showQuizUI() {
-//   const viz = document.getElementById('visualization');
-//   const fb  = document.getElementById('dfs-feedback');
-//   const ex  = document.getElementById('example-instructions');
-//   const it  = document.getElementById('interactive-instructions');
-//   if (viz) viz.style.display = 'none';
-//   if (fb)  fb.style.display  = 'none';
-//   if (ex)  ex.style.display  = 'none';
-//   if (it)  it.style.display  = 'none';
-
-//   const quiz = document.getElementById('dfs-quiz');
-//   if (quiz) quiz.style.display = 'block';
-//   document.querySelector('h1').textContent = 'DFS Quiz';
-// }

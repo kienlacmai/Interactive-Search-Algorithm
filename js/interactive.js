@@ -1,7 +1,7 @@
 // MODULE: EXAMPLE AND INTERACTIVE ACTIVITY LOGISTICS
 
 let interactiveActive = false;   // WHETHER WE ARE IN AN INTERACTIVE ATTEMPT RIGHT NOW
-let uiMode = 'example';          // 'EXAMPLE' | 'INTERACTIVE'
+let uiMode = 'example';          // 'example' | 'interactive' | 'quiz' | 'coding'
 let userInput = [];
 let correctAnswer = [];
 
@@ -41,7 +41,7 @@ function resetGraph() {
 }
 
 // --- BUTTONS ---
-let runExampleBtn, startInteractiveBtn, startQuizBtn;
+let runExampleBtn, startInteractiveBtn;
 function cacheButtons() {
   runExampleBtn       = document.getElementById('run-example-btn');
   startInteractiveBtn = document.getElementById('start-interactive-btn');
@@ -86,14 +86,45 @@ function setUIMode(mode) {
   const exInstr  = document.getElementById('example-instructions');
   const instr = document.getElementById('interactive-instructions');
   const quizBtn = document.getElementById('take-quiz-btn');
-  if (exInstr) exInstr.style.display = (mode === 'example' ? 'block' : 'none');
-  if (instr) instr.style.display = (mode === 'interactive' ? 'block' : 'none');
-  if (mode === 'interactive') {
-    if (runExampleBtn) runExampleBtn.textContent = 'Return to DFS Example';
+  const h1      = document.querySelector('h1');
+  const pseudo  = document.getElementById('pseudocodePanel');
+
+  // helpers
+  const show = (el) => { if (el) el.style.display = 'block'; };
+  const hide = (el) => { if (el) el.style.display = 'none'; };
+
+  // default: hide everything
+  hide(exInstr); hide(itInstr); hide(viz); hide(fb); hide(quiz); hide(coding);
+
+  // close pseudocode if open (optional; keep UX simple when switching modes)
+  if (pseudo && pseudo.classList.contains('show')) {
+    pseudo.classList.remove('show');
+    pseudo.setAttribute('aria-hidden', 'true');
+    const btn = document.getElementById('togglePseudocodeBtn');
+    if (btn) { btn.setAttribute('aria-pressed', 'false'); btn.textContent = 'Show pseudocode'; }
+  }
+
+  if (mode === 'example') {
+    show(viz); show(exInstr); show(fb);
+    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+    if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
+    if (h1) h1.textContent = '🧠 Interactive DFS Tutorial';
+  } else if (mode === 'interactive') {
+    show(viz); show(itInstr); show(fb);
+    if (runExampleBtn)       runExampleBtn.textContent       = 'Return to DFS Example';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Try another DFS';
-    if (quizBtn) quizBtn.textContent = 'Take a Quiz';
-  } else if (mode === 'example') {
-    if (runExampleBtn) runExampleBtn.textContent = 'Run Example DFS';
+    if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
+    if (h1) h1.textContent = '🧠 Interactive DFS Tutorial';
+  } else if (mode === 'quiz') {
+    show(quiz);
+    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+    if (quizBtn)             quizBtn.textContent             = 'Retake Quiz';
+    if (h1) h1.textContent = '🧠 DFS Quiz';
+  } else if (mode === 'coding') {
+    show(coding);
+    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
     if (quizBtn) quizBtn.textContent = 'Take a Quiz';
   } else if (mode === 'quiz') {
@@ -106,26 +137,26 @@ function setUIMode(mode) {
 // --- EXAMPLE ACTIVITY ---
 // RUN DFS AND ANIMATE ON GRAPH
 function startDFS() {
-  if (typeof window.hideQuizUI === 'function') window.hideQuizUI();
   setUIMode('example');
   endInteractiveSession();
   const graph = typeof sampleGraph !== 'undefined' ? sampleGraph : getRandomGraph();
   loadGraph(graph);
   resetGraph();
   if (typeof cy !== 'undefined') {
-  cy.resize();
-  cy.layout({
-    name: 'breadthfirst',
-    directed: true,
-    roots: ['A'],
-    orientation: 'vertical',
-    spacingFactor: 1.75,
-    padding: 10
-  }).run();
-}
+    cy.resize();
+    cy.layout({
+      name: 'breadthfirst',
+      directed: true,
+      roots: ['A'],
+      orientation: 'vertical',
+      spacingFactor: 1.75,
+      padding: 10
+    }).run();
+  }
   const order = dfs(graph, 'A');
   animateDFSTraversal(order);
 }
+
 // EXAMPLE TRAVERSAL ANIMATION
 function animateDFSTraversal(order) {
   const delay = 600;
@@ -138,12 +169,14 @@ function animateDFSTraversal(order) {
   });
   trackTimeout(revealStartInteractive, order.length * delay + 20);
 }
+
 // TRAVERSAL VISUALIZED VIA HIGHLIGHTING
 function highlightNode(nodeId, correct) {
   cy.getElementById(nodeId).animate({
     style: { 'background-color': correct ? '#28a745' : '#dc3545' }
   }, { duration: 300 });
 }
+
 // HIGHLIGHT TIMING AND DISPLAY
 let _animTimers = [];
 function trackTimeout(fn, ms) {
@@ -160,7 +193,6 @@ function clearAnimTimers() {
 // --- INTERACTIVE ACTIVITY ---
 // START ACTIVITY
 function startInteractiveDFS() {
-  if (typeof window.hideQuizUI === 'function') window.hideQuizUI();
   setUIMode('interactive');
   interactiveActive = true;
   renderResult(null);
@@ -168,16 +200,16 @@ function startInteractiveDFS() {
   loadGraph(graph);
   resetGraph();
   if (typeof cy !== 'undefined') {
-  cy.resize();
-  cy.layout({
-    name: 'breadthfirst',
-    directed: true,
-    roots: ['A'],
-    orientation: 'vertical',
-    spacingFactor: 1.75,
-    padding: 10
-  }).run();
-}
+    cy.resize();
+    cy.layout({
+      name: 'breadthfirst',
+      directed: true,
+      roots: ['A'],
+      orientation: 'vertical',
+      spacingFactor: 1.75,
+      padding: 10
+    }).run();
+  }
   if (typeof cy !== 'undefined') cy.off('tap');
   userInput     = [];
   correctAnswer = dfs(graph, 'A');
@@ -206,18 +238,18 @@ function startInteractiveDFS() {
 function renderResult(state) {
   const fb = document.getElementById('dfs-feedback');
   if (!fb) return;
+
   const modal = document.getElementById('dfs-modal');
   const modalMsg = document.getElementById('dfs-modal-message');
   const modalClose = document.getElementById('dfs-modal-close');
+
   if (state === false) {
     fb.className = 'feedback wrong';
     if (modal && modalMsg && modalClose) {
       modalMsg.textContent = '❌ Incorrect choice!';
       modalClose.textContent = 'Try Again';
       modal.style.display = 'flex';
-      modalClose.onclick = () => {
-        modal.style.display = 'none';
-      };
+      modalClose.onclick = () => { modal.style.display = 'none'; };
     }
   } else if (state === true) {
     fb.className = 'feedback correct';
@@ -225,9 +257,7 @@ function renderResult(state) {
       modalMsg.textContent = '🎉 Traversal complete!';
       modalClose.textContent = 'Close';
       modal.style.display = 'flex';
-      modalClose.onclick = () => {
-        modal.style.display = 'none';
-      };
+      modalClose.onclick = () => { modal.style.display = 'none'; };
     }
     trackTimeout(revealQuiz(), order.length * delay + 20);
   } 

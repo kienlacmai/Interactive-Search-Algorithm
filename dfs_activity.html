@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  
-<!-- HEAD -->
 <head>
+  <!-- HEAD -->
   <meta charset="UTF-8">
   <title>DFS Interactive Tutorial</title>
   <link rel="stylesheet" href="css/style.css">
@@ -12,35 +11,37 @@
   <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
-<!-- FEEDBACK SCREEN FOR INTERACTIVE ACTIVITIES -- ERRORS/COMPLETION -->
-<div id="dfs-modal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <span id="dfs-modal-message"></span>
-    <button id="dfs-modal-close">Try Again</button>
-  </div>
-</div>
-
-<!-- BODY -->
 <body>
+  <!-- FEEDBACK SCREEN FOR INTERACTIVE ACTIVITIES -- ERRORS/COMPLETION -->
+  <div id="dfs-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span id="dfs-modal-message"></span>
+      <button id="dfs-modal-close">Try Again</button>
+    </div>
+  </div>
+
+  <!-- BODY -->
   <div class="container">
     <!-- TOGGLE BUTTON -->
     <button id="theme-toggle" aria-label="Toggle Theme">
-    <img src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
+      <img src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
     </button>
+
     <!-- PAGE HEADER -->
     <h1>🧠 Interactive DFS Tutorial</h1>
 
     <!-- BUTTONS -->
     <div class="controls">
-      <button id="run-example-btn" onclick="startDFS()">Run example DFS</button>
-      <button id="start-interactive-btn" onclick="startInteractiveDFS()">Start Interactive DFS</button>
-      <button id="take-quiz-btn" onclick="renderQuiz()">Take a Quiz</button>
+      <button id="run-example-btn">Run example DFS</button>
+      <button id="start-interactive-btn">Start Interactive DFS</button>
+      <button id="take-quiz-btn">Take a Quiz</button>
       <button id="togglePseudocodeBtn" class="btn primary" aria-pressed="false">Show pseudocode</button>
-      <!-- THIS IS THE RESET BUTTON FOR DEBUGGING<button id="reset-btn" onclick="resetGraph()">Reset graph</button> -->
+      <button id="start-coding-btn">Start Coding Activity</button>
+      <!-- THIS IS THE RESET BUTTON FOR DEBUGGING<button id="reset-btn">Reset graph</button> -->
     </div>
 
     <!-- TEXT INSTRUCTIONS UNDER EACH ACTIVITY WHEN CLICKED -->
-    <p id="example-instructions" class="activity-instructions" style="display: none;">
+    <p id="example-instructions" class="activity-instructions" style="display:none;">
       Click on <strong>Run Example DFS</strong> to see the algorithm traversal. Start the <strong>Interactive DFS</strong> after the example has completed!
     </p>
     <p id="interactive-instructions" class="instructions">
@@ -50,10 +51,42 @@
     <!-- LOAD GRAPH -->
     <div id="visualization"></div>
 
+    <!-------------------- CODING ACTIVITY PANEL -------------------->
+    <section id="coding-activity" class="coding-panel" style="display:none;">
+      <!-- PANEL HEADER/TITLE -->
+      <h2>DFS Coding Activity</h2>
+      <p class="instructions">Fill in the blanks and run the code. Hidden tests will verify your DFS implementation.</p>
+
+      <!-- READ-ONLY SCAFFOLD + BLANKS -->
+      <pre class="code">
+def dfs(graph, start):
+    visited = set()
+    stack = [<input class="blank" size="6" aria-label="initial push">]   # blank #1
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            visited.add(node)
+            # push neighbors in reverse so left-most comes out first
+            stack.extend(<input class="blank" size="12" aria-label="neighbors">)
+    return visited
+      </pre>
+
+      <!-- CONTROLS -->
+      <div class="controls">
+        <button id="run-python">Run</button>
+        <button id="clear-output">Clear Output</button>
+        <button id="exit-coding-activity">Return to DFS example</button>
+      </div>
+
+      <!-- OUTPUT / FEEDBACK -->
+      <div id="py-output" class="feedback" aria-live="polite"></div>
+    </section>
+    <!-------------------- END CODING ACTIVITY PANEL -------------------->
+
     <!-- LOAD FEEDBACK POPUP -->
     <div id="dfs-feedback" class="feedback"></div>
 
-<!-------------------- PSEUDOCODE SIDE PANEL -------------------- -->
+    <!-------------------- PSEUDOCODE SIDE PANEL -------------------->
     <aside id="pseudocodePanel" aria-hidden="true">
       <div class="panel-header">
         <!-- PANEL HEADER/TITLE -->
@@ -65,8 +98,9 @@
         <button class="seg selected" role="tab" aria-selected="true" data-target="recursive">Recursive</button>
         <button class="seg" role="tab" aria-selected="false" data-target="iterative">Iterative</button>
       </div>
-<!-- RECURSIVE PSEUDOCODE IN PANEL -->
-<pre id="pseudo-recursive" class="code pseudo show">
+
+      <!-- RECURSIVE PSEUDOCODE IN PANEL -->
+      <pre id="pseudo-recursive" class="code pseudo show">
   procedure DFS(G, start):
     visited ← set()
     parent  ← map()
@@ -83,9 +117,10 @@
 
     visit(start)
     return parent
-  </pre>
-<!-- ITERATIVE PSEUDOCODE IN PANEL -->
-<pre id="pseudo-iterative" class="code pseudo">
+      </pre>
+
+      <!-- ITERATIVE PSEUDOCODE IN PANEL -->
+      <pre id="pseudo-iterative" class="code pseudo">
   procedure DFS_iter(G, start):
     visited ← set()
     parent  ← map()
@@ -100,20 +135,22 @@
                     parent[v] ← u
                     S.push(v)
     return parent
-  </pre>
+      </pre>
 
       <p class="note">Mentally trace the code to understand the algorithm's traversal pathing!</p>
     </aside>
   </div>
   <!-- END OF PSEUDOCODE PANEL -->
-  
-  <!-- JAVASCRIPT FILE IMPORTS -->
+
+  <!-- QUIZ PANEL (hidden until quiz mode) -->
   <section id="dfs-quiz" class="quiz-panel" style="display:none;"></section>
-  <script src="js/dfs.js"></script> 
+
+  <!-- JAVASCRIPT FILE IMPORTS -->
+  <script src="js/dfs.js"></script>
   <script src="js/visualization.js"></script>
   <script src="js/interactive.js"></script>
   <script src="js/quiz.js"></script>
   <script src="js/dfs_ui.js"></script>
-
+  <script src="js/coding_activity.js"></script>
 </body>
 </html>
