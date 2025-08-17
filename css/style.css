@@ -340,6 +340,29 @@ body.dark-mode #interactive-instructions {
   color: #e5e7eb;               /* readable on dark background */
 }
 
+/* General instruction styling */
+.instructions {
+  margin: 10px auto;
+  text-align: center;
+
+  font: 500 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: #374151; /* light mode text */
+  background: none;
+  border: none;
+}
+
+.instructions strong {
+  font-weight: 700;
+  color: inherit; /* keep same color as text */
+}
+
+/* Dark mode override */
+body.dark-mode .instructions {
+  color: #e5e7eb; /* readable on dark background */
+}
+
+
+
 /* Interactive DFS feedback */
 .modal {
   position: fixed;
@@ -431,3 +454,4 @@ body.dark-mode .quiz-panel {
   background: #0f172a;
   border-color: #1f2937;
 }
+
