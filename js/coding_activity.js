@@ -58,13 +58,13 @@
 
     const messages = [];
     if (!startCorrect) {
-      messages.push('❌ Blank #1: push the *start* node onto the stack first (e.g., `start`).');
+      messages.push('❌ Blank #1: push the *start* node onto the stack first.');
     } else {
       messages.push('✅ Blank #1 looks good.');
     }
 
     if (!neighborCorrect) {
-      messages.push('❌ Blank #2: push neighbors in reverse order so the left-most is popped first (e.g., `reversed(graph[node])`).');
+      messages.push('❌ Blank #2: push neighbors in reverse order so the left-most is popped first.');
     } else {
       messages.push('✅ Blank #2 looks good.');
     }
