@@ -63,13 +63,14 @@ function setUIMode(mode) {
   const quizBtn = document.getElementById('take-quiz-btn');
   const h1      = document.querySelector('h1');
   const pseudo  = document.getElementById('pseudocodePanel');
+  const app     = document.getElementById('application-activity');
 
   // helpers
   const show = (el) => { if (el) el.style.display = 'block'; };
   const hide = (el) => { if (el) el.style.display = 'none'; };
 
   // default: hide everything
-  hide(exInstr); hide(itInstr); hide(viz); hide(fb); hide(quiz); hide(coding);
+  hide(exInstr); hide(itInstr); hide(viz); hide(fb); hide(quiz); hide(coding); hide(app);
 
   // close pseudocode if open (optional; keep UX simple when switching modes)
   if (pseudo && pseudo.classList.contains('show')) {
@@ -84,7 +85,7 @@ function setUIMode(mode) {
     if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
     if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
-    if (h1) h1.textContent = '🧠 Interactive DFS Tutorial';
+    if (h1) h1.textContent = '🧠 Example DFS Tutorial';
   } else if (mode === 'interactive') {
     show(viz); show(itInstr); show(fb);
     if (runExampleBtn)       runExampleBtn.textContent       = 'Return to DFS Example';
@@ -103,8 +104,19 @@ function setUIMode(mode) {
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
     if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
     if (h1) h1.textContent = '🧠 DFS Coding Activity';
-  }
+  
+  } else if (mode === 'application') {
+  show(app);
+  if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
+  if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+  if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
+  if (h1) h1.textContent = '🧩 Maze Application';
+  const appPanel = document.getElementById('application-activity');
+  if (appPanel) appPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+}
+
+
 
 // --- EXAMPLE ACTIVITY ---
 // RUN DFS AND ANIMATE ON GRAPH
@@ -269,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // unify top buttons via the single state machine
   const codingBtn = document.getElementById('start-coding-btn');
   const quizBtn   = document.getElementById('take-quiz-btn');
+  const appBtn = document.getElementById('start-application-btn');
 
   if (runExampleBtn) {
     runExampleBtn.addEventListener('click', () => {
@@ -301,4 +314,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('start-interactive-btn');
     if (btn) btn.classList.add('revealed'); // STORES THE BUTTON INTO LOCAL MEMORY SO ONCE UNLOCKED ALWAYS UNLOCKED
   }
+  if (appBtn) {
+    appBtn.addEventListener('click', () => {
+      setUIMode('application');
+    });
+  }
 });
+
