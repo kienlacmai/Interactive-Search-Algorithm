@@ -13,6 +13,9 @@
 
   --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
   --shadow-md: 0 10px 20px rgba(0,0,0,.06), 0 3px 6px rgba(0,0,0,.05);
+
+  --chip-bg: #f8fafc;
+  --chip-text: #111827;
 }
 
 body.dark-mode {
@@ -26,6 +29,9 @@ body.dark-mode {
   --primary-hover: #1d4ed8;
 
   --shadow-md: 0 10px 24px rgba(0,0,0,.35);
+
+  --chip-bg: #0f172a;
+  --chip-text: #e5e7eb;
 }
 
 /* =========================
@@ -97,7 +103,7 @@ body.dark-mode #theme-toggle img { filter: invert(1); }
 ========================= */
 .instructions {
   margin: 10px auto;
-  font: 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font: 500 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   color: var(--muted);
   background: none; border: none;
 }
@@ -177,17 +183,36 @@ body.dark-mode #theme-toggle img { filter: invert(1); }
 .icon-btn { width: 36px; height: 36px; }
 
 .pseudo-toggle {
-  display: inline-flex; border: 1px solid var(--ring); border-radius: .75rem;
-  overflow: hidden; margin: 6px 0 10px; align-items: center;
+  display: inline-flex;
+  border: 1px solid var(--ring);
+  border-radius: .75rem;
+  overflow: hidden;
+  margin: 6px 0 10px;
+  align-items: center;
 }
 .pseudo-toggle .seg {
-  padding: .45rem .8rem; background: #f8fafc; border: 0;
-  font: 600 13px/1 system-ui, sans-serif; cursor: pointer; height: 36px; display: inline-flex; align-items: center; justify-content: center;
-  color: #111827;                    /* unselected text (light) */
+  padding: .45rem .8rem;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  cursor: pointer;
+  font: 600 13px/1 system-ui, sans-serif;
+
+  /* theme-aware */
+  background: var(--chip-bg);
+  color: var(--chip-text);                /* unselected text (light) */
 }
 .pseudo-toggle .seg + .seg { border-left: 1px solid var(--ring); }
-.pseudo-toggle .seg.selected { background: var(--primary); color: #fff; }
-
+.pseudo-toggle .seg.selected {
+  background: var(--primary);
+  color: #fff;
+}
+.pseudo-toggle .seg:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
 pre.code { background: #f9fafb; color: #111827; padding: 12px 14px; border-radius: .75rem; overflow: auto;
   font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
 body.dark-mode pre.code { background: #0a0f1a; color: #e6edf3; }
