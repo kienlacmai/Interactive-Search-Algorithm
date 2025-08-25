@@ -8,7 +8,7 @@ body {
 }
 
 body.dark-mode {
-  background-color: #121212;
+  background-color: #0b1220;
   color: white;
 }
 body.dark-mode button {
@@ -65,7 +65,7 @@ body.dark-mode #theme-toggle img {
     filter: invert(1);
 }
 body.dark-mode #visualization {
-    background-color: #23272a;
+    background-color: #11192c;
 }
 
 /* Buttons */

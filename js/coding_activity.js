@@ -1,140 +1,39 @@
 // ---------------- CODING ACTIVITY (Fill-in-the-blank) ----------------
-// Teaching checker (no Python runtime). Validates a canonical iterative DFS pattern.
+//
+// Note: This is a *teaching* checker, not a Python runner.
+// We validate the two blanks for a canonical iterative DFS pattern.
+// Accepts a few common variants for the neighbor push.
+//
 
 (function () {
   function $(id) { return document.getElementById(id); }
 
-  // ---- NEW: tiny helpers for UI feedback ----
-  function markBlank(index, ok, hint = '') {
-    const blanks = document.querySelectorAll('#coding-activity input.blank');
-    const b = blanks[index];
-    if (!b) return;
-    b.classList.toggle('correct', ok);
-    b.classList.toggle('wrong', !ok);
-    b.setAttribute('aria-invalid', String(!ok));
-    b.setAttribute('title', hint || '');
+  function showCoding() {
+    // Hide other activities
+    $('dfs-quiz').style.display = 'none';
+
+    // Hide the visualization
+    const viz = $('visualization');
+    viz.style.display = 'none';
+
+    // Show coding panel
+    $('coding-activity').style.display = 'block';
   }
 
-  // Reuse the DFS modal just like interactive.js does
-  function renderCodingResult({ passed, startCorrect, neighborCorrect }) {
-  const fb = $('py-output');
-  if (!fb) return;
-
-  const modal    = $('dfs-modal');
-  const modalMsg = $('dfs-modal-message');
-  const modalBtn = $('dfs-modal-close'); // primary button slot
-  if (!modal || !modalMsg || !modalBtn) return;
-
-  fb.className = 'feedback ' + (passed ? 'correct' : 'wrong');
-
-  // helpers to manage extra buttons
-  function ensureBtn(id, label) {
-    let btn = document.getElementById(id);
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.id = id;
-      btn.textContent = label;
-      modalBtn.insertAdjacentElement('afterend', btn);
-    } else {
-      btn.textContent = label;
-    }
-    return btn;
+  function hideCoding() {
+    $('coding-activity').style.display = 'none';
+    // Re-show the visualization
+    const viz = $('visualization');
+    viz.style.display = '';
   }
-  function removeBtn(id) {
-    const b = document.getElementById(id);
-    if (b && b.parentNode) b.parentNode.removeChild(b);
-  }
-
-  // Success → close-only, no hint/giveup buttons
-  if (passed) {
-    modalMsg.textContent = '🎉 All tests passed! Nice work.';
-    modalBtn.textContent = 'Close';
-    modalBtn.onclick = () => { modal.style.display = 'none'; };
-    removeBtn('dfs-modal-hint');
-    removeBtn('dfs-modal-giveup');
-    modal.style.display = 'flex';
-    return;
-  }
-
-  // Failure → offer Try Again + Get a hint
-  const someRight = startCorrect || neighborCorrect;
-  modalMsg.textContent = someRight
-    ? '⚠️ You got one blank correct, but the other needs fixing.'
-    : '❌ Both blanks are incorrect.';
-
-  modalBtn.textContent = 'Try Again';
-  modalBtn.onclick = () => { modal.style.display = 'none'; };
-
-  const hintBtn = ensureBtn('dfs-modal-hint', 'Get a hint');
-  removeBtn('dfs-modal-giveup'); // only show "Give up" in the hint view, not here
-
-  hintBtn.onclick = () => {
-    // Show the hint *in the same modal*, with two new buttons: Try again + Give up
-    // Compute targeted hint text for each case
-    let hint = '';
-    if (!startCorrect && !neighborCorrect) {
-      // both wrong -> nudge only for the first box (as requested)
-      hint = 'Hint for blank #1: initialize the stack with the start node. For example: stack = [start].';
-    } else if (!startCorrect) {
-      hint = 'Hint for blank #1: the initial push should be the start node itself → [start].';
-    } else if (!neighborCorrect) {
-      hint = 'Hint for blank #2: push neighbors in reverse order so left-most is visited first (e.g., reversed(graph[node]) or graph[node][::-1]).';
-    }
-
-    modalMsg.textContent = hint;
-
-    // Primary now reads Try again; keep same handler (close modal)
-    modalBtn.textContent = 'Try again';
-    modalBtn.onclick = () => { modal.style.display = 'none'; };
-
-    // Add a secondary "Give up" (no logic yet)
-   const giveUpBtn = ensureBtn('dfs-modal-giveup', 'Give up');
-giveUpBtn.onclick = () => {
-  const inputs = document.querySelectorAll('#coding-activity input.blank');
-
-  // ✅ Autofill box 1 with the correct value
-  if (inputs[0]) inputs[0].value = 'start';
-
-  // 📚 List all valid answers for box 2
-  const neighborAnswers = [
-    'reversed(graph[node])',
-    'list(reversed(graph[node]))',
-    'graph[node][::-1]',
-    'sorted(graph[node], reverse=True)'
-  ];
-
-  const modalMsg = document.getElementById('dfs-modal-message');
-  modalMsg.innerHTML = `
-    <div>✅ <strong>Answer for blank #1:</strong> <code>start</code></div>
-    <div style="margin-top:.5em;">📚 <strong>Possible answers for blank #2:</strong>
-      <ul style="text-align:left;margin:.5em 0 0 1.25em;">
-        ${neighborAnswers.map(a => `<li><code>${a}</code></li>`).join('')}
-      </ul>
-    </div>
-  `;
-
-  // Primary button becomes Close
-  const modalBtn = document.getElementById('dfs-modal-close');
-  modalBtn.textContent = 'Close';
-  modalBtn.onclick = () => { document.getElementById('dfs-modal').style.display = 'none'; };
-
-  // Remove the "Give up" button after showing solution
-  giveUpBtn.remove();
-};
-
-    // In hint view we don’t need the "Get a hint" button anymore
-    removeBtn('dfs-modal-hint');
-
-    modal.style.display = 'flex';
-  };
-
-  modal.style.display = 'flex';
-}
 
   function readBlanks() {
     const blanks = document.querySelectorAll('#coding-activity input.blank');
     const values = Array.from(blanks).map(b => (b.value || '').trim());
-    return { startPush: values[0] || '', neighborExpr: values[1] || '' };
+    return {
+      startPush: values[0] || '',
+      neighborExpr: values[1] || '',
+    };
   }
 
   function checkAnswers(startPush, neighborExpr) {
@@ -144,62 +43,72 @@ giveUpBtn.onclick = () => {
       'reversed(graph[node])',
       'list(reversed(graph[node]))',
       'graph[node][::-1]',
-      'sorted(graph[node],reverse=True)',
+      'sorted(graph[node], reverse=True)', // acceptable variant
     ]);
 
-    const startCorrect = okStart.includes(startPush.replace(/\s+/g, ''));
-    const neighborCanonical = neighborExpr.replace(/\s+/g, '');
-    const neighborCorrect = okNeighbors.has(neighborCanonical);
+    const startCorrect = okStart.includes(startPush);
+    const neighborCorrect = okNeighbors.has(neighborExpr.replace(/\s+/g, ''));
 
     return { startCorrect, neighborCorrect };
   }
 
   function runHiddenTests(startPush, neighborExpr) {
-  const { startCorrect, neighborCorrect } = checkAnswers(startPush, neighborExpr);
-  const passed = startCorrect && neighborCorrect;
+    // Lightweight, illustrative checks
+    const { startCorrect, neighborCorrect } = checkAnswers(startPush, neighborExpr);
 
-  // Just return booleans, no messages
-  return { passed, startCorrect, neighborCorrect };
-}
+    const messages = [];
+    if (!startCorrect) {
+      messages.push('❌ Blank #1: push the *start* node onto the stack first.');
+    } else {
+      messages.push('✅ Blank #1 looks good.');
+    }
 
+    if (!neighborCorrect) {
+      messages.push('❌ Blank #2: push neighbors in reverse order so the left-most is popped first.');
+    } else {
+      messages.push('✅ Blank #2 looks good.');
+    }
 
+    const passed = startCorrect && neighborCorrect;
+    return { passed, messages };
+  }
+
+  function writeOutput(lines, passed) {
+    const out = $('py-output');
+    out.className = 'feedback ' + (passed ? 'correct' : 'wrong');
+    out.innerHTML = lines.map(l => `<div>${l}</div>`).join('');
+  }
+
+  function clearOutput() {
+    const out = $('py-output');
+    out.className = 'feedback';
+    out.textContent = '';
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
     const startCodingBtn = $('start-coding-btn');
-    const runBtn   = $('run-python');
+    const runBtn = $('run-python');
     const clearBtn = $('clear-output');
+    const exitBtn = $('exit-coding-activity');
 
-    // Prefer the global UI state machine if present
     if (startCodingBtn) {
-      startCodingBtn.addEventListener('click', () => {
-        if (typeof window.setUIMode === 'function') {
-          window.setUIMode('coding');
-          const panel = $('coding-activity');
-          if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-          // Fallback: show panel directly
-          $('dfs-quiz') && ($('dfs-quiz').style.display = 'none');
-          $('visualization') && ($('visualization').style.display = 'none');
-          $('coding-activity').style.display = 'block';
-        }
+      startCodingBtn.addEventListener('click', showCoding);
+    }
+    if (runBtn) {
+      runBtn.addEventListener('click', () => {
+        const { startPush, neighborExpr } = readBlanks();
+        const { passed, messages } = runHiddenTests(startPush, neighborExpr);
+        writeOutput(messages, passed);
       });
     }
-
-    if (runBtn) {
-  runBtn.addEventListener('click', () => {
-    const { startPush, neighborExpr } = readBlanks();
-    const result = runHiddenTests(startPush, neighborExpr);
-
-    // Per-blank highlighting + quick hints (no HTML injected)
-    markBlank(0, result.startCorrect, result.startCorrect ? '' : 'Use "start"');
-    markBlank(1, result.neighborCorrect, result.neighborCorrect ? '' : 'Reverse the neighbors');
-
-    // Pass the whole result so the modal can handle 0/1/2-correct cases
-    renderCodingResult(result);
-  });
-}
-
-
-    if (clearBtn) clearBtn.addEventListener('click', clearOutput);
+    if (clearBtn) {
+      clearBtn.addEventListener('click', clearOutput);
+    }
+    if (exitBtn) {
+      exitBtn.addEventListener('click', () => {
+        clearOutput();
+        hideCoding();
+      });
+    }
   });
 })();
