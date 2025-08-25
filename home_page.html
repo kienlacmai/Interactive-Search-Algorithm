@@ -1,33 +1,90 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Algo Visualizer</title>
-  <link rel="stylesheet" href="css/style.css">
-  <style>
-    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); padding: 2rem; }
-    .card { border: 1px solid #ddd; border-radius: 12px; padding: 1.25rem; text-decoration: none; }
-    .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
-    h1 { text-align: center; margin: 1.25rem 0; }
-    .muted { color: #555; font-size: .95rem; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive Algorithm Tutorials</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
-  <h1>Interactive Algorithm Visualizer</h1>
-  <div class="grid">
-    <a class="card" href="http://127.0.0.1:5500/home_page.html">
-      <h2>Depth-First Search (DFS)</h2>
-      <p class="muted">Explore recursive and stack-based DFS with step-by-step highlighting.</p>
-    </a>
-    <a class="card" href="pages/bfs.html">
-      <h2>Breadth-First Search (BFS)</h2>
-      <p class="muted">Level-order exploration using a queue (coming soon).</p>
-    </a>
-    <a class="card" href="pages/astar.html">
-      <h2>A* Pathfinding</h2>
-      <p class="muted">Heuristics, open/closed sets, and shortest paths (coming soon).</p>
-    </a>
+<button id="theme-toggle" aria-label="Toggle Theme">
+      <img src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
+    </button>
+  <header class="hero">
+  <!-- Site brand row -->
+  <div class="site-brand">
+    <span class="logo">🧠</span>
+    <span class="title">Interactive Algorithm Tutorials</span>
   </div>
+
+  <!-- Main page heading -->
+  <h1>Choose Your Algorithm Adventure</h1>
+  <p>
+    Explore fundamental graph traversal and pathfinding algorithms through
+    interactive visualizations, hands-on coding exercises, and
+    step-by-step tutorials.
+  </p>
+</header>
+
+
+  <main class="grid">
+    <!-- DFS -->
+    <article class="card">
+      <div class="icon blue">↳</div>
+      <h3>Depth-First Search</h3>
+      <p class="desc">Explore graphs by going as deep as possible before backtracking. Perfect for maze solving and tree traversal.</p>
+      <ul class="bullets">
+        <li>Stack-based traversal</li>
+        <li>Memory efficient</li>
+        <li>Great for pathfinding</li>
+      </ul>
+      <a class="cta blue" href="dfs_activity.html">Start DFS Tutorial</a>
+    </article>
+
+    <!-- BFS -->
+    <article class="card">
+      <div class="icon green">≡</div>
+      <h3>Breadth-First Search</h3>
+      <p class="desc">Explore graphs level by level, guaranteeing the shortest path in unweighted graphs. Ideal for minimum distances.</p>
+      <ul class="bullets">
+        <li>Queue-based traversal</li>
+        <li>Shortest path guarantee</li>
+        <li>Level-order exploration</li>
+      </ul>
+      <a class="cta green" href="bfs_activity.html">Start BFS Tutorial</a>
+    </article>
+
+    <!-- A* -->
+    <article class="card">
+      <div class="icon violet">◎</div>
+      <h3>A* Search</h3>
+      <p class="desc">Smart pathfinding using heuristics to find optimal paths efficiently. The gold standard for games, AI and robotics.</p>
+      <ul class="bullets">
+        <li>Heuristic-guided search</li>
+        <li>Optimal and efficient</li>
+        <li>Used in games & robotics</li>
+      </ul>
+      <a class="cta violet" href="astar_activity.html">Start A* Tutorial</a>
+    </article>
+  </main>
+
+  <section class="quick">
+    <h4>Quick Access</h4>
+    <a class="pill" href="#">Algorithm Playground</a>
+  </section>
+
+  <script>
+    // Simple theme toggle that persists
+    const btn = document.getElementById('theme-toggle');
+    const preferDark = localStorage.getItem('theme') === 'dark';
+    if (preferDark) document.body.classList.add('dark');
+    btn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
+  </script>
 </body>
 </html>
