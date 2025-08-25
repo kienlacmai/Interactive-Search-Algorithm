@@ -151,7 +151,6 @@ function animateDFSTraversal(order) {
       }, { duration: 300 });
     }, i * delay);
   });
-  trackTimeout(revealStartInteractive, order.length * delay + 20);
 }
 
 // TRAVERSAL VISUALIZED VIA HIGHLIGHTING
@@ -216,12 +215,6 @@ function startInteractiveDFS() {
       renderResult(false);
     }
   });
-}
-
-function revealStartInteractive() {
-  const btn = document.getElementById('start-interactive-btn');
-  if (btn) btn.classList.add('revealed');
-  localStorage.setItem('dfsInteractiveRevealed', '1'); // COMMENT OUT TO SEE INITIAL USER FLOW
 }
 
 function hideStartInteractive() {
@@ -310,10 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (localStorage.getItem('dfsInteractiveRevealed') === '1') {
-    const btn = document.getElementById('start-interactive-btn');
-    if (btn) btn.classList.add('revealed'); // STORES THE BUTTON INTO LOCAL MEMORY SO ONCE UNLOCKED ALWAYS UNLOCKED
-  }
+  
   if (appBtn) {
     appBtn.addEventListener('click', () => {
       setUIMode('application');

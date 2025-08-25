@@ -1,543 +1,225 @@
+/* =========================
+   Theme tokens (match homepage)
+========================= */
+:root {
+  --bg: #f5f7fa;
+  --text: #0f172a;
+  --muted: #374151;
+  --card: #ffffff;
+  --ring: #e5e7eb;
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;    
-    background-color: #f5f7fa;
-    margin: 0;
-    padding: 0;
-    text-align: center;
+  --primary: #0b61d8;
+  --primary-hover: #0a51b5;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 10px 20px rgba(0,0,0,.06), 0 3px 6px rgba(0,0,0,.05);
 }
 
 body.dark-mode {
-  background-color: #0b1220;
-  color: white;
-}
-body.dark-mode button {
-    background-color: #222e3c;
-    color: #e0e0e0;
+  --bg: #0b1220;
+  --text: #e5e7eb;
+  --muted: #e5e7eb;
+  --card: #0f172a;
+  --ring: #1f2937;
+
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+
+  --shadow-md: 0 10px 24px rgba(0,0,0,.35);
 }
 
-body.dark-mode button:hover {
-    background-color: #3a4a5a;
+/* =========================
+   Base
+========================= */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
-/*DO NOT DELETE THIS COMMENT: This is the main container for the content */
-.container {
-    max-width: 900px;
-    margin: 0 auto;
-    text-align: left;
-}
+.container { max-width: 900px; margin: 0 auto; text-align: left; }
 
-h1,
-.controls,
-.instructions {
-    text-align: center;
-}
-/* Darkmode styles */
+h1, .controls, .instructions { text-align: center; }
+
+/* =========================
+   Theme toggle (same behavior as homepage)
+========================= */
 #theme-toggle {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    z-index: 10;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: background 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  top: 16px; left: 16px; z-index: 10;
+  background: none; border: 0; cursor: pointer;
+  padding: 8px; border-radius: 50%;
+  transition: background .2s;
+  display: flex; align-items: center; justify-content: center;
 }
+#theme-toggle:hover { background: rgba(0,0,0,.08); }
+#theme-toggle img { width: 28px; height: 28px; display:block; filter: invert(0); transition: filter .2s; }
+body.dark-mode #theme-toggle img { filter: invert(1); }
 
-#theme-toggle:hover {
-    background: rgba(0,0,0,0.08);
-}
-
-#theme-toggle img {
-    display: block;
-    width: 28px;
-    height: 28px;
-    filter: invert(0);
-    transition: filter 0.2s;
-}
-
-body.dark-mode #theme-toggle img {
-    filter: invert(1);
-}
-body.dark-mode #visualization {
-    background-color: #11192c;
-}
-
-/* Buttons */
+/* =========================
+   Controls + Buttons
+========================= */
 .controls {
-    margin: 20px 0;
+  margin: 20px 0;
+  display: flex; gap: .5rem; align-items: center; flex-wrap: wrap;
+  justify-content: flex-start;
 }
+#togglePseudocodeBtn { margin-left: auto; order: 999; }
 
-button {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    margin: 6px;
-    font-size: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.instructions {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 20px;
-}
-
-/* ✅ Graph appears directly below everything */
-#visualization {
-    width: 900px;
-    height: 600px;
-    margin: 30px auto; 
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #ffffff;
-}
-
-
-
-
-/* ===== DFS Pseudocode Panel Styles ===== */
-.pseudo-toggle .seg { color: #111827; }    /* unselected tab = black text */
-.pseudo-toggle .seg.selected { color: #fff; }  /* selected tab stays white on blue */
-
-.controls {
-  display: flex;
-  gap: .5rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.btn,
-.icon-btn {
+.controls > button,
+#dfs-modal-close,
+#dfs-modal-hint,
+#dfs-modal-giveup {
   padding: .55rem .9rem;
-  border: 1px solid #e4e4e7;
-  border-radius: 50%;             /* circle */
-  background: #fff;
+  border-radius: .75rem;
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: #fff;
+  font: 500 14px/1.1 system-ui, sans-serif;
   cursor: pointer;
-  font: 500 14px/1 system-ui, sans-serif;
-  display: flex;                  /* centers the X inside */
-  align-items: center;
-  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: background .2s, border-color .2s;
+}
+.controls > button:hover,
+#dfs-modal-close:hover,
+#dfs-modal-hint:hover,
+#dfs-modal-giveup:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+.controls > button[aria-pressed="true"] { background: var(--primary-hover); border-color: var(--primary-hover); }
+
+/* =========================
+   Instructions
+========================= */
+.instructions {
+  margin: 10px auto;
+  font: 500 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: var(--muted);
+  background: none; border: none;
+}
+.instructions strong { font-weight: 700; color: inherit; }
+
+/* Shown/hidden by JS */
+#example-instructions, #interactive-instructions { display: none; margin: 6px 0 8px; }
+
+/* =========================
+   Panels (match homepage cards)
+========================= */
+#visualization,
+.quiz-panel,
+.modal-content {
+  border: 1px solid var(--ring);
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--shadow-md);
 }
 
-.btn[aria-pressed="true"] { background: #f4f4f5; }
-
-/* Primary style so the pseudocode toggle button is visible in light mode */
-.btn.primary {
-  background: #0b61d8;
-  color: #ffffff;
-  border-color: #0b61d8;
+/* Graph panel */
+#visualization {
+  width: 900px; height: 600px;
+  margin: 30px auto;
 }
-.btn.primary[aria-pressed="true"] { background: #0a51b5; border-color: #0a51b5; }
-.btn.primary:focus { outline: 2px solid #93c5fd; outline-offset: 2px; }
 
-/* Slide-over panel */
-#pseudocodePanel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 100vh;
-  width: min(560px, 90vw);
-  background: #ffffff;
-  border-left: 1px solid #e4e4e7;
-  box-shadow: -8px 0 24px rgba(0,0,0,.08);
-  transform: translateX(100%);
-  transition: transform .24s ease;
+/* Quiz panel */
+.quiz-panel {
+  width: 900px; margin: 30px auto; padding: 16px 20px; text-align: left;
+}
+.quiz-panel h2 { margin: 0 0 12px; font-family: system-ui, sans-serif; font-weight: 700; }
+.quiz-question { margin-bottom: 14px; }
+.quiz-question p { margin: 0 0 6px; font-family: system-ui, sans-serif; font-weight: 600; }
+.quiz-question label { display: block; margin: 4px 0; font-family: system-ui, sans-serif; cursor: pointer; }
+.quiz-question.correct { outline: 2px solid #2ecc71; border-radius: 8px; }
+.quiz-question.incorrect { outline: 2px dashed #e74c3c; border-radius: 8px; }
+
+/* =========================
+   Modal
+========================= */
+.modal {
+  position: fixed; inset: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,.5);
+  display: flex; align-items: center; justify-content: center;
   z-index: 1000;
-  padding: 16px 18px;
+}
+.modal-content { padding: 2em; text-align: center; display: flex; flex-direction: column; gap: 1em; }
+#dfs-modal-message { font-size: 1.2em; margin-bottom: .5em; }
 
-  /* Use flex to avoid big empty space */
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
+/* =========================
+   Pseudocode slide-over
+========================= */
+#pseudocodePanel {
+  position: fixed; top: 0; right: 0; height: 100vh;
+  width: min(560px, 90vw);
+  background: var(--card);
+  border-left: 1px solid var(--ring);
+  box-shadow: -8px 0 24px rgba(0,0,0,.08);
+  transform: translateX(100%); transition: transform .24s ease;
+  z-index: 1000; padding: 16px 18px;
+  display: flex; flex-direction: column; gap: 12px;
   visibility: hidden;
 }
 #pseudocodePanel.show { transform: translateX(0); visibility: visible; }
 
-.panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.panel-header { display: flex; align-items: center; justify-content: space-between; }
+
+.btn, .icon-btn {
+  padding: .55rem .9rem; border: 1px solid var(--ring);
+  border-radius: 50%;
+  background: var(--card); color: var(--text);
+  font: 500 14px/1 system-ui, sans-serif; display: flex; align-items: center; justify-content: center;
 }
+.btn.primary { background: var(--primary); border-color: var(--primary); color:#fff; }
+.btn.primary[aria-pressed="true"] { background: var(--primary-hover); border-color: var(--primary-hover); }
+.btn.primary:focus { outline: 2px solid #93c5fd; outline-offset: 2px; }
+.icon-btn { width: 36px; height: 36px; }
 
-#pseudocodePanel .note {
-  font-family: system-ui, sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.icon-btn {
-  width: 36px;
-  height: 36px;
-  display: grid;
-  place-items: center;
-}
-
-/* Default light mode code box */
-pre.code {
-  background: #f9fafb;  /* light gray */
-  color: #111827;       /* dark text */
-  padding: 12px 14px;
-  border-radius: .75rem;
-  overflow: auto;
-  font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-}
-
-/* Dark mode override */
-body.dark-mode pre.code {
-  background: #0b1020;  /* dark navy */
-  color: #e6edf3;       /* light text */
-}
-
-
-/* Segmented control */
 .pseudo-toggle {
-  display: inline-flex;
-  border: 1px solid #e4e4e7;
-  border-radius: .75rem;
-  overflow: hidden;
-  margin: 6px 0 10px;
-  align-items: center;
+  display: inline-flex; border: 1px solid var(--ring); border-radius: .75rem;
+  overflow: hidden; margin: 6px 0 10px; align-items: center;
 }
-
 .pseudo-toggle .seg {
-  padding: .45rem .8rem;
-  background: #f8fafc;
-  border: 0;
-  font: 600 13px/1 system-ui, sans-serif;
-  cursor: pointer;
-
-  /* Normal-sized buttons */
-  height: 36px;
-  line-height: 1.1;
-  width: auto;
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  padding: .45rem .8rem; background: #f8fafc; border: 0;
+  font: 600 13px/1 system-ui, sans-serif; cursor: pointer; height: 36px; display: inline-flex; align-items: center; justify-content: center;
+  color: #111827;                    /* unselected text (light) */
 }
+.pseudo-toggle .seg + .seg { border-left: 1px solid var(--ring); }
+.pseudo-toggle .seg.selected { background: var(--primary); color: #fff; }
 
-/* Light mode: unselected tab text should be dark on light bg */
-.pseudo-toggle .seg { color: #111827; }       /* << light-mode fix */
-.pseudo-toggle .seg.selected { background: #0b61d8; color: #fff; }
-
-.pseudo-toggle .seg + .seg { border-left: 1px solid #e4e4e7; }
-
+pre.code { background: #f9fafb; color: #111827; padding: 12px 14px; border-radius: .75rem; overflow: auto;
+  font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+body.dark-mode pre.code { background: #0a0f1a; color: #e6edf3; }
 pre.pseudo { display: none; margin-top: 8px; }
 pre.pseudo.show { display: block; }
 
-/* Dark mode */
-body.dark-mode #pseudocodePanel { background: #0b0f1a; border-left-color: #1f2937; }
-body.dark-mode pre.code { background: #0a0f1a; color: #e6edf3; }
-body.dark-mode .btn,
-body.dark-mode .icon-btn { background: #0f172a; color: #e5e7eb; border-color: #1f2937; }
-body.dark-mode .btn[aria-pressed="true"] { background: #111827; }
-body.dark-mode .btn.primary { background: #2563eb; border-color: #2563eb; }
+/* =========================
+   Progressive UI bits
+========================= */
+@keyframes dfsFadeIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
 
-body.dark-mode .pseudo-toggle { border-color: #1f2937; }
-body.dark-mode .pseudo-toggle .seg { background: #0f172a; color: #e5e7eb; }
-body.dark-mode .pseudo-toggle .seg + .seg { border-left-color: #1f2937; }
-body.dark-mode .pseudo-toggle .seg.selected { background: #2563eb; color: #fff; }
-
-body:not(.dark-mode) #pseudocodePanel .icon-btn {
-  color: #111827; /* dark text for light mode */
-}
-
-body:not(.dark-mode) #pseudocodePanel .icon-btn:hover {
-  background: #f1f5f9;
-}
-
-body:not(.dark-mode) #pseudocodePanel .icon-btn:focus {
-  outline: 2px solid #93c5fd;
-  outline-offset: 2px;
-}
-
-/* Light mode pseudocode text changes */
-body:not(.dark-mode) #pseudocodePanel pre.code {
-  background: #ffffff;
-  color: #111827;
-}
-
-/* Pin "Show pseudocode" to the right edge of the controls row */
-.controls {
-  justify-content: flex-start;   /* keep the first 3 buttons on the left */
-}
-#togglePseudocodeBtn {
-  margin-left: auto;             /* pushes it to the far right of the container */
-  order: 999;                    /* ensures it stays last even if DOM order changes */
-}
-
-/* === Uniform styling for all action buttons in the controls row === */
-/* Applies to: Run Example DFS, Start Interactive DFS, Reset Graph, Show pseudocode */
-.controls > button {
-  padding: .55rem .9rem;
-  border-radius: .75rem;
-  border: 1px solid #0b61d8;
-  background: #0b61d8;
-  color: #ffffff;
-  font: 500 14px/1.1 system-ui, sans-serif;
-  cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0,0,0,.04);
-}
-
-.controls > button:hover {
-  background: #0a51b5;
-  border-color: #0a51b5;
-}
-
-.controls > button:focus {
-  outline: 2px solid #93c5fd;
-  outline-offset: 2px;
-}
-
-/* If a button uses aria-pressed (e.g., Show pseudocode), keep the pressed look consistent */
-.controls > button[aria-pressed="true"] {
-  background: #0a51b5;
-  border-color: #0a51b5;
-}
-
-/* Dark mode parity */
-body.dark-mode .controls > button {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #ffffff;
-}
-
-body.dark-mode .controls > button:hover {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
-}
-
-/* hides buttons until function is done */
-#start-interactive-btn {           /* initially hidden */
-  display: none;
-}
-
-#start-interactive-btn.revealed {  /* becomes visible + fades in */
-  display: inline-block;
-  animation: dfsFadeIn .28s ease-out both;
-}
-
-
-@keyframes dfsFadeIn {
-  from { opacity: 0; transform: translateY(-2px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-#example-instructions,
-#interactive-instructions {
-  display: none;                /* JS will toggle this */
-  margin: 6px 0 8px;
-  color: #374151;
-  font: 500 16px/1.35 system-ui, sans-serif;  /* match buttons/title */
-  text-align: center;
-}
-body.dark-mode #example-instructions,
-body.dark-mode #interactive-instructions {
-  color: #e5e7eb;               /* readable on dark background */
-}
-
-/* General instruction styling */
-.instructions {
-  margin: 10px auto;
-  text-align: center;
-
-  font: 500 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: #374151; /* light mode text */
-  background: none;
-  border: none;
-}
-
-.instructions strong {
-  font-weight: 700;
-  color: inherit; /* keep same color as text */
-}
-
-/* Dark mode override */
-body.dark-mode .instructions {
-  color: #e5e7eb; /* readable on dark background */
-}
-
-
-
-/* Interactive DFS feedback */
-.modal {
-  position: fixed;
-  left: 0; top: 0; width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.5);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1000;
-}
-.modal-content {
-  background: #fff;
-  padding: 2em;
-  border-radius: 8px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 1em; /* Adds space between message and button */
-}
-#dfs-modal-message {
-  font-size: 1.2em;
-  margin-bottom: 0.5em;
-}
-#dfs-modal-close {
-  padding: 0.5em 1.5em;
-  font-size: 1em;
-  border-radius: 4px;
-  border: none;
-  background: #007bff;
-  color: #fff;
-  cursor: pointer;
-}
-#dfs-modal-close:hover {
-  background: #0056b3;
-}
-
-/* Dark mode for modal */
-body.dark-mode .modal-content {
-  background: #23272a;
-  color: #e6edf3;
-}
-body.dark-mode #dfs-modal-message {
-  color: #e6edf3;
-}
-body.dark-mode #dfs-modal-close {
-  background: #2563eb;
-  color: #fff;
-}
-body.dark-mode #dfs-modal-close:hover {
-  background: #1d4ed8;
-}
-
-/* === DFS Quiz Panel (left-aligned, same width as graph) === */
-.quiz-panel {
-  width: 900px;                 /* matches #visualization */
-  margin: 30px auto;            /* same vertical rhythm/centering in the page */
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: #ffffff;
-  padding: 16px 20px;
-  text-align: left;             /* left-align the text */
-}
-
-.quiz-panel h2 {
-  margin: 0 0 12px;
-  font-family: system-ui, sans-serif;
-  font-weight: 700;
-}
-
-.quiz-question {
-  margin-bottom: 14px;
-}
-
-.quiz-question p {
-  margin: 0 0 6px;
-  font-family: system-ui, sans-serif;
-  font-weight: 600;
-}
-
-.quiz-question label {
-  display: block;               /* one option per line */
-  margin: 4px 0;
-  font-family: system-ui, sans-serif;
-  cursor: pointer;
-}
-.quiz-question.correct { outline: 2px solid #2ecc71; border-radius: 8px; }
-.quiz-question.incorrect { outline: 2px dashed #e74c3c; border-radius: 8px; }
-
-/* Dark mode */
-body.dark-mode .quiz-panel {
-  background: #0f172a;
-  border-color: #1f2937;
-}
-
-/* Extra modal buttons (match #dfs-modal-close) */
-#dfs-modal-hint,
-#dfs-modal-giveup {
-  padding: 0.5em 1.5em;
-  font-size: 1em;
-  border-radius: 4px;
-  border: none;
-  background: #007bff;
-  color: #fff;
-  cursor: pointer;
-  margin-top: 0.5em;
-}
-#dfs-modal-hint:hover,
-#dfs-modal-giveup:hover {
-  background: #0056b3;
-}
-
-/* Dark mode parity */
-body.dark-mode #dfs-modal-hint,
-body.dark-mode #dfs-modal-giveup {
-  background: #2563eb;
-  color: #fff;
-}
-body.dark-mode #dfs-modal-hint:hover,
-body.dark-mode #dfs-modal-giveup:hover {
-  background: #1d4ed8;
-}
-/* Default (light mode) blanks */
+/* =========================
+   Coding activity blanks
+========================= */
 #coding-activity input.blank {
-  background-color: #f9fafb;  /* subtle light gray */
-  color: #111827;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  padding: 2px 4px;
+  background: #f9fafb; color: #111827; border: 1px solid #d1d5db; border-radius: 4px; padding: 2px 4px;
   font: 14px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
+body.dark-mode #coding-activity input.blank { background: #111827; color: #f3f4f6; border: 1px solid #374151; }
 
-/* Dark mode blanks */
-body.dark-mode #coding-activity input.blank {
-  background-color: #111827;  /* matches dark code background */
-  color: #f3f4f6;             /* light readable text */
-  border: 1px solid #374151;
-}
+/* =========================
+   Application (Maze) panel
+========================= */
+#application-activity { padding: 8px 16px; margin-top: 16px; text-align: left; }
+#application-activity h2 { margin: 0 0 4px; font-weight: 700; }
+#application-activity p.activity-instructions { margin: 4px 0 12px; opacity: .9; }
 
-/* Application (Maze) panel matches the rest of the site */
-#application-activity { 
-  padding: 8px 16px; 
-  margin-top: 16px; 
-  text-align: left;
-}
-
-#application-activity h2 { 
-  margin: 0 0 4px; 
-  font-weight: 700; 
-}
-
-#application-activity p.activity-instructions {
-  margin: 4px 0 12px;
-  opacity: .9;
-}
-
-/* Frame as a rounded card */
 #maze-frame {
-  display: block;
-  width: 100%;
-  border: 1px solid #e5e7eb;
+  display: block; width: 100%;
+  border: 1px solid var(--ring);
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0,0,0,.08);
   background: transparent;
 }
-
-body.dark-mode #maze-frame {
-  border-color: #374151;
-  box-shadow: 0 10px 28px rgba(0,0,0,.45);
-}
-
+body.dark-mode #maze-frame { box-shadow: 0 10px 28px rgba(0,0,0,.45); }
