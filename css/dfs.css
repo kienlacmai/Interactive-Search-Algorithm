@@ -186,14 +186,22 @@ button:hover {
   place-items: center;
 }
 
+/* Default light mode code box */
 pre.code {
-  background: #0b1020;
-  color: #e6edf3;
+  background: #f9fafb;  /* light gray */
+  color: #111827;       /* dark text */
   padding: 12px 14px;
   border-radius: .75rem;
   overflow: auto;
   font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 }
+
+/* Dark mode override */
+body.dark-mode pre.code {
+  background: #0b1020;  /* dark navy */
+  color: #e6edf3;       /* light text */
+}
+
 
 /* Segmented control */
 .pseudo-toggle {
@@ -483,6 +491,22 @@ body.dark-mode #dfs-modal-giveup {
 body.dark-mode #dfs-modal-hint:hover,
 body.dark-mode #dfs-modal-giveup:hover {
   background: #1d4ed8;
+}
+/* Default (light mode) blanks */
+#coding-activity input.blank {
+  background-color: #f9fafb;  /* subtle light gray */
+  color: #111827;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 2px 4px;
+  font: 14px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Dark mode blanks */
+body.dark-mode #coding-activity input.blank {
+  background-color: #111827;  /* matches dark code background */
+  color: #f3f4f6;             /* light readable text */
+  border: 1px solid #374151;
 }
 
 
