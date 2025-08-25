@@ -91,7 +91,7 @@
 
   <!-- Quick Access -->
   <section class="quick" aria-label="Quick access">
-    <h3 class="quick__title">Quick Access</h3>
+    <h3 class="quick__title">Test Your Knowledge📝</h3>
     <a class="pill" href="#">Algorithm Playground</a>
   </section>
 
@@ -99,50 +99,47 @@
        Scripts (tiny, no deps)
   ========================================================== -->
   <script>
-    (function () {
-      const body = document.body;
-      const toggle = document.getElementById('theme-toggle');
-      const icon = document.getElementById('theme-icon');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+  (function () {
+    const body   = document.body;
+    const toggle = document.getElementById('theme-toggle');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
-      // Restore theme
-      const saved = localStorage.getItem('theme');
-      if (saved === 'dark' || (!saved && prefersDark.matches)) {
-        body.classList.add('dark');
-      }
+    // Restore theme like DFS (no icon swapping, CSS handles inversion)
+    const saved = localStorage.getItem('theme');
+    const startDark = saved === 'dark' || (!saved && prefersDark.matches);
+    body.classList.toggle('dark', startDark);
 
-      // Toggle theme
-      toggle.addEventListener('click', () => {
-        body.classList.toggle('dark');
-        localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
-        icon.src = body.classList.contains('dark') ? 'icons/light_mode.svg' : 'icons/dark_mode.svg';
+    // Toggle + persist
+    toggle.addEventListener('click', () => {
+      const isDark = body.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+
+    // Make entire card clickable while preserving internal links
+    document.querySelectorAll('.card').forEach(card => {
+      const link = card.querySelector('.card__cta');
+      if (!link) return;
+
+      card.addEventListener('click', (e) => {
+        const interactive = e.target.closest('a,button');
+        if (!interactive) link.click();
       });
 
-      // Make entire card clickable while preserving internal links
-      document.querySelectorAll('.card').forEach(card => {
-        const link = card.querySelector('.card__cta');
-        if (!link) return;
-
-        card.addEventListener('click', (e) => {
-          const interactive = e.target.closest('a,button');
-          if (!interactive) link.click();
-        });
-
-        card.addEventListener('keydown', (e) => {
-          if ((e.key === 'Enter' || e.key === ' ') && document.activeElement === card) {
-            e.preventDefault(); link.click();
-          }
-        });
+      card.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && document.activeElement === card) {
+          e.preventDefault(); link.click();
+        }
       });
+    });
 
-      // Staggered reveal on load (respects reduced motion)
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!reduce) {
-        const cards = Array.from(document.querySelectorAll('.card'));
-        cards.forEach((c, i) => c.style.setProperty('--reveal-delay', (80 + i * 100) + 'ms'));
-        document.documentElement.classList.add('reveal-cards');
-      }
-    })();
-  </script>
+    // Staggered reveal on load (respects reduced motion)
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      const cards = Array.from(document.querySelectorAll('.card'));
+      cards.forEach((c, i) => c.style.setProperty('--reveal-delay', (80 + i * 100) + 'ms'));
+      document.documentElement.classList.add('reveal-cards');
+    }
+  })();
+</script>
 </body>
 </html>
