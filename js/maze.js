@@ -16,7 +16,8 @@
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
   }
-
+    let speedMs = 50;
+    let abortSearch = false;
   // ---- Maze state ----
   const MAZE_SIZE = 25;
   const CELL_SIZE = 20;
@@ -61,7 +62,21 @@
     // Action buttons
     document.getElementById('runButton')?.addEventListener('click', runAlgorithm);
     document.getElementById('generateButton')?.addEventListener('click', () => !isRunning && generateMaze());
-  }
+    // STOP button
+    const stopBtn = document.getElementById('stopButton');
+    if (stopBtn) stopBtn.addEventListener('click', () => { abortSearch = true; });
+    // Speed slider
+    const speedSlider = document.getElementById('speedSlider');
+    const speedValue  = document.getElementById('speedValue');
+    if (speedSlider) {
+    speedMs = parseInt(speedSlider.value, 10) || 0;
+    if (speedValue) speedValue.textContent = speedMs + 'ms';
+    speedSlider.addEventListener('input', () => {
+        speedMs = parseInt(speedSlider.value, 10) || 0;
+        if (speedValue) speedValue.textContent = speedMs + 'ms';
+    });
+    }
+}
 
   function selectAlgorithm(algo) {
     selectedAlgorithm = algo;
@@ -109,6 +124,7 @@
   function setControlsEnabled(enabled) {
     const runBtn   = document.getElementById('runButton');
     const genBtn   = document.getElementById('generateButton');
+    const stopBtn  = document.getElementById('stopButton');
     const algoBtns = Array.from(document.querySelectorAll('#algoToggle .seg'));
     const modeBtns = Array.from(document.querySelectorAll('#modeToggle .seg'));
 
@@ -117,6 +133,11 @@
       b.disabled = !enabled;
       b.setAttribute('aria-disabled', String(!enabled));
     });
+
+    if (stopBtn) {
+        stopBtn.disabled = enabled;                // enabled when others disabled
+        stopBtn.setAttribute('aria-disabled', String(!stopBtn.disabled));
+    }
   }
 
   // ---- Maze generation (recursive backtracking) ----
@@ -179,6 +200,7 @@
 
   // ---- Rendering ----
   function renderMaze() {
+    
     const container = document.getElementById('mazeContainer');
     if (!container) return;
 
@@ -199,14 +221,16 @@
         }
 
         // Theme-aware colors via inline background
-        let bg = 'var(--card)';
-        if (cell.isWall)       bg = 'var(--text)';   // reads as dark wall in both themes
-        else if (cell.isStart) bg = '#22c55e';
-        else if (cell.isEnd)   bg = '#ef4444';
-        else if (cell.isPath)  bg = '#2563eb';
-        else if (cell.isVisited) bg = '#facc15';
+        // Theme-aware colors via CSS variables
+    let bg = 'var(--maze-floor)';
+    if (cell.isWall)          bg = 'var(--maze-wall)';
+    else if (cell.isStart)    bg = 'var(--maze-start)';
+    else if (cell.isEnd)      bg = 'var(--maze-end)';
+    else if (cell.isPath)     bg = 'var(--maze-path)';
+    else if (cell.isVisited)  bg = 'var(--maze-visit)';
 
-        div.style.background = bg;
+    div.style.background = bg;
+
         container.appendChild(div);
       });
     });
@@ -245,39 +269,36 @@
     maze[MAZE_SIZE-2][MAZE_SIZE-2].isEnd = true;
   }
 
-  // ---- Algorithms ----
   async function runAlgorithm() {
     if (isRunning) return;
-    if (isManualMode && (!manualStart || !manualEnd)) {
-      alert('Please set both start and end points before running.');
-      return;
-    }
+  if (isManualMode && (!manualStart || !manualEnd)) {
+    alert('Please set both start and end points before running.');
+    return;
+  }
 
-    isRunning = true;
-    resetMaze();
+  isRunning = true;
+  abortSearch = false;        // NEW
+  resetMaze();
 
-    // LOCK everything in the controls row
-    setControlsEnabled(false);
+  setControlsEnabled(false);
+  const runBtn = document.getElementById('runButton');
+  const label  = algorithmInfo[selectedAlgorithm].name;
+  if (runBtn) runBtn.textContent = 'Running...';
 
-    const runBtn = document.getElementById('runButton');
-    const label  = algorithmInfo[selectedAlgorithm].name;
-    if (runBtn) runBtn.textContent = 'Running...';
+  const t0 = performance.now();
+  try {
+    if (selectedAlgorithm === 'dfs')       await solveDFS();
+    else if (selectedAlgorithm === 'bfs')  await solveBFS();
+    else                                    await solveAStar();
+  } finally {
+    const dt = Math.round(performance.now() - t0);
+    stats.time = dt;
+    updateStats();
 
-    const t0 = performance.now();
-    try {
-      if (selectedAlgorithm === 'dfs')       await solveDFS();
-      else if (selectedAlgorithm === 'bfs')  await solveBFS();
-      else                                    await solveAStar();
-    } finally {
-      const dt = Math.round(performance.now() - t0);
-      stats.time = dt;
-      updateStats();
-
-      // UNLOCK everything in the controls row
-      setControlsEnabled(true);
-      if (runBtn) runBtn.textContent = `Run ${label}`;
-      isRunning = false;
-    }
+    setControlsEnabled(true);
+    if (runBtn) runBtn.textContent = `Run ${label}`;
+    isRunning = false;
+  }
   }
 
   async function solveDFS() {
@@ -287,7 +308,7 @@
     stack.push(startCell);
     let visitedCount = 0;
 
-    while (stack.length && !isComplete) {
+    while (stack.length && !isComplete && !abortSearch) {
       const cur = stack.pop();
       const key = cur.x + ',' + cur.y;
       if (visited.has(key)) continue;
@@ -312,8 +333,9 @@
       });
 
       renderMaze();
-      await sleep(50);
+      await sleep(speedMs);
     }
+    if (abortSearch) return;
   }
 
   async function solveBFS() {
@@ -324,7 +346,7 @@
     visited.add(startCell.x + ',' + startCell.y);
     let visitedCount = 0;
 
-    while (q.length && !isComplete) {
+    while (q.length && !isComplete && !abortSearch) {
       const cur = q.shift();
       cur.isVisited = true;
       visitedCount++;
@@ -349,8 +371,9 @@
       });
 
       renderMaze();
-      await sleep(50);
+      await sleep(speedMs);
     }
+    if (abortSearch) return;
   }
 
   async function solveAStar() {
@@ -366,7 +389,7 @@
 
     let visitedCount = 0;
 
-    while (open.length && !isComplete) {
+    while (open.length && !isComplete && !abortSearch) {
       open.sort((a,b) => (a.fScore||0) - (b.fScore||0));
       const cur = open.shift();
 
@@ -402,8 +425,9 @@
       }
 
       renderMaze();
-      await sleep(30);
+      await sleep(speedMs);
     }
+    if (abortSearch) return;
   }
 
   function getValidNeighbors(c) {
@@ -438,9 +462,10 @@ function buildPath(endCell) {
 // Animate painting the final shortest path
 async function animateFinalPath(path) {
   for (const node of path) {
+    if (abortSearch) return;
     node.isPath = true;   // renders as blue
     renderMaze();
-    await sleep(25);      // adjust speed here (ms)
+    await sleep(speedMs);      // adjust speed here (ms)
   }
 }
 

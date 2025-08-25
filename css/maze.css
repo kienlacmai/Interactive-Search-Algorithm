@@ -1,4 +1,33 @@
 /* Maze-specific tweaks; relies on tokens & components from dfs.css */
+/* ---- Maze theme palette (light) ---- */
+:root {
+  --maze-floor: #eef2f7;   /* walkable cells */
+  --maze-wall:  #0b1324;   /* walls (rich navy/black) */
+  --maze-path:  #3b82f6;   /* final path (blue) */
+  --maze-visit: #f59e0b;   /* visited/frontier (amber) */
+  --maze-start: #22c55e;   /* start (green) */
+  --maze-end:   #ef4444;   /* end (red) */
+}
+
+/* ---- Dark mode overrides ---- */
+body.dark-mode {
+  --maze-floor: #ffffff;   /* deep slate (distinct from page bg) */
+  --maze-wall:  #ffffff0f;   /* almost-black navy for strong contrast */
+  --maze-path:  #60a5fa;   /* lighter blue reads better on dark */
+  --maze-visit: #fbbf24;   /* brighter amber for contrast */
+}
+
+/* Subtle frame to separate maze from page in dark mode */
+body.dark-mode #maze-frame {
+  background: transparent;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px #ffffff0f, 0 12px 24px rgba(0,0,0,.35);
+  padding: 6px;
+}
+
+#mazeContainer > div { box-shadow: inset 0 0 0 2px rgba(0,0,0,.03); }
+body.dark-mode #mazeContainer > div { box-shadow: inset 0 0 0 2px rgba(255,255,255,.03); }
+
 
 /* Manual hint hidden by default; shown via JS when in manual mode */
 #manualInstructions { display: none; }
@@ -47,3 +76,6 @@ body.manual-mode #mazeContainer { cursor: pointer; }
   transform: none;
   box-shadow: none;
 }
+
+/* Make the slider compact in the control row */
+.speed-wrap input[type="range"] { width: 140px; }

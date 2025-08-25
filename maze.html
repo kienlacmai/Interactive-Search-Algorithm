@@ -43,8 +43,8 @@
       <!-- Actions -->
       <button id="runButton" type="button">Run Depth-First Search</button>
       <button id="generateButton" type="button">Generate New Maze</button>
+      <button id="stopButton" type="button" disabled>Stop</button>
     </div>
-
     <!-- Manual mode hint -->
     <p id="manualInstructions" class="instructions">Click on maze cells to set start (green) and end (red) points.</p>
 
@@ -62,8 +62,14 @@
         <div>Cells Visited: <strong id="visitedCount">0</strong></div>
         <div>Path Length: <strong id="pathLength">0</strong></div>
         <div>Time: <strong id="timeElapsed">0ms</strong></div>
+        <label class="speed-wrap" for="speedSlider" style="display:inline-flex;align-items:center;gap:8px;">
+          <span>Speed</span>
+          <input id="speedSlider" type="range" min="0" max="150" step="5" value="50" />
+          <span id="speedValue">50ms</span>
+        </label>
       </div>
     </section>
+    
   </div>
 
   <script src="js/maze.js" defer></script>
