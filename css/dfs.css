@@ -509,5 +509,35 @@ body.dark-mode #coding-activity input.blank {
   border: 1px solid #374151;
 }
 
+/* Application (Maze) panel matches the rest of the site */
+#application-activity { 
+  padding: 8px 16px; 
+  margin-top: 16px; 
+  text-align: left;
+}
 
+#application-activity h2 { 
+  margin: 0 0 4px; 
+  font-weight: 700; 
+}
+
+#application-activity p.activity-instructions {
+  margin: 4px 0 12px;
+  opacity: .9;
+}
+
+/* Frame as a rounded card */
+#maze-frame {
+  display: block;
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  background: transparent;
+}
+
+body.dark-mode #maze-frame {
+  border-color: #374151;
+  box-shadow: 0 10px 28px rgba(0,0,0,.45);
+}
 
