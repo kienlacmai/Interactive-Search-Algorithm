@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maze Search Activity</title>
+
+  <!-- Shared site styles (cards, buttons, tokens) -->
+  <link rel="stylesheet" href="css/dfs.css" />
+  <!-- Maze-specific tweaks (sizing, disabled states, etc.) -->
+  <link rel="stylesheet" href="css/maze.css" />
+</head>
+<body>
+  <!-- Theme toggle (same as DFS) -->
+  <button id="theme-toggle" aria-label="Toggle Theme">
+    <img src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
+  </button>
+
+  <div class="container">
+    <!-- Header -->
+    <h1>🧩 Interactive Maze Search</h1>
+
+    <!-- Description -->
+    <p id="maze-instructions" class="instructions">
+      Choose an algorithm, set start/end (Auto or Manual), then generate and run the solver on a random maze.
+    </p>
+
+    <!-- Controls -->
+    <div class="controls" role="toolbar" aria-label="Maze Controls">
+      <!-- Algorithm segmented control -->
+      <div class="pseudo-toggle" id="algoToggle" role="tablist" aria-label="Algorithm">
+        <button class="seg selected" role="tab" aria-selected="true" data-algorithm="dfs">DFS</button>
+        <button class="seg" role="tab" aria-selected="false" data-algorithm="bfs">BFS</button>
+        <button class="seg" role="tab" aria-selected="false" data-algorithm="astar">A*</button>
+      </div>
+
+      <!-- Mode segmented control -->
+      <div class="pseudo-toggle" id="modeToggle" role="tablist" aria-label="Start/End Mode">
+        <button class="seg selected" role="tab" aria-selected="true" id="autoMode">Auto</button>
+        <button class="seg" role="tab" aria-selected="false" id="manualMode">Manual</button>
+      </div>
+
+      <!-- Actions -->
+      <button id="runButton" type="button">Run Depth-First Search</button>
+      <button id="generateButton" type="button">Generate New Maze</button>
+    </div>
+
+    <!-- Manual mode hint -->
+    <p id="manualInstructions" class="instructions">Click on maze cells to set start (green) and end (red) points.</p>
+
+    <!-- Maze panel -->
+    <section id="application-activity">
+      <h2>Maze</h2>
+      <p class="activity-instructions">A randomized 25×25 maze. Click “Generate New Maze” to reshuffle.</p>
+
+      <div id="maze-frame">
+        <div id="mazeContainer" class="maze-canvas"></div>
+      </div>
+
+      <!-- Stats -->
+      <div class="maze-stats">
+        <div>Cells Visited: <strong id="visitedCount">0</strong></div>
+        <div>Path Length: <strong id="pathLength">0</strong></div>
+        <div>Time: <strong id="timeElapsed">0ms</strong></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/maze.js" defer></script>
+</body>
+</html>

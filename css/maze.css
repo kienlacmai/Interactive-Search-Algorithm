@@ -1,0 +1,49 @@
+/* Maze-specific tweaks; relies on tokens & components from dfs.css */
+
+/* Manual hint hidden by default; shown via JS when in manual mode */
+#manualInstructions { display: none; }
+
+/* Canvas sizing & layout (moved from inline styles) */
+#mazeContainer {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  margin: 12px auto;
+}
+
+/* Stats row */
+.maze-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 12px 4px;
+}
+
+/* Disabled states for this page’s controls */
+#algoToggle .seg:disabled,
+#modeToggle .seg:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.controls > button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Optional: pointer feedback only when manual mode is active */
+body.manual-mode #mazeContainer { cursor: pointer; }
+
+/* Disabled states */
+.pseudo-toggle .seg:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+.controls > button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
