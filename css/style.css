@@ -323,14 +323,6 @@ body.dark-mode .controls > button:hover {
   animation: dfsFadeIn .28s ease-out both;
 }
 
-#take-quiz-btn {           /* initially hidden */
-  display: none;
-}
-
-#take-quiz-btn.revealed {  /* becomes visible + fades in */
-  display: inline-block;
-  animation: dfsFadeIn .28s ease-out both;
-}
 
 @keyframes dfsFadeIn {
   from { opacity: 0; transform: translateY(-2px); }
