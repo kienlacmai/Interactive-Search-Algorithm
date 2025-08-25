@@ -64,13 +64,15 @@ function setUIMode(mode) {
   const h1      = document.querySelector('h1');
   const pseudo  = document.getElementById('pseudocodePanel');
   const app     = document.getElementById('application-activity');
+  const qzInstr = document.getElementById('quiz-instructions');
+  const cdInstr = document.getElementById('coding-instructions');
 
   // helpers
   const show = (el) => { if (el) el.style.display = 'block'; };
   const hide = (el) => { if (el) el.style.display = 'none'; };
 
   // default: hide everything
-  hide(exInstr); hide(itInstr); hide(viz); hide(fb); hide(quiz); hide(coding); hide(app);
+  hide(exInstr); hide(itInstr); hide(viz); hide(fb); hide(quiz); hide(coding); hide(app); hide(qzInstr); hide(cdInstr);
 
   // close pseudocode if open (optional; keep UX simple when switching modes)
   if (pseudo && pseudo.classList.contains('show')) {
@@ -93,13 +95,13 @@ function setUIMode(mode) {
     if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
     if (h1) h1.textContent = '🧠 Interactive DFS Tutorial';
   } else if (mode === 'quiz') {
-    show(quiz);
+    show(quiz); show(qzInstr)
     if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
     if (quizBtn)             quizBtn.textContent             = 'Retake Quiz';
     if (h1) h1.textContent = '🧠 DFS Quiz';
   } else if (mode === 'coding') {
-    show(coding);
+    show(coding); show(cdInstr);
     if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
     if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
