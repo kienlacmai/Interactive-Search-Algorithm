@@ -1,81 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Interactive Algorithm Tutorials</title>
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
   <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
-<button id="theme-toggle" aria-label="Toggle Theme">
-  <img id="theme-icon" src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
-</button>
+  <!-- =========================================================
+       Header / Brand
+  ========================================================== -->
+  <button id="theme-toggle" aria-label="Toggle theme">
+    <img id="theme-icon" src="icons/dark_mode.svg" alt="" width="28" height="28" />
+  </button>
 
-  <header class="hero">
-  <!-- Site brand row -->
-  <div class="site-brand">
-    <span class="logo">🧠</span>
-    <span class="title">Interactive Algorithm Tutorials</span>
-  </div>
+  <header class="hero" role="banner">
+    <div class="brand">
+      <span class="brand__emoji" aria-hidden="true">🧠</span>
+      <span class="brand__title">Interactive Algorithm Tutorials</span>
+    </div>
 
-  <!-- Main page heading -->
-  <h1>Choose Your Algorithm Adventure</h1>
-  <p>
-    Explore fundamental graph traversal and pathfinding algorithms through
-    interactive visualizations, hands-on coding exercises, and
-    step-by-step tutorials.
-  </p>
-</header>
+    <h1 class="hero__title">Choose Your Algorithm Adventure</h1>
+    <p class="hero__lead">
+      Explore fundamental graph traversal and pathfinding algorithms through interactive visualizations,
+      hands‑on coding exercises, and step‑by‑step tutorials.
+    </p>
+  </header>
 
-
-  <main class="grid">
+  <!-- =========================================================
+       Main Content
+  ========================================================== -->
+  <main class="cards" role="main" aria-label="Algorithm cards">
     <!-- DFS -->
-    <article class="card">
-      <div class="icon blue">↳</div>
-      <h3>Depth-First Search</h3>
-      <p class="desc">Explore graphs by going as deep as possible before backtracking. Perfect for maze solving and tree traversal.</p>
-      <ul class="bullets">
-        <li>Stack-based traversal</li>
+    <article class="card card--dfs" tabindex="0">
+      <div class="card__accent" aria-hidden="true"></div>
+      <div class="card__icon card__icon--blue" aria-hidden="true">↳</div>
+      <h2 class="card__title">Depth‑First Search</h2>
+      <p class="card__desc">
+        Explore graphs by going as deep as possible before backtracking.
+        Perfect for maze solving and tree traversal.
+      </p>
+      <ul class="card__bullets">
+        <li>Stack‑based traversal</li>
         <li>Memory efficient</li>
         <li>Great for pathfinding</li>
       </ul>
-      <a class="cta blue" href="dfs_activity.html">Start DFS Tutorial</a>
+      <a class="button button--blue card__cta" href="dfs_activity.html">Start DFS Tutorial</a>
     </article>
 
     <!-- BFS -->
-    <article class="card">
-      <div class="icon green">≡</div>
-      <h3>Breadth-First Search</h3>
-      <p class="desc">Explore graphs level by level, guaranteeing the shortest path in unweighted graphs. Ideal for minimum distances.</p>
-      <ul class="bullets">
-        <li>Queue-based traversal</li>
+    <article class="card card--bfs" tabindex="0">
+      <div class="card__accent" aria-hidden="true"></div>
+      <div class="card__icon card__icon--green" aria-hidden="true">≡</div>
+      <h2 class="card__title">Breadth‑First Search</h2>
+      <p class="card__desc">
+        Explore graphs level by level and find shortest paths on unweighted graphs.
+      </p>
+      <ul class="card__bullets">
+        <li>Queue‑based traversal</li>
         <li>Shortest path guarantee</li>
-        <li>Level-order exploration</li>
+        <li>Level‑order exploration</li>
       </ul>
-      <a class="cta green" href="bfs_activity.html">Start BFS Tutorial</a>
+      <a class="button button--green card__cta" href="bfs_activity.html">Start BFS Tutorial</a>
     </article>
 
     <!-- A* -->
-    <article class="card">
-      <div class="icon violet">◎</div>
-      <h3>A* Search</h3>
-      <p class="desc">Smart pathfinding using heuristics to find optimal paths efficiently. The gold standard for games, AI and robotics.</p>
-      <ul class="bullets">
-        <li>Heuristic-guided search</li>
-        <li>Optimal and efficient</li>
-        <li>Used in games & robotics</li>
+    <article class="card card--astar" tabindex="0">
+      <div class="card__accent" aria-hidden="true"></div>
+      <div class="card__icon card__icon--violet" aria-hidden="true">◎</div>
+      <h2 class="card__title">A* Search</h2>
+      <p class="card__desc">
+        Heuristic‑guided pathfinding that is both optimal and efficient.
+        Widely used in games, AI, and robotics.
+      </p>
+      <ul class="card__bullets">
+        <li>Heuristic‑guided search</li>
+        <li>Optimal with admissible heuristic</li>
+        <li>Scales well in practice</li>
       </ul>
-      <a class="cta violet" href="astar_activity.html">Start A* Tutorial</a>
+      <a class="button button--violet card__cta" href="astar_activity.html">Start A* Tutorial</a>
     </article>
   </main>
 
-  <section class="quick">
-    <h4>Quick Access</h4>
+  <!-- Quick Access -->
+  <section class="quick" aria-label="Quick access">
+    <h3 class="quick__title">Quick Access</h3>
     <a class="pill" href="#">Algorithm Playground</a>
   </section>
 
+  <!-- =========================================================
+       Scripts (tiny, no deps)
+  ========================================================== -->
+  <script>
+    (function () {
+      const body = document.body;
+      const toggle = document.getElementById('theme-toggle');
+      const icon = document.getElementById('theme-icon');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+      // Restore theme
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark' || (!saved && prefersDark.matches)) {
+        body.classList.add('dark');
+      }
+
+      // Toggle theme
+      toggle.addEventListener('click', () => {
+        body.classList.toggle('dark');
+        localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
+        icon.src = body.classList.contains('dark') ? 'icons/light_mode.svg' : 'icons/dark_mode.svg';
+      });
+
+      // Make entire card clickable while preserving internal links
+      document.querySelectorAll('.card').forEach(card => {
+        const link = card.querySelector('.card__cta');
+        if (!link) return;
+
+        card.addEventListener('click', (e) => {
+          const interactive = e.target.closest('a,button');
+          if (!interactive) link.click();
+        });
+
+        card.addEventListener('keydown', (e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && document.activeElement === card) {
+            e.preventDefault(); link.click();
+          }
+        });
+      });
+
+      // Staggered reveal on load (respects reduced motion)
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce) {
+        const cards = Array.from(document.querySelectorAll('.card'));
+        cards.forEach((c, i) => c.style.setProperty('--reveal-delay', (80 + i * 100) + 'ms'));
+        document.documentElement.classList.add('reveal-cards');
+      }
+    })();
+  </script>
 </body>
 </html>
