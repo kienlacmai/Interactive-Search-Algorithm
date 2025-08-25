@@ -311,5 +311,39 @@ document.addEventListener('DOMContentLoaded', () => {
       setUIMode('application');
     });
   }
+  // One-time top-down reveal on initial load
+(function runInitialRevealOnce() {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || window._dfsRevealDone) return;  // do not re-run
+
+  // Which description is currently visible?
+  const desc = [
+    document.getElementById('example-instructions'),
+    document.getElementById('interactive-instructions'),
+    document.getElementById('coding-instructions')
+  ].find(el => el && getComputedStyle(el).display !== 'none');
+
+  const header   = document.querySelector('h1');
+  const controls = document.querySelector('.controls');
+  const vis      = document.getElementById('visualization');
+
+  // Set delays (header → desc → buttons → panel)
+  if (header)   header.style.setProperty('--reveal-delay', '0ms');
+  if (desc)     desc.style.setProperty('--reveal-delay',   '90ms');
+  if (controls) controls.style.setProperty('--reveal-delay','180ms');
+  if (vis)      vis.style.setProperty('--reveal-delay',    '360ms');
+
+  // Add the class that enables the CSS animations
+  document.documentElement.classList.add('reveal-dfs');
+
+  // After the LAST animation ends (the panel), remove the class + inline vars
+  const finalize = () => {
+    document.documentElement.classList.remove('reveal-dfs');
+    [header, desc, controls, vis].forEach(el => el && el.style.removeProperty('--reveal-delay'));
+    window._dfsRevealDone = true;   // prevent any future re-runs this session
+    vis && vis.removeEventListener('animationend', finalize);
+  };
+  vis && vis.addEventListener('animationend', finalize);
+})();
 });
 

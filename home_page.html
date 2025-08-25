@@ -138,7 +138,19 @@
       const cards = Array.from(document.querySelectorAll('.card'));
       cards.forEach((c, i) => c.style.setProperty('--reveal-delay', (80 + i * 100) + 'ms'));
       document.documentElement.classList.add('reveal-cards');
+      const toggle = document.getElementById('theme-toggle');
+      const brand  = document.querySelector('.brand');
+      const title  = document.querySelector('.hero__title');
+      const lead   = document.querySelector('.hero__lead');
+      const quick  = document.querySelector('.quick');
+
+      const items = [toggle, brand, title, lead, quick].filter(Boolean);
+      const base = 0, step = 90; // ms
+      items.forEach((el, i) => el.style.setProperty('--fade-delay', (base + i * step) + 'ms'));
+
+      document.documentElement.classList.add('reveal-home');
     }
+    
   })();
 </script>
 </body>
