@@ -11,8 +11,9 @@
 </head>
 <body>
 <button id="theme-toggle" aria-label="Toggle Theme">
-      <img src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
-    </button>
+  <img id="theme-icon" src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
+</button>
+
   <header class="hero">
   <!-- Site brand row -->
   <div class="site-brand">
@@ -76,15 +77,5 @@
     <a class="pill" href="#">Algorithm Playground</a>
   </section>
 
-  <script>
-    // Simple theme toggle that persists
-    const btn = document.getElementById('theme-toggle');
-    const preferDark = localStorage.getItem('theme') === 'dark';
-    if (preferDark) document.body.classList.add('dark');
-    btn.addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-    });
-  </script>
 </body>
 </html>

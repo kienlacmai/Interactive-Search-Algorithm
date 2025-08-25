@@ -58,38 +58,19 @@ body {
 
 
 /* Theme toggle */
-/* Default theme toggle button */
 #theme-toggle {
   position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 10;
-  background: #0b61d8;       /* same as DFS buttons */
-  border: 1px solid #0b61d8; /* match border */
+  top: 20px;
+  left: 20px;
+  border: 0;
+  background: transparent;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: background 0.2s, border-color 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 9999px;
+  padding: 10px;
+  font-size: 30px;
+  line-height: 1;
 }
-
-#theme-toggle:hover {
-  background: #0a51b5;   /* hover blue, like DFS buttons */
-  border-color: #0a51b5;
-}
-
-/* Dark mode parity */
-body.dark-mode #theme-toggle {
-  background: #2563eb;
-  border-color: #2563eb;
-}
-body.dark-mode #theme-toggle:hover {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
-}
-
+#theme-toggle:hover { background: rgba(0,0,0,.06); }
 
 /* Hero */
 .hero {
@@ -189,4 +170,3 @@ body.dark-mode #theme-toggle:hover {
   --shadow: 0 10px 24px rgba(0,0,0,.35);
 }
 .dark #theme-toggle:hover { background: rgba(255,255,255,.06); }
-
