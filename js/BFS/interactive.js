@@ -84,33 +84,33 @@ function setUIMode(mode) {
 
   if (mode === 'example') {
     show(viz); show(exInstr); show(fb);
-    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
-    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example BFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive BFS';
     if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
-    if (h1) h1.textContent = '🧠 Example DFS Tutorial';
+    if (h1) h1.textContent = '🧠 Example BFS Tutorial';
   } else if (mode === 'interactive') {
     show(viz); show(itInstr); show(fb);
-    if (runExampleBtn)       runExampleBtn.textContent       = 'Return to DFS Example';
-    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Try another DFS';
+    if (runExampleBtn)       runExampleBtn.textContent       = 'Return to BFS Example';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Try another BFS';
     if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
-    if (h1) h1.textContent = '🧠 Interactive DFS Tutorial';
+    if (h1) h1.textContent = '🧠 Interactive BFS Tutorial';
   } else if (mode === 'quiz') {
     show(quiz); show(qzInstr)
-    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
-    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example BFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive BFS';
     if (quizBtn)             quizBtn.textContent             = 'Retake Quiz';
-    if (h1) h1.textContent = '🧠 DFS Quiz';
+    if (h1) h1.textContent = '🧠 BFS Quiz';
   } else if (mode === 'coding') {
     show(coding); show(cdInstr);
-    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
-    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example BFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive BFS';
     if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
-    if (h1) h1.textContent = '🧠 DFS Coding Activity';
+    if (h1) h1.textContent = '🧠 BFS Coding Activity';
   
   } else if (mode === 'application') {
   show(app);
-  if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
-  if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+  if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example BFS';
+  if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive BFS';
   if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
   if (h1) h1.textContent = '🧩 Maze Application';
   const appPanel = document.getElementById('application-activity');
@@ -139,7 +139,7 @@ function startDFS() {
       padding: 10
     }).run();
   }
-  const order = dfs(graph, 'A');
+  const order = bfs(graph, 'A');
   animateDFSTraversal(order);
 }
 
@@ -197,7 +197,7 @@ function startInteractiveDFS() {
   }
   if (typeof cy !== 'undefined') cy.off('tap');
   userInput     = [];
-  correctAnswer = dfs(graph, 'A');
+  correctAnswer = bfs(graph, 'A');
   console.log('Correct DFS Order:', correctAnswer);
   cy.on('tap', 'node', (evt) => {
     if (!interactiveActive) return;

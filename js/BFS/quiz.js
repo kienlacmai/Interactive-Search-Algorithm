@@ -1,63 +1,64 @@
 // MODULE: QUIZ FORMATTING AND QUESTIONS
 // QUIZ ACTIVITY QUESTIONS
 //TODO: EXPLAIN WHY ANSWERS ARE WRONG
-const dfsQuestions = [
+const bfsQuestions = [
   {
-    question: "Which data structure is commonly used to implement DFS?",
+    question: "Which data structure is commonly used to implement BFS?",
     options: ["Queue", "Stack", "Heap", "Tree"],
-    answer: "Stack"
+    answer: "Queue"
   },
   {
-    question: "DFS can be used to detect cycles in a graph.",
+    question: "BFS is guaranteed to find the shortest path in an unweighted graph.",
     options: ["True", "False"],
     answer: "True"
   },
   {
-    question: "What is the time complexity of DFS for a graph with V vertices and E edges?",
+    question: "What is the time complexity of BFS for a graph with V vertices and E edges?",
     options: ["O(V)", "O(E)", "O(V+E)", "O(V*E)"],
     answer: "O(V+E)"
   },
   {
-    question: "Which traversal method does DFS use?",
+    question: "Which traversal method does BFS use?",
     options: ["Level-order", "Pre-order", "Post-order", "Random-order"],
-    answer: "Pre-order"
+    answer: "Level-order"
   },
   {
-    question: "DFS is guaranteed to find the shortest path in an unweighted graph.",
-    options: ["True", "False"],
-    answer: "False"
-  },
-  {
-    question: "In DFS, what happens when a vertex has no unvisited adjacent vertices?",
+    question: "In BFS, what happens when a vertex has no unvisited adjacent vertices?",
     options: [
       "Restart from the first vertex",
       "Stop the search",
-      "Backtrack to the previous vertex",
+      "Dequeue the next vertex from the queue",
       "Remove the vertex from the graph"
     ],
-    answer: "Backtrack to the previous vertex"
+    answer: "Dequeue the next vertex from the queue"
   },
   {
-    question: "Which of the following is NOT a common application of DFS?",
-    options: ["Topological sorting", "Finding connected components", "Cycle detection", "Sorting numbers in ascending order"],
+    question: "Which of the following is NOT a common application of BFS?",
+    options: ["Shortest path in unweighted graph", "Web crawling", "Broadcasting in networks", "Sorting numbers in ascending order"],
     answer: "Sorting numbers in ascending order"
   },
   {
-    question: "DFS traversal can be implemented using:",
-    options: ["Recursion", "Explicit stack", "Both", "Neither"],
-    answer: "Both"
+    question: "BFS traversal can be implemented using:",
+    options: ["Recursion", "Queue", "Both", "Neither"],
+    answer: "Queue"
   },
   {
-    question: "In a DFS of a tree, how many times is each edge explored?",
+    question: "In a BFS of a tree, how many times is each edge explored?",
     options: ["Once", "Twice", "Three times", "Depends on implementation"],
     answer: "Twice"
   },
   {
-    question: "For a connected undirected graph with V vertices and E edges, DFS will visit:",
+    question: "For a connected undirected graph with V vertices and E edges, BFS will visit:",
     options: ["All V vertices", "Only a subset of vertices", "All vertices and edges exactly once", "Only the root vertex"],
     answer: "All V vertices"
+  },
+  {
+    question: "BFS is best suited for solving which of the following problems?",
+    options: ["Detecting cycles", "Finding shortest path in unweighted graphs", "Topological sorting", "Evaluating expressions"],
+    answer: "Finding shortest path in unweighted graphs"
   }
 ];
+
 
 
 // HELPERS -------------------->
@@ -96,7 +97,7 @@ document.getElementById('take-quiz-btn').onclick = function() {
   quizSection.style.display = 'block';
   //quizBtn.textContent = 'Retake Quiz';
 
-  const selectedQuestions = getRandomQuestions(dfsQuestions, 5);
+  const selectedQuestions = getRandomQuestions(bfsQuestions, 5);
   renderQuiz(selectedQuestions);
 };
 
@@ -108,7 +109,7 @@ function renderQuiz() {
   quizSection.innerHTML = '<h2>DFS Quiz</h2><form id="quiz-form"></form>';
   const form = quizSection.querySelector('#quiz-form');
   // GENERATING 5 RANDOM QUESTIONS FROM SET OF QUESTIONS WITH FORMATTING
-  const selectedQuestions = getRandomQuestions(dfsQuestions, 5);
+  const selectedQuestions = getRandomQuestions(bfsQuestions, 5);
   selectedQuestions.forEach((q, i) => {
     const qDiv = document.createElement('div');
     qDiv.className = 'quiz-question';

@@ -1,41 +1,31 @@
 // MODULE: DFS ALGORITHM RUN AND GRAPH GENERATION
 
 // DFS ALGORITHM CODE TO RUN
-function bfs(graph, start) {
-  const visited = new Set();
-  const queue = [start]; 
-
-  while (queue.length > 0) {
-    const node = queue.shift();
-    if (!visited.has(node)) {
-      visited.add(node);
-      for (const neighbor of graph[node]) {
-        queue.push(neighbor);
-      }
-    }
-  }
-
-  return visited;
-}
-
-function dfs(graph, startNode) {
+function bfs(graph, startNode) {
     let visited = new Set();
     let order = [];
 
-    function explore(node) {
-        visited.add(node);
-        order.push(node);
-        
-        graph[node].forEach(neighbor => {
-            if (!visited.has(neighbor)) {
-                explore(neighbor);
-            }
-        });
+    function explore(start) {
+        let queue = [start];
+        visited.add(start);
+
+        while (queue.length > 0) {
+            let node = queue.shift();   // dequeue
+            order.push(node);
+
+            graph[node].forEach(neighbor => {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor); // enqueue
+                }
+            });
+        }
     }
 
     explore(startNode);
     return order;
 }
+
 
 // EXAMPLE ACTIVITIY GRAPH
 const sampleGraph = {

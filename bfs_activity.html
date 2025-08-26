@@ -110,39 +110,42 @@ def bfs(graph, start):
 
       <!-- RECURSIVE PSEUDOCODE IN PANEL -->
       <pre id="pseudo-recursive" class="code pseudo show">
-  procedure DFS(G, start):
-    visited ← set()
-    parent  ← map()
-    time    ← 0
+      procedure BFS_recursive(G, start):
+        visited ← set()
+        parent  ← map()
+        frontier ← [start]       // nodes to explore this "level"
 
-    function visit(u):
-        visited.add(u)
-        time ← time + 1
-        for v in G.neighbors(u):
-            if v ∉ visited:
-                parent[v] ← u
-                visit(v)
-        time ← time + 1
+        function explore(level):
+            if level empty:
+                return
+            next ← []
+            for u in level:
+                if u ∉ visited:
+                    visited.add(u)
+                    for v in G.neighbors(u):
+                        if v ∉ visited:
+                            parent[v] ← u
+                            next.append(v)
+            explore(next)        // recurse to next level
 
-    visit(start)
-    return parent
-      </pre>
-
+        explore(frontier)
+        return parent
+  </pre>
       <!-- ITERATIVE PSEUDOCODE IN PANEL -->
       <pre id="pseudo-iterative" class="code pseudo">
-  procedure DFS_iter(G, start):
+  procedure BFS_iter(G, start):
     visited ← set()
     parent  ← map()
-    S ← stack([start])
+    Q ← queue([start])
 
-    while S not empty:
-        u ← S.pop()
+    while Q not empty:
+        u ← Q.dequeue()
         if u ∉ visited:
             visited.add(u)
-            for v in reverse(G.neighbors(u)):
+            for v in G.neighbors(u):
                 if v ∉ visited:
                     parent[v] ← u
-                    S.push(v)
+                    Q.enqueue(v)
     return parent
       </pre>
 
@@ -158,7 +161,7 @@ def bfs(graph, start):
 <!-- JAVASCRIPT FILE IMPORTS -->
   <script src="js/BFS/bfs.js"></script>
   <script src="js/visualization.js"></script>
-  <script src="js/interactive.js"></script>
+  <script src="js/BFS/interactive.js"></script>
   <script src="js/BFS/quiz.js"></script>
   <script src="js/BFS/ui.js"></script>
   <script src="js/BFS/codingActivity.js"></script>
