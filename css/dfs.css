@@ -57,7 +57,7 @@ h1, .controls, .instructions { text-align: center; }
 ========================= */
 #theme-toggle {
   position: absolute;
-  top: 16px; left: 16px; z-index: 10;
+  top: 16px; right: 16px; z-index: 10;
   background: none; border: 0; cursor: pointer;
   padding: 8px; border-radius: 50%;
   transition: background .2s;
@@ -395,4 +395,22 @@ body.dark-mode #maze-frame { box-shadow: 0 10px 28px rgba(0,0,0,.45); }
 #application-activity #maze-frame {
   backface-visibility: hidden;
   transform: translateZ(0);
+}
+
+#back-home {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  font: 500 14px/1.2 system-ui, sans-serif;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: background .2s, transform .2s;
+}
+#back-home:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
 }

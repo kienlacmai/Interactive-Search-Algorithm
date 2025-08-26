@@ -47,7 +47,7 @@ body {
 #theme-toggle {
   position: fixed;
   top: 16px;
-  left: 16px;
+  right: 16px;
   border: 0;
   background: transparent;
   cursor: pointer;
