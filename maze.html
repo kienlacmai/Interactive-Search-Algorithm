@@ -22,7 +22,7 @@
 
     <!-- Description -->
     <p id="maze-instructions" class="instructions">
-      Choose an algorithm, set start/end (Auto or Manual), then generate and run the solver on a random maze.
+      Choose an algorithm, select a mode, then generate and run the solver on a random maze. The manual activity will require you to traverse the maze correctly with the given algorithm.
     </p>
 
     <!-- Controls -->
@@ -50,8 +50,6 @@
 
     <!-- Maze panel -->
     <section id="application-activity">
-      <h2>Maze</h2>
-      <p class="activity-instructions">A randomized 25×25 maze. Click “Generate New Maze” to reshuffle.</p>
 
       <div id="maze-frame">
         <div id="mazeContainer" class="maze-canvas"></div>
@@ -63,9 +61,14 @@
         <div>Path Length: <strong id="pathLength">0</strong></div>
         <div>Time: <strong id="timeElapsed">0ms</strong></div>
         <label class="speed-wrap" for="speedSlider" style="display:inline-flex;align-items:center;gap:8px;">
-          <span>Speed</span>
+          <span>Iteration Delay:</span>
           <input id="speedSlider" type="range" min="0" max="150" step="5" value="50" />
           <span id="speedValue">50ms</span>
+        </label>
+        <label class="size-wrap" for="sizeSlider" style="display:inline-flex;align-items:center;gap:8px;margin-left:12px;">
+          <span>Maze Size:</span>
+          <input id="sizeSlider" type="range" min="11" max="25" step="2" value="25" />
+          <span id="sizeValue">25×25</span>
         </label>
       </div>
     </section>
