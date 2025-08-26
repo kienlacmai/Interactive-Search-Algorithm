@@ -48,37 +48,6 @@ function cacheButtons() {
   // NOTE: quiz & coding buttons are fetched inline where needed
 }
 
-/* -----------------------------------------------------------
-   REVEAL HELPERS (fast cadence 40 / 80 / 140 / 200 ms)
------------------------------------------------------------ */
-function applyFastReveal(descEl, visEl) {
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce) return;
-
-  const header   = document.querySelector('h1');
-  const controls = document.querySelector('.controls');
-
-  // Ensure elements are visible before animating (avoid display:none jumps)
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      document.documentElement.classList.add('reveal-dfs');
-
-      // header → desc → controls → panel
-      if (header)   header.style.setProperty('--reveal-delay', '40ms');
-      if (descEl)   descEl.style.setProperty('--reveal-delay', '80ms');
-      if (controls) controls.style.setProperty('--reveal-delay','140ms');
-      if (visEl)    visEl.style.setProperty('--reveal-delay',  '200ms');
-
-      const finalize = () => {
-        document.documentElement.classList.remove('reveal-dfs');
-        [header, descEl, controls, visEl].forEach(el => el && el.style.removeProperty('--reveal-delay'));
-        visEl && visEl.removeEventListener('animationend', finalize);
-      };
-      visEl && visEl.addEventListener('animationend', finalize, { once: true });
-    });
-  });
-}
-
 // --- UI MODE ---
 function setUIMode(mode) {
   uiMode = mode;
@@ -137,32 +106,19 @@ function setUIMode(mode) {
     if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
     if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
     if (h1) h1.textContent = '🧠 DFS Coding Activity';
+  
   } else if (mode === 'application') {
-    show(app);
-    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
-    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
-    if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
-    if (h1) h1.textContent = '🧩 Maze Application';
-    const appPanel = document.getElementById('application-activity');
-    if (appPanel) appPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  // Apply fast reveal for the visible description/panel
-  let descEl = null, visEl = null;
-  if (mode === 'example') {
-    descEl = exInstr; visEl = viz;
-  } else if (mode === 'interactive') {
-    descEl = itInstr; visEl = viz;
-  } else if (mode === 'quiz') {
-    descEl = qzInstr; visEl = quiz;
-  } else if (mode === 'coding') {
-    descEl = cdInstr; visEl = coding;
-  } else if (mode === 'application') {
-    descEl = app ? app.querySelector('.activity-instructions') : null;
-    visEl  = app ? app.querySelector('#maze-frame') : null;
-  }
-  applyFastReveal(descEl, visEl);
+  show(app);
+  if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
+  if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+  if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
+  if (h1) h1.textContent = '🧩 Maze Application';
+  const appPanel = document.getElementById('application-activity');
+  if (appPanel) appPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+}
+
+
 
 // --- EXAMPLE ACTIVITY ---
 // RUN DFS AND ANIMATE ON GRAPH
@@ -320,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // unify top buttons via the single state machine
   const codingBtn = document.getElementById('start-coding-btn');
   const quizBtn   = document.getElementById('take-quiz-btn');
-  const appBtn    = document.getElementById('start-application-btn');
+  const appBtn = document.getElementById('start-application-btn');
 
   if (runExampleBtn) {
     runExampleBtn.addEventListener('click', () => {
@@ -349,44 +305,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  
   if (appBtn) {
     appBtn.addEventListener('click', () => {
       setUIMode('application');
     });
   }
+  // One-time top-down reveal on initial load
+(function runInitialRevealOnce() {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || window._dfsRevealDone) return;  // do not re-run
 
-  // One-time top-down reveal on initial load (FAST cadence)
-  (function runInitialRevealOnce() {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce || window._dfsRevealDone) return;  // do not re-run
+  // Which description is currently visible?
+  const desc = [
+    document.getElementById('example-instructions'),
+    document.getElementById('interactive-instructions'),
+    document.getElementById('coding-instructions')
+  ].find(el => el && getComputedStyle(el).display !== 'none');
 
-    // Which description is currently visible?
-    const desc = [
-      document.getElementById('example-instructions'),
-      document.getElementById('interactive-instructions'),
-      document.getElementById('coding-instructions')
-    ].find(el => el && getComputedStyle(el).display !== 'none');
+  const header   = document.querySelector('h1');
+  const controls = document.querySelector('.controls');
+  const vis      = document.getElementById('visualization');
 
-    const header   = document.querySelector('h1');
-    const controls = document.querySelector('.controls');
-    const vis      = document.getElementById('visualization');
+  // Set delays (header → desc → buttons → panel)
+  if (header)   header.style.setProperty('--reveal-delay', '80ms');
+  if (desc)     desc.style.setProperty('--reveal-delay',   '140ms');
+  if (controls) controls.style.setProperty('--reveal-delay','200ms');
+  if (vis)      vis.style.setProperty('--reveal-delay',    '260ms');
 
-    // Set delays (header → desc → buttons → panel) — FAST cadence
-    if (header)   header.style.setProperty('--reveal-delay', '80ms');
-    if (desc)     desc.style.setProperty('--reveal-delay',   '160ms');
-    if (controls) controls.style.setProperty('--reveal-delay','240ms');
-    if (vis)      vis.style.setProperty('--reveal-delay',    '300ms');
+  // Add the class that enables the CSS animations
+  document.documentElement.classList.add('reveal-dfs');
 
-    // Add the class that enables the CSS animations
-    document.documentElement.classList.add('reveal-dfs');
-
-    // After the LAST animation ends (the panel), remove the class + inline vars
-    const finalize = () => {
-      document.documentElement.classList.remove('reveal-dfs');
-      [header, desc, controls, vis].forEach(el => el && el.style.removeProperty('--reveal-delay'));
-      window._dfsRevealDone = true;   // prevent any future re-runs this session
-      vis && vis.removeEventListener('animationend', finalize);
-    };
-    vis && vis.addEventListener('animationend', finalize);
-  })();
+  // After the LAST animation ends (the panel), remove the class + inline vars
+  const finalize = () => {
+    document.documentElement.classList.remove('reveal-dfs');
+    [header, desc, controls, vis].forEach(el => el && el.style.removeProperty('--reveal-delay'));
+    window._dfsRevealDone = true;   // prevent any future re-runs this session
+    vis && vis.removeEventListener('animationend', finalize);
+  };
+  vis && vis.addEventListener('animationend', finalize);
+})();
 });
