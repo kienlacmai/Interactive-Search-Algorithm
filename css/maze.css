@@ -98,3 +98,81 @@ body.manual-mode #mazeContainer { cursor: pointer; }
 body.dark-mode #mazeContainer > .cell { box-shadow: inset 0 0 0 2px rgba(255,255,255,.03); }
 
 .size-wrap input[type="range"] { width: 140px; }
+
+/* =========================
+   Progressive UI reveal (match DFS)
+========================= */
+@keyframes cardInDown {
+  from { opacity: 0; transform: translateY(-22px) scale(.985); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+/* When <html> has .reveal-dfs, fade/slide in key sections using a stagger via --reveal-delay */
+.reveal-dfs h1,
+.reveal-dfs #maze-instructions,
+.reveal-dfs .controls,
+.reveal-dfs #application-activity #maze-frame,
+.reveal-dfs #application-activity .maze-stats {
+  opacity: 0;
+  animation: cardInDown .4s var(--ease, cubic-bezier(.22,.61,.36,1)) forwards;
+  animation-delay: var(--reveal-delay, 0ms);
+  will-change: transform, opacity;
+}
+
+/* =========================
+   Micro-interactions: hover, press, focus
+========================= */
+
+/* Primary action buttons in the controls row */
+.controls > button {
+  position: relative; overflow: hidden; /* clip ripple */
+  transform: translateY(0) scale(1);
+  transition:
+    transform .18s var(--ease, cubic-bezier(.22,.61,.36,1)),
+    box-shadow .18s var(--ease, cubic-bezier(.22,.61,.36,1)),
+    filter .18s var(--ease, cubic-bezier(.22,.61,.36,1)),
+    background .2s, border-color .2s;
+}
+.controls > button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.12);
+}
+.controls > button:active {
+  transform: translateY(0) scale(.98);
+  filter: brightness(.98);
+}
+.controls > button:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px color-mix(in oklab, #93c5fd 35%, transparent);
+}
+
+/* Segmented chips (algo + mode) get the same hover/press feel */
+.pseudo-toggle .seg {
+  position: relative; overflow: hidden; /* for ripple */
+  transition:
+    transform .18s var(--ease, cubic-bezier(.22,.61,.36,1)),
+    box-shadow .18s var(--ease, cubic-bezier(.22,.61,.36,1));
+}
+.pseudo-toggle .seg:hover { transform: translateY(-1px); }
+.pseudo-toggle .seg:active { transform: translateY(0) scale(.98); }
+
+/* Ripple element (injected by JS) */
+.button-ripple {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: rgba(255,255,255,.45);  /* plays nicely on primary chip/button */
+  mix-blend-mode: overlay;
+  animation: dfsRipple .6s ease-out forwards;
+  will-change: transform, opacity;
+}
+@keyframes dfsRipple {
+  to { transform: translate(-50%, -50%) scale(6); opacity: 0; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .controls > button, .pseudo-toggle .seg { transition: none; }
+}

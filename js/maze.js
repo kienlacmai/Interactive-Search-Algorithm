@@ -739,3 +739,45 @@
 
   function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 })();
+
+// --- UI reveal + micro-interactions (additive only) ---
+
+// 1) Staggered load-in (match DFS timing & order)
+document.documentElement.classList.add('reveal-dfs');
+const revealTargets = [
+  document.querySelector('h1'),                             // ~40ms
+  document.getElementById('maze-instructions'),            // ~80ms
+  document.querySelector('.controls'),                     // ~120ms
+  document.querySelector('#application-activity #maze-frame'), // ~180ms
+  document.querySelector('#application-activity .maze-stats')  // ~220ms
+].filter(Boolean);
+
+revealTargets.forEach((el, i) => {
+  el.style.setProperty('--reveal-delay', `${40 + i * 40}ms`);
+});
+
+// 2) Ripple on clicks (controls buttons + segmented chips)
+document.addEventListener('click', (e) => {
+  const target = e.target.closest('.controls > button, .pseudo-toggle .seg');
+  if (!target) return;
+
+  const r = document.createElement('span');
+  r.className = 'button-ripple';
+  const rect = target.getBoundingClientRect();
+  r.style.left = (e.clientX - rect.left) + 'px';
+  r.style.top  = (e.clientY - rect.top) + 'px';
+  target.appendChild(r);
+  r.addEventListener('animationend', () => r.remove(), { once: true });
+});
+
+// 3) Little “tick” on slider value changes (optional polish)
+const speedValue = document.getElementById('speedValue');
+const sizeValue  = document.getElementById('sizeValue');
+function tick(el) {
+  if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }],
+             { duration: 160, easing: 'ease-out' });
+}
+// If your hookUI updates these values, also call tick(...) there:
+document.getElementById('speedSlider')?.addEventListener('input', () => tick(speedValue));
+document.getElementById('sizeSlider')?.addEventListener('input',  () => tick(sizeValue));

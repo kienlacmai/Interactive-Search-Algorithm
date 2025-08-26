@@ -30,7 +30,7 @@
     <h1 class="hero__title">Choose Your Algorithm Adventure</h1>
     <p class="hero__lead">
       Explore fundamental graph traversal and pathfinding algorithms through interactive visualizations,
-      hands‑on coding exercises, and step‑by‑step tutorials.
+      hands-on coding exercises, and step-by-step tutorials.
     </p>
   </header>
 
@@ -42,13 +42,13 @@
     <article class="card card--dfs" tabindex="0">
       <div class="card__accent" aria-hidden="true"></div>
       <div class="card__icon card__icon--blue" aria-hidden="true">↳</div>
-      <h2 class="card__title">Depth‑First Search</h2>
+      <h2 class="card__title">Depth-First Search</h2>
       <p class="card__desc">
         Explore graphs by going as deep as possible before backtracking.
         Perfect for maze solving and tree traversal.
       </p>
       <ul class="card__bullets">
-        <li>Stack‑based traversal</li>
+        <li>Stack-based traversal</li>
         <li>Memory efficient</li>
         <li>Great for pathfinding</li>
       </ul>
@@ -59,14 +59,14 @@
     <article class="card card--bfs" tabindex="0">
       <div class="card__accent" aria-hidden="true"></div>
       <div class="card__icon card__icon--green" aria-hidden="true">≡</div>
-      <h2 class="card__title">Breadth‑First Search</h2>
+      <h2 class="card__title">Breadth-First Search</h2>
       <p class="card__desc">
         Explore graphs level by level and find shortest paths on unweighted graphs.
       </p>
       <ul class="card__bullets">
-        <li>Queue‑based traversal</li>
+        <li>Queue-based traversal</li>
         <li>Shortest path guarantee</li>
-        <li>Level‑order exploration</li>
+        <li>Level-order exploration</li>
       </ul>
       <a class="button button--green card__cta" href="bfs_activity.html">Start BFS Tutorial</a>
     </article>
@@ -77,11 +77,11 @@
       <div class="card__icon card__icon--violet" aria-hidden="true">◎</div>
       <h2 class="card__title">A* Search</h2>
       <p class="card__desc">
-        Heuristic‑guided pathfinding that is both optimal and efficient.
+        Heuristic-guided pathfinding that is both optimal and efficient.
         Widely used in games, AI, and robotics.
       </p>
       <ul class="card__bullets">
-        <li>Heuristic‑guided search</li>
+        <li>Heuristic-guided search</li>
         <li>Optimal with admissible heuristic</li>
         <li>Scales well in practice</li>
       </ul>
@@ -100,17 +100,17 @@
   ========================================================== -->
   <script>
   (function () {
-    const body   = document.body;
-    const toggle = document.getElementById('theme-toggle');
+    const body     = document.body;
+    const themeBtn = document.getElementById('theme-toggle');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
-    // Restore theme like DFS (no icon swapping, CSS handles inversion)
+    // Restore theme (same behavior as activities)
     const saved = localStorage.getItem('theme');
     const startDark = saved === 'dark' || (!saved && prefersDark.matches);
     body.classList.toggle('dark', startDark);
 
     // Toggle + persist
-    toggle.addEventListener('click', () => {
+    themeBtn.addEventListener('click', () => {
       const isDark = body.classList.toggle('dark');
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
@@ -132,26 +132,44 @@
       });
     });
 
-    // Staggered reveal on load (respects reduced motion)
+    // ---------- Staggered reveal on load (titles -> cards -> bottom button) ----------
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduce) {
+      // Titles (fast, like Maze/DFS)
+      const brand = document.querySelector('.brand');
+      const title = document.querySelector('.hero__title');
+      const lead  = document.querySelector('.hero__lead');
+
+      // Panels (cards) — keep consecutive animation
       const cards = Array.from(document.querySelectorAll('.card'));
-      cards.forEach((c, i) => c.style.setProperty('--reveal-delay', (80 + i * 100) + 'ms'));
-      document.documentElement.classList.add('reveal-cards');
-      const toggle = document.getElementById('theme-toggle');
-      const brand  = document.querySelector('.brand');
-      const title  = document.querySelector('.hero__title');
-      const lead   = document.querySelector('.hero__lead');
-      const quick  = document.querySelector('.quick');
 
-      const items = [toggle, brand, title, lead, quick].filter(Boolean);
-      const base = 0, step = 90; // ms
-      items.forEach((el, i) => el.style.setProperty('--fade-delay', (base + i * step) + 'ms'));
+      // Bottom button (quick access)
+      const quickTitle = document.querySelector('.quick__title');
+      const quickPill  = document.querySelector('.pill');
 
+      // Enable CSS animations
       document.documentElement.classList.add('reveal-home');
+      document.documentElement.classList.add('reveal-cards');
+
+      // Titles first
+      const t0 = 0;
+      if (brand)    brand.style.setProperty('--home-delay',  `${t0 +  0}ms`);
+      if (title)    title.style.setProperty('--home-delay',  `${t0 + 40}ms`);
+      if (lead)     lead.style.setProperty('--home-delay',   `${t0 + 80}ms`);
+      if (themeBtn) themeBtn.style.setProperty('--home-delay', `${t0 + 80}ms`);
+
+      // Cards next (staggered)
+      const cardsBase = 140;  // starts after lead
+      const cardsStep = 120;  // per-card offset
+      cards.forEach((c, i) => c.style.setProperty('--reveal-delay', `${cardsBase + i * cardsStep}ms`));
+
+      // Quick access last (after last card)
+      const lastCardDelay = cardsBase + (cards.length - 1) * cardsStep;
+      const quickBase = lastCardDelay + 80;
+      if (quickTitle) quickTitle.style.setProperty('--home-delay', `${quickBase}ms`);
+      if (quickPill)  quickPill.style.setProperty('--home-delay',  `${quickBase + 80}ms`);
     }
-    
   })();
-</script>
+  </script>
 </body>
 </html>

@@ -59,7 +59,7 @@ body {
 #theme-toggle:hover { background: rgba(0,0,0,.06); transform: scale(1.04); }
 .dark #theme-toggle:hover { background: rgba(255,255,255,.06); }
 
-/* Make the theme icon invert in dark mode (same as DFS page) */
+/* Invert theme icon in dark mode (same as activities) */
 #theme-toggle img {
   display: block;
   width: 28px;
@@ -67,10 +67,7 @@ body {
   filter: invert(0);
   transition: filter var(--dur) var(--ease);
 }
-.dark #theme-toggle img {
-  filter: invert(1);
-}
-
+.dark #theme-toggle img { filter: invert(1); }
 
 /* =========================
    Hero
@@ -204,9 +201,7 @@ body {
   box-shadow: 0 18px 40px rgba(0,0,0,.10), 0 6px 12px rgba(0,0,0,.06);
 }
 .card:hover .card__icon,
-.card:focus-within .card__icon {
-  transform: translateY(-4px) rotate(-2deg);
-}
+.card:focus-within .card__icon { transform: translateY(-4px) rotate(-2deg); }
 .card:hover .card__title,
 .card:focus-within .card__title {
   text-decoration: underline;
@@ -221,41 +216,38 @@ body {
 .card--astar:hover, .card--astar:focus-within { border-color: color-mix(in oklab, var(--violet) 45%, var(--ring)); }
 
 /* =========================
-   On‑load reveal animation
+   On-load reveal animation (cards)
 ========================= */
 @keyframes cardIn {
   from { opacity: 0; transform: translateY(22px) scale(.985); }
   to   { opacity: 1; transform: translateY(0)   scale(1); }
 }
-
 .reveal-cards .card {
   opacity: 0;
   animation: cardIn .66s var(--ease) forwards;
   animation-delay: var(--reveal-delay, 0ms);
 }
-
 @media (prefers-reduced-motion: reduce) {
   .reveal-cards .card { opacity: 1; animation: none; }
 }
 
-/* ===== Fade-in for non-card UI ===== */
-@keyframes fadeIn {
-  from { opacity: 0 }
-  to   { opacity: 1 }
+/* ===== Non-card UI (titles / quick) use the same slide-down as other pages ===== */
+@keyframes cardInDown {
+  from { opacity: 0; transform: translateY(-22px) scale(.985); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
-
 /* Apply only while <html> has .reveal-home */
 .reveal-home #theme-toggle,
 .reveal-home .brand,
 .reveal-home .hero__title,
 .reveal-home .hero__lead,
-.reveal-home .quick {
+.reveal-home .quick__title,
+.reveal-home .pill {
   opacity: 0;
-  animation: fadeIn .6s var(--ease) forwards;
-  animation-delay: var(--fade-delay, 0ms);
-  will-change: opacity;
+  animation: cardInDown .4s var(--ease) forwards;
+  animation-delay: var(--home-delay, 0ms);
+  will-change: transform, opacity;
 }
-
 
 /* =========================
    Test Your Knowledge
@@ -274,7 +266,7 @@ body {
   border: 1px solid var(--ring);
   padding: 10px 16px;
   border-radius: 9999px;
-  background: var(--card);          /* was #fff */
+  background: var(--card);
   color: var(--text);
   text-decoration: none;
   box-shadow: var(--shadow-sm);
@@ -283,7 +275,6 @@ body {
               box-shadow var(--dur) var(--ease),
               transform var(--dur) var(--ease);
 }
-
 /* Subtle interaction states for both themes */
 .pill:hover { transform: translateY(-1px); }
 .pill:focus-visible {
@@ -291,8 +282,6 @@ body {
   outline-offset: 2px;
   text-decoration: none;
 }
-
-/* Optional: slightly lift the pill on hover in dark mode for contrast */
 .dark .pill { box-shadow: 0 2px 10px rgba(0,0,0,.35); }
 .dark .pill:hover { box-shadow: 0 4px 14px rgba(0,0,0,.45); }
 
