@@ -361,3 +361,38 @@ body.dark-mode #maze-frame { box-shadow: 0 10px 28px rgba(0,0,0,.45); }
   will-change: transform, opacity;
 }
 
+/* === DFS reveal animation to match Home + Maze === */
+@keyframes cardInDown {
+  from { opacity: 0; transform: translateY(-22px) scale(.985); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+/* When <html> has .reveal-dfs, animate these in with a stagger */
+.reveal-dfs h1,
+.reveal-dfs #example-instructions,
+.reveal-dfs #interactive-instructions,
+.reveal-dfs #quiz-instructions,
+.reveal-dfs #coding-instructions,
+.reveal-dfs .controls,
+.reveal-dfs #visualization,
+.reveal-dfs #dfs-quiz,
+.reveal-dfs #coding-activity,
+.reveal-dfs #application-activity #maze-frame,
+.reveal-dfs #application-activity .maze-stats {
+  opacity: 0;
+  animation: cardInDown .4s var(--ease, cubic-bezier(.22,.61,.36,1)) forwards;
+  animation-delay: var(--reveal-delay, 0ms);
+  will-change: transform, opacity;
+}
+
+/* Don’t re-animate individual buttons inside the controls container */
+.reveal-dfs .controls > * { animation: none !important; opacity: 1; }
+
+/* Smooth the panel animation: promote to its own layer */
+#visualization,
+#dfs-quiz,
+#coding-activity,
+#application-activity #maze-frame {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
