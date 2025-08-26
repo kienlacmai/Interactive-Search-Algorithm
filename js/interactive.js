@@ -328,10 +328,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const vis      = document.getElementById('visualization');
 
   // Set delays (header → desc → buttons → panel)
-  if (header)   header.style.setProperty('--reveal-delay', '40ms');
-  if (desc)     desc.style.setProperty('--reveal-delay',   '80ms');
-  if (controls) controls.style.setProperty('--reveal-delay','140ms');
-  if (vis)      vis.style.setProperty('--reveal-delay',    '200ms');
+  if (header)   header.style.setProperty('--reveal-delay', '80ms');
+  if (desc)     desc.style.setProperty('--reveal-delay',   '160ms');
+  if (controls) controls.style.setProperty('--reveal-delay','240ms');
+  if (vis)      vis.style.setProperty('--reveal-delay',    '320ms');
 
   // Add the class that enables the CSS animations
   document.documentElement.classList.add('reveal-dfs');

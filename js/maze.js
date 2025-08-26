@@ -753,7 +753,7 @@ const revealTargets = [
 ].filter(Boolean);
 
 revealTargets.forEach((el, i) => {
-  el.style.setProperty('--reveal-delay', `${40 + i * 40}ms`);
+  el.style.setProperty('--reveal-delay', `${80 + i * 40}ms`);
 });
 
 // 2) Ripple on clicks (controls buttons + segmented chips)
