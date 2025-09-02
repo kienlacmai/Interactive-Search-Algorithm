@@ -3,7 +3,7 @@
 <head>
   <!-- HEAD -->
   <meta charset="UTF-8">
-  <title>DFS Interactive Tutorial</title>
+  <title>BFS Interactive Tutorial</title>
   <link rel="stylesheet" href="css/base.css">
 
   <!-- CYTOSCAPE TO GENERATE GRAPH -->
@@ -23,22 +23,22 @@
   <!-- BODY -->
   <div class="container">
     <!-- TOGGLE BUTTON -->
-    <a href="index.html" id="back-home" aria-label="Back to Home">⌂ Home</a>
+    <a href="home_page.html" id="back-home" aria-label="Back to Home">⌂ Home</a>
     <button id="theme-toggle" aria-label="Toggle Theme">
       <img src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
     </button>
 
     <!-- PAGE HEADER -->
-    <h1>🧠 Interactive DFS Tutorial</h1>
+    <h1>🧠 Interactive BFS Tutorial</h1>
     
     <!-- TEXT INSTRUCTIONS UNDER EACH ACTIVITY WHEN CLICKED -->
         <p id="example-instructions" class="instructions" style="display:none;">
-  <strong>Click on Run Example DFS</strong> to see the algorithm traversal. Start the
-  <strong>Interactive DFS</strong> after the example has completed!
+  <strong>Click on Run Example BFS</strong> to see the algorithm traversal. Start the
+  <strong>Interactive BFS</strong> after the example has completed!
 </p>
 
 <p id="interactive-instructions" class="instructions" style="display:none;">
-  <strong>Click on the correct nodes</strong> that follow the DFS traversal path. Complete the
+  <strong>Click on the correct nodes</strong> that follow the BFS traversal path. Complete the
   traversal and test your knowledge with a <strong>quiz</strong>!
 </p>
 
@@ -50,8 +50,8 @@
 
     <!-- BUTTONS -->
     <div class="controls">
-      <button id="run-example-btn">Run example DFS</button>
-      <button id="start-interactive-btn">Start Interactive DFS</button>
+      <button id="run-example-btn">Run example BFS</button>
+      <button id="start-interactive-btn">Start Interactive BFS</button>
       <button id="take-quiz-btn">Take a Quiz</button>
       <button id="togglePseudocodeBtn" class="btn primary" aria-pressed="false">Show pseudocode</button>
       <button id="start-coding-btn">Start Coding Activity</button>
@@ -70,7 +70,7 @@
 
       <!-- READ-ONLY SCAFFOLD + BLANKS -->
       <pre class="code">
-def dfs(graph, start):
+def bfs(graph, start):
     visited = set()
     stack = [<input class="blank" size="6" aria-label="initial push">]   # blank #1
     while stack:
@@ -99,7 +99,7 @@ def dfs(graph, start):
     <aside id="pseudocodePanel" aria-hidden="true">
       <div class="panel-header">
         <!-- PANEL HEADER/TITLE -->
-        <h2>Depth-First Search (DFS) — Pseudocode</h2>
+        <h2>Depth-First Search (BFS) — Pseudocode</h2>
         <button id="closePseudocodeBtn" class="icon-btn" aria-label="Close">✕</button>
       </div>
 
@@ -110,39 +110,42 @@ def dfs(graph, start):
 
       <!-- RECURSIVE PSEUDOCODE IN PANEL -->
       <pre id="pseudo-recursive" class="code pseudo show">
-  procedure DFS(G, start):
-    visited ← set()
-    parent  ← map()
-    time    ← 0
+      procedure BFS_recursive(G, start):
+        visited ← set()
+        parent  ← map()
+        frontier ← [start]       // nodes to explore this "level"
 
-    function visit(u):
-        visited.add(u)
-        time ← time + 1
-        for v in G.neighbors(u):
-            if v ∉ visited:
-                parent[v] ← u
-                visit(v)
-        time ← time + 1
+        function explore(level):
+            if level empty:
+                return
+            next ← []
+            for u in level:
+                if u ∉ visited:
+                    visited.add(u)
+                    for v in G.neighbors(u):
+                        if v ∉ visited:
+                            parent[v] ← u
+                            next.append(v)
+            explore(next)        // recurse to next level
 
-    visit(start)
-    return parent
-      </pre>
-
+        explore(frontier)
+        return parent
+  </pre>
       <!-- ITERATIVE PSEUDOCODE IN PANEL -->
       <pre id="pseudo-iterative" class="code pseudo">
-  procedure DFS_iter(G, start):
+  procedure BFS_iter(G, start):
     visited ← set()
     parent  ← map()
-    S ← stack([start])
+    Q ← queue([start])
 
-    while S not empty:
-        u ← S.pop()
+    while Q not empty:
+        u ← Q.dequeue()
         if u ∉ visited:
             visited.add(u)
-            for v in reverse(G.neighbors(u)):
+            for v in G.neighbors(u):
                 if v ∉ visited:
                     parent[v] ← u
-                    S.push(v)
+                    Q.enqueue(v)
     return parent
       </pre>
 
@@ -153,38 +156,14 @@ def dfs(graph, start):
 
   <!-- QUIZ PANEL (hidden until quiz mode) -->
   <section id="dfs-quiz" class="quiz-panel" style="display:none;"></section>
-
-  
-  <!-- APPLICATION ACTIVITY: Maze Solver -->
-  <section id="application-activity" style="display:none; margin-top: 16px;">
-    <h2>🧩 Application: Solve a Maze with BFS / DFS / A*</h2>
-    <p class="activity-instructions">Set a <strong>Source</strong> and <strong>Target</strong>, draw some walls, then try different search algorithms.</p>
-    <iframe id="maze-frame" src="maze/" width="100%" height="820" loading="lazy"
-        style="border:1px solid var(--border-color, #ccc); border-radius: 8px;"></iframe>
-  </section>
-
-<!-- APPLICATION ACTIVITY: Maze Solver -->
-<section id="application-activity" style="display:none; margin-top: 16px;">
-  <h2>🧩 Application: Solve a Maze with BFS / DFS / A*</h2>
-  <p class="activity-instructions">
-    Set a <strong>Source</strong> and <strong>Target</strong>, draw walls, then try different search algorithms.
-  </p>
-  <iframe
-    id="maze-frame"
-    src="maze/index.html"
-    width="100%"
-    height="820"
-    loading="lazy"
-    style="border:1px solid var(--border-color, #ccc); border-radius: 8px;"
-  ></iframe>
 </section>
 
 <!-- JAVASCRIPT FILE IMPORTS -->
-  <script src="js/DFS/dfs.js"></script>
+  <script src="js/BFS/bfs.js"></script>
   <script src="js/visualization.js"></script>
-  <script src="js/DFS/interactive.js"></script>
-  <script src="js/DFS/quiz.js"></script>
-  <script src="js/DFS/ui.js"></script>
-  <script src="js/DFS/codingActivity.js"></script>
+  <script src="js/BFS/interactive.js"></script>
+  <script src="js/BFS/quiz.js"></script>
+  <script src="js/BFS/ui.js"></script>
+  <script src="js/BFS/codingActivity.js"></script>
 </body>
 </html>
