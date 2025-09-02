@@ -36,42 +36,40 @@
     };
   }
 
-  function checkAnswers(startPush, neighborExpr) {
-    // Accept common correct answers
-    const okStart = ['start'];
-    const okNeighbors = new Set([
-      'reversed(graph[node])',
-      'list(reversed(graph[node]))',
-      'graph[node][::-1]',
-      'sorted(graph[node], reverse=True)', // acceptable variant
-    ]);
+function checkAnswers(startPush, neighborExpr) {
+  // Accept common correct answers
+  const okStart = ['start'];
+  const okNeighbors = new Set([
+    'graph[node]',
+    'list(graph[node])',  // acceptable Python variant
+  ]);
 
-    const startCorrect = okStart.includes(startPush);
-    const neighborCorrect = okNeighbors.has(neighborExpr.replace(/\s+/g, ''));
+  const startCorrect = okStart.includes(startPush);
+  const neighborCorrect = okNeighbors.has(neighborExpr.replace(/\s+/g, ''));
 
-    return { startCorrect, neighborCorrect };
+  return { startCorrect, neighborCorrect };
+}
+
+function runHiddenTests(startPush, neighborExpr) {
+  const { startCorrect, neighborCorrect } = checkAnswers(startPush, neighborExpr);
+
+  const messages = [];
+  if (!startCorrect) {
+    messages.push('❌ Blank #1: enqueue the *start* node into the queue first.');
+  } else {
+    messages.push('✅ Blank #1 looks good.');
   }
 
-  function runHiddenTests(startPush, neighborExpr) {
-    // Lightweight, illustrative checks
-    const { startCorrect, neighborCorrect } = checkAnswers(startPush, neighborExpr);
-
-    const messages = [];
-    if (!startCorrect) {
-      messages.push('❌ Blank #1: push the *start* node onto the stack first.');
-    } else {
-      messages.push('✅ Blank #1 looks good.');
-    }
-
-    if (!neighborCorrect) {
-      messages.push('❌ Blank #2: push neighbors in reverse order so the left-most is popped first.');
-    } else {
-      messages.push('✅ Blank #2 looks good.');
-    }
-
-    const passed = startCorrect && neighborCorrect;
-    return { passed, messages };
+  if (!neighborCorrect) {
+    messages.push('❌ Blank #2: enqueue all neighbors of the current node.');
+  } else {
+    messages.push('✅ Blank #2 looks good.');
   }
+
+  const passed = startCorrect && neighborCorrect;
+  return { passed, messages };
+}
+
 
   function writeOutput(lines, passed) {
     const out = $('py-output');
