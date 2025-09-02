@@ -72,16 +72,16 @@
       <pre class="code">
 def bfs(graph, start):
     visited = set()
-    stack = [<input class="blank" size="6" aria-label="initial push">]   # blank #1
-    while stack:
-        node = stack.pop()
+    queue = [<input class="blank" size="6" aria-label="initial enqueue">]   # blank #1
+    while queue:
+        node = queue.pop(0)   # dequeue from front
         if node not in visited:
             visited.add(node)
-            # push neighbors in reverse so left-most comes out first
-            stack.extend(<input class="blank" size="12" aria-label="neighbors">)
+            # enqueue neighbors so they are explored in order
+            queue.extend(<input class="blank" size="12" aria-label="neighbors">)
     return visited
       </pre>
-
+      
       <!-- CONTROLS -->
       <div class="controls">
         <button id="run-python">Run</button>
@@ -113,7 +113,7 @@ def bfs(graph, start):
       procedure BFS_recursive(G, start):
         visited ← set()
         parent  ← map()
-        frontier ← [start]       // nodes to explore this "level"
+        frontier ← [start]
 
         function explore(level):
             if level empty:
@@ -126,7 +126,7 @@ def bfs(graph, start):
                         if v ∉ visited:
                             parent[v] ← u
                             next.append(v)
-            explore(next)        // recurse to next level
+            explore(next)
 
         explore(frontier)
         return parent
