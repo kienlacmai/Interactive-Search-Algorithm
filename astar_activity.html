@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <!-- HEAD -->
-  <meta charset="UTF-8">
-  <title>DFS Interactive Tutorial</title>
-  <link rel="stylesheet" href="css/base.css">
+  <meta charset="UTF-8" />
+  <title>A* Interactive Tutorial</title>
+  <link rel="stylesheet" href="css/base.css" />
 
   <!-- CYTOSCAPE TO GENERATE GRAPH -->
   <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
@@ -12,7 +12,7 @@
 </head>
 
 <body>
-  <!-- FEEDBACK SCREEN FOR INTERACTIVE ACTIVITIES -- ERRORS/COMPLETION -->
+  <!-- FEEDBACK MODAL (kept for parity with DFS/BFS) -->
   <div id="dfs-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <span id="dfs-modal-message"></span>
@@ -22,169 +22,149 @@
 
   <!-- BODY -->
   <div class="container">
-    <!-- TOGGLE BUTTON -->
-    <a href="home_page.html" id="back-home" aria-label="Back to Home">⌂ Home</a>
+    <!-- BACK & THEME TOGGLE (match other activities) -->
+    <a href="index.html" id="back-home" aria-label="Back to Home">⌂ Home</a>
     <button id="theme-toggle" aria-label="Toggle Theme">
       <img src="icons/dark_mode.svg" alt="Toggle dark mode" width="28" height="28" />
     </button>
 
     <!-- PAGE HEADER -->
-    <h1>🧠 Interactive DFS Tutorial</h1>
-    
-    <!-- TEXT INSTRUCTIONS UNDER EACH ACTIVITY WHEN CLICKED -->
-        <p id="example-instructions" class="instructions" style="display:none;">
-  <strong>Click on Run Example DFS</strong> to see the algorithm traversal. Start the
-  <strong>Interactive DFS</strong> after the example has completed!
-</p>
+    <h1>A* Search (A*) — Interactive Tutorial</h1>
 
-<p id="interactive-instructions" class="instructions" style="display:none;">
-  <strong>Click on the correct nodes</strong> that follow the DFS traversal path. Complete the
-  traversal and test your knowledge with a <strong>quiz</strong>!
-</p>
+    <!-- INSTRUCTION TEXT (same class/ids as others) -->
+    <p id="example-instructions" class="instructions" style="display:none;">
+      <strong>Click on Run Example A*</strong> to see the algorithm compute the path from start to goal.
+      Then try the <strong>Interactive A*</strong> mode!
+    </p>
 
-<p id="quiz-instructions" class="instructions" style="display:none;">
-  <strong>Answer each question correctly</strong> with the knowledge you've accumulated. Move on to the <strong>coding activity</strong> when complete!
-</p>
+    <p id="interactive-instructions" class="instructions" style="display:none;">
+      <strong>Click the next node on the A* path</strong> to follow the optimal route from start to goal.
+      You’ll get instant feedback at each step.
+    </p>
 
-<p id="coding-instructions"class="instructions"><strong>Fill in the blanks and run the code</strong>. Hints will be available on submission.</p>
+    <p id="quiz-instructions" class="instructions" style="display:none;">
+      <strong>Answer each question</strong> about A*: f(n)=g(n)+h(n), admissible/consistent heuristics, and
+      min-heap selection.
+    </p>
 
-    <!-- BUTTONS -->
+    <p id="coding-instructions" class="instructions" style="display:none;">
+      <strong>Fill in the blanks</strong> in the A* skeleton to practice selecting the min-f node and updating f.
+    </p>
+
+    <!-- BUTTONS (must be direct children of .controls for CSS to match) -->
     <div class="controls">
-      <button id="run-example-btn">Run example DFS</button>
-      <button id="start-interactive-btn">Start Interactive DFS</button>
+      <button id="run-example-btn">Run Example A*</button>
+      <button id="start-interactive-btn">Start Interactive A*</button>
       <button id="take-quiz-btn">Take a Quiz</button>
       <button id="togglePseudocodeBtn" class="btn primary" aria-pressed="false">Show pseudocode</button>
       <button id="start-coding-btn">Start Coding Activity</button>
-      <!-- THIS IS THE RESET BUTTON FOR DEBUGGING<button id="reset-btn">Reset graph</button> -->
     </div>
 
-    
+    <!-- VISUALIZATION -->
+    <section id="visualization" class="viz" aria-label="Graph visualization"></section>
 
-    <!-- LOAD GRAPH -->
-    <div id="visualization"></div>
-
-    <!-------------------- CODING ACTIVITY PANEL -------------------->
-    <section id="coding-activity" class="coding-panel" style="display:none;">
-      <!-- PANEL HEADER/TITLE -->
-  
-
-      <!-- READ-ONLY SCAFFOLD + BLANKS -->
-      <pre class="code">
-def dfs(graph, start):
-    visited = set()
-    stack = [<input class="blank" size="6" aria-label="initial push">]   # blank #1
-    while stack:
-        node = stack.pop()
-        if node not in visited:
-            visited.add(node)
-            # push neighbors in reverse so left-most comes out first
-            stack.extend(<input class="blank" size="12" aria-label="neighbors">)
-    return visited
-      </pre>
-
-      <!-- CONTROLS -->
-      <div class="controls">
-        <button id="run-python">Run</button>
-      </div>
-
-      <!-- OUTPUT / FEEDBACK -->
-      <div id="py-output" class="feedback" aria-live="polite"></div>
+    <!-- OPTIONAL APP PANEL (hidden by default, kept for parity) -->
+    <section id="application-activity" class="app-activity" style="display:none;">
+      <h2>Apply A*</h2>
+      <p class="muted">Mini scenarios mirroring real-world pathfinding (coming soon).</p>
     </section>
-    <!-------------------- END CODING ACTIVITY PANEL -------------------->
 
-    <!-- LOAD FEEDBACK POPUP -->
-    <div id="dfs-feedback" class="feedback"></div>
+    <!-- QUIZ -->
+    <section id="astar-quiz" class="quiz" style="display:none;" aria-live="polite"></section>
 
-    <!-------------------- PSEUDOCODE SIDE PANEL -------------------->
+    <!-- CODING ACTIVITY -->
+    <section id="coding-activity" style="display:none;">
+      <h2>Start Coding: A* (Fill in the Blanks)</h2>
+      <div class="py-editor">
+<pre>
+def astar(graph, start, goal, h):
+    open_set = { start }
+    came_from = {}
+    g = defaultdict(lambda: float('inf'))
+    f = defaultdict(lambda: float('inf'))
+
+    g[start] = 0
+    f[start] = h(start)
+
+    while open_set:
+        # Blank #1: select node with smallest f-score from open_set
+        current = &lt;select_min_f_from_open_set&gt;
+
+        if current == goal:
+            return reconstruct_path(came_from, current)
+
+        open_set.remove(current)
+        for nb in graph[current]:
+            # cost(current, nb) assumed 1 if not provided
+            tentative = g[current] + cost(current, nb)
+            if tentative &lt; g[nb]:
+                came_from[nb] = current
+                g[nb] = tentative
+                # Blank #2: update f[nb] with g + h
+                f[nb] = &lt;update_f_using_g_plus_h&gt;
+                open_set.add(nb)
+</pre>
+        <div class="controls">
+          <button id="run-py" class="primary">Check Solution</button>
+          <button id="clear-py" class="secondary">Clear Output</button>
+          <button id="exit-coding-activity" class="secondary">Exit</button>
+        </div>
+        <div id="py-output" class="feedback" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- FEEDBACK BAR -->
+    <div id="astar-feedback" class="feedback"></div>
+
+    <!-- PSEUDOCODE SIDE PANEL (same structure/classes as others) -->
     <aside id="pseudocodePanel" aria-hidden="true">
       <div class="panel-header">
-        <!-- PANEL HEADER/TITLE -->
-        <h2>Depth-First Search (DFS) — Pseudocode</h2>
+        <h2>A* Search (A*) — Pseudocode</h2>
         <button id="closePseudocodeBtn" class="icon-btn" aria-label="Close">✕</button>
       </div>
 
-      <div class="pseudo-toggle" role="tablist" aria-label="Pseudocode variant">
-        <button class="seg selected" role="tab" aria-selected="true" data-target="recursive">Recursive</button>
-        <button class="seg" role="tab" aria-selected="false" data-target="iterative">Iterative</button>
+      <div class="pseudo-toggle" role="tablist" aria-label="Pseudocode variants">
+        <button class="tab active" data-target="pseudo-iterative" role="tab" aria-selected="true">Iterative (Priority Queue)</button>
+        <button class="tab" data-target="pseudo-recursive" role="tab" aria-selected="false" aria-controls="pseudo-recursive">Notes</button>
       </div>
 
-      <!-- RECURSIVE PSEUDOCODE IN PANEL -->
-      <pre id="pseudo-recursive" class="code pseudo show">
-  procedure DFS(G, start):
-    visited ← set()
-    parent  ← map()
-    time    ← 0
+      <div class="pseudo-content" aria-live="polite">
+<pre id="pseudo-iterative" role="tabpanel">
+function AStar(Graph, start, goal):
+    openSet = {start}
+    cameFrom = empty map
+    for each v in Graph:
+        g[v] = ∞; f[v] = ∞
+    g[start] = 0
+    f[start] = h(start)
 
-    function visit(u):
-        visited.add(u)
-        time ← time + 1
-        for v in G.neighbors(u):
-            if v ∉ visited:
-                parent[v] ← u
-                visit(v)
-        time ← time + 1
-
-    visit(start)
-    return parent
-      </pre>
-
-      <!-- ITERATIVE PSEUDOCODE IN PANEL -->
-      <pre id="pseudo-iterative" class="code pseudo">
-  procedure DFS_iter(G, start):
-    visited ← set()
-    parent  ← map()
-    S ← stack([start])
-
-    while S not empty:
-        u ← S.pop()
-        if u ∉ visited:
-            visited.add(u)
-            for v in reverse(G.neighbors(u)):
-                if v ∉ visited:
-                    parent[v] ← u
-                    S.push(v)
-    return parent
-      </pre>
-
-      <p class="note">Mentally trace the code to understand the algorithm's traversal pathing!</p>
+    while openSet not empty:
+        current = argmin_{n in openSet} f[n]
+        if current == goal: return RECONSTRUCT(cameFrom, current)
+        remove current from openSet
+        for each neighbor in neighbors(current):
+            tentative = g[current] + cost(current, neighbor)
+            if tentative &lt; g[neighbor]:
+                cameFrom[neighbor] = current
+                g[neighbor] = tentative
+                f[neighbor] = tentative + h(neighbor)
+                add neighbor to openSet
+    return failure
+</pre>
+<pre id="pseudo-recursive" role="tabpanel">
+# A* is almost always implemented iteratively using a priority queue (min-heap).
+# Recursive variants exist but are less common in practice and teaching.
+</pre>
+      </div>
     </aside>
   </div>
-  <!-- END OF PSEUDOCODE PANEL -->
 
-  <!-- QUIZ PANEL (hidden until quiz mode) -->
-  <section id="dfs-quiz" class="quiz-panel" style="display:none;"></section>
-
-  
-  <!-- APPLICATION ACTIVITY: Maze Solver -->
-  <section id="application-activity" style="display:none; margin-top: 16px;">
-    <h2>🧩 Application: Solve a Maze with BFS / DFS / A*</h2>
-    <p class="activity-instructions">Set a <strong>Source</strong> and <strong>Target</strong>, draw some walls, then try different search algorithms.</p>
-    <iframe id="maze-frame" src="maze/" width="100%" height="820" loading="lazy"
-        style="border:1px solid var(--border-color, #ccc); border-radius: 8px;"></iframe>
-  </section>
-
-<!-- APPLICATION ACTIVITY: Maze Solver -->
-<section id="application-activity" style="display:none; margin-top: 16px;">
-  <h2>🧩 Application: Solve a Maze with BFS / DFS / A*</h2>
-  <p class="activity-instructions">
-    Set a <strong>Source</strong> and <strong>Target</strong>, draw walls, then try different search algorithms.
-  </p>
-  <iframe
-    id="maze-frame"
-    src="maze/index.html"
-    width="100%"
-    height="820"
-    loading="lazy"
-    style="border:1px solid var(--border-color, #ccc); border-radius: 8px;"
-  ></iframe>
-</section>
-
-<!-- JAVASCRIPT FILE IMPORTS -->
-  <script src="js/DFS/dfs.js"></script>
+  <!-- SCRIPTS (A* bundle + shared viz) -->
+  <script src="js/AStar/astar.js"></script>
   <script src="js/visualization.js"></script>
-  <script src="js/interactive.js"></script>
-  <script src="js/DFS/quiz.js"></script>
-  <script src="js/DFS/ui.js"></script>
-  <script src="js/DFS/codingActivity.js"></script>
+  <script src="js/AStar/interactive.js"></script>
+  <script src="js/AStar/quiz.js"></script>
+  <script src="js/AStar/ui.js"></script>
+  <script src="js/AStar/codingActivity.js"></script>
 </body>
 </html>
