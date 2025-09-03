@@ -1,49 +1,76 @@
 // ---------------- CODING ACTIVITY (Fill-in-the-blank) ----------------
 //
-// A* checker: validates two key blanks:
-// 1) Selecting min-f node from open_set
-// 2) Updating f[nb] = g[nb] + h(nb)
+// Note: This is a *teaching* checker, not a Python runner.
+// We validate the two blanks for a canonical iterative DFS pattern.
+// Accepts a few common variants for the neighbor push.
 //
-// This is a teaching checker, not a Python runner.
-//
+
 (function () {
   function $(id) { return document.getElementById(id); }
 
   function showCoding() {
-    const quiz = $('astar-quiz');
-    if (quiz) quiz.style.display = 'none';
+    // Hide other activities
+    $('dfs-quiz').style.display = 'none';
+
+    // Hide the visualization
     const viz = $('visualization');
-    if (viz) viz.style.display = 'none';
+    viz.style.display = 'none';
+
+    // Show coding panel
+    $('coding-activity').style.display = 'block';
   }
 
   function hideCoding() {
+    $('coding-activity').style.display = 'none';
+    // Re-show the visualization
     const viz = $('visualization');
-    if (viz) viz.style.display = 'block';
-    const quiz = $('astar-quiz');
-    if (quiz) quiz.style.display = 'none';
-    const coding = $('coding-activity');
-    if (coding) coding.style.display = 'none';
+    viz.style.display = '';
   }
 
-  function checkSolution() {
-    const editorEl = document.querySelector('.py-editor pre');
-    const code = (editorEl?.textContent || '').toLowerCase();
+  function readBlanks() {
+    const blanks = document.querySelectorAll('#coding-activity input.blank');
+    const values = Array.from(blanks).map(b => (b.value || '').trim());
+    return {
+      startPush: values[0] || '',
+      neighborExpr: values[1] || '',
+    };
+  }
 
-    const minFRegex =
-      /(current\s*=\s*.*(min|argmin).*f\s*\[?\s*[a-z_]*\s*\]?\s*.*open_set)/;
-    const updateFRegex =
-      /(f\s*\[\s*nb\s*\]\s*=\s*g\s*\[\s*nb\s*\]\s*\+\s*h\s*\(\s*nb\s*\))/;
+  function checkAnswers(startPush, neighborExpr) {
+    // Accept common correct answers
+    const okStart = ['start'];
+    const okNeighbors = new Set([
+      'reversed(graph[node])',
+      'list(reversed(graph[node]))',
+      'graph[node][::-1]',
+      'sorted(graph[node], reverse=True)', // acceptable variant
+    ]);
 
-    const okMin = minFRegex.test(code);
-    const okF = updateFRegex.test(code);
+    const startCorrect = okStart.includes(startPush);
+    const neighborCorrect = okNeighbors.has(neighborExpr.replace(/\s+/g, ''));
+
+    return { startCorrect, neighborCorrect };
+  }
+
+  function runHiddenTests(startPush, neighborExpr) {
+    // Lightweight, illustrative checks
+    const { startCorrect, neighborCorrect } = checkAnswers(startPush, neighborExpr);
 
     const messages = [];
-    if (!okMin) messages.push('❌ Blank #1: select node with minimum f-score (e.g., current = argmin over open_set of f[n]).');
-    else messages.push('✅ Blank #1 looks good.');
-    if (!okF) messages.push('❌ Blank #2: update f[nb] = g[nb] + h(nb).');
-    else messages.push('✅ Blank #2 looks good.');
+    if (!startCorrect) {
+      messages.push('❌ Blank #1: push the *start* node onto the stack first.');
+    } else {
+      messages.push('✅ Blank #1 looks good.');
+    }
 
-    return { passed: okMin && okF, messages };
+    if (!neighborCorrect) {
+      messages.push('❌ Blank #2: push neighbors in reverse order so the left-most is popped first.');
+    } else {
+      messages.push('✅ Blank #2 looks good.');
+    }
+
+    const passed = startCorrect && neighborCorrect;
+    return { passed, messages };
   }
 
   function writeOutput(lines, passed) {
@@ -55,17 +82,22 @@
   function clearOutput() {
     const out = $('py-output');
     out.className = 'feedback';
-    out.innerHTML = '';
+    out.textContent = '';
   }
 
-  window.addEventListener('DOMContentLoaded', () => {
-    const runBtn = $('run-py');
-    const clearBtn = $('clear-py');
+  document.addEventListener('DOMContentLoaded', () => {
+    const startCodingBtn = $('start-coding-btn');
+    const runBtn = $('run-python');
+    const clearBtn = $('clear-output');
     const exitBtn = $('exit-coding-activity');
 
+    if (startCodingBtn) {
+      startCodingBtn.addEventListener('click', showCoding);
+    }
     if (runBtn) {
       runBtn.addEventListener('click', () => {
-        const { passed, messages } = checkSolution();
+        const { startPush, neighborExpr } = readBlanks();
+        const { passed, messages } = runHiddenTests(startPush, neighborExpr);
         writeOutput(messages, passed);
       });
     }

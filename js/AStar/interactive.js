@@ -15,135 +15,66 @@ function resetGraph() {
   clearAnimTimers();
   if (typeof cy !== 'undefined') {
     cy.stop();
-    const cls = 'visited active current highlighted correct wrong';
+    const cls = 'visited active current highlighted correct wrong clicked done';
     cy.nodes().removeClass(cls);
     cy.edges().removeClass(cls);
+    cy.nodes().forEach(node => {
+      node.stop();
+      node.removeStyle('background-color');
+      node.removeStyle('color');
+      node.removeStyle('text-outline-color');
+      node.animate({
+        style: {
+          'background-color': '#007BFF',
+          'color': '#fff',
+          'text-outline-color': '#007BFF'
+        }
+      }, { duration: 200 });
+    });
+    cy.edges().forEach(e => {
+      e.removeStyle('line-color');
+      e.removeStyle('target-arrow-color');
+      e.removeStyle('width');
+    });
   }
-}
-
-let timers = [];
-function clearAnimTimers() {
-  timers.forEach(t => clearTimeout(t));
-  timers = [];
-}
-
-function animateStep(nodeId, delay, isCorrectPath=false) {
-  const t = setTimeout(() => {
-    const node = cy.$(`#${nodeId}`);
-    if (node) {
-      node.addClass('active');
-      if (isCorrectPath) node.addClass('correct');
-    }
-  }, delay);
-  timers.push(t);
-}
-
-// --- RENDER RESULTS ---
-function renderResult(status) {
-  const fb = document.getElementById('astar-feedback');
-  if (!fb) return;
-
-  if (status === true || status === 'step-correct') {
-    fb.className = 'feedback correct';
-    fb.textContent = status === true
-      ? '✅ Great job! You followed the A* path correctly!'
-      : '✅ Correct next step.';
-  } else if (status === false) {
-    fb.className = 'feedback wrong';
-    fb.textContent = '❌ That node is not next on the A* path. Try again!';
-  } else {
-    fb.className = 'feedback';
-    fb.textContent = '';
-  }
-}
-
-// --- MAIN EXAMPLE RUN ---
-function runExample() {
-  resetGraph();
-  const graph = getRandomGraph();
-  loadGraph(graph);
-
-  // Compute correct A* path for this graph from registry
-  const ctx = getAStarContext(graph);
-  correctAnswer = astar(graph, ctx.start, ctx.goal, ctx.weights, ctx.heuristic);
-  console.log('Correct A* Path:', correctAnswer);
-
-  // Animate
-  let delay = 0;
-  correctAnswer.forEach((n) => {
-    animateStep(n, delay, true);
-    delay += 700;
-  });
-}
-
-// --- INTERACTIVE MODE ---
-function startInteractive() {
-  interactiveActive = true;
   userInput = [];
-  const graph = getRandomGraph();
-  loadGraph(graph);
-
-  const ctx = getAStarContext(graph);
-  correctAnswer = astar(graph, ctx.start, ctx.goal, ctx.weights, ctx.heuristic);
-
-  renderResult(null);
-
-  cy.nodes().on('tap', (evt) => {
-    if (!interactiveActive) return;
-    const clicked = evt.target.data('id');
-    const expected = correctAnswer[userInput.length];
-    if (clicked === expected) {
-      userInput.push(clicked);
-      const node = cy.$(`#${clicked}`);
-      node.addClass('highlighted');
-      renderResult('step-correct');
-      if (userInput.length === correctAnswer.length) {
-        renderResult(true);
-        endInteractiveSession();
-      }
-    } else {
-      const node = cy.$(`#${clicked}`);
-      node.addClass('wrong');
-      renderResult(false);
-    }
-  });
 }
 
-function endInteractiveSession() {
-  interactiveActive = false;
-}
-
-// Cache main buttons for performance
+// --- BUTTONS ---
 let runExampleBtn, startInteractiveBtn;
 function cacheButtons() {
   runExampleBtn       = document.getElementById('run-example-btn');
   startInteractiveBtn = document.getElementById('start-interactive-btn');
+  // NOTE: quiz & coding buttons are fetched inline where needed
 }
 
-// --- UI MODE SWITCHING ---
+// --- UI MODE ---
 function setUIMode(mode) {
   uiMode = mode;
+
   if (!runExampleBtn || !startInteractiveBtn) cacheButtons();
 
   const exInstr = document.getElementById('example-instructions');
   const itInstr = document.getElementById('interactive-instructions');
   const viz     = document.getElementById('visualization');
-  const fb      = document.getElementById('astar-feedback');
-  const quiz    = document.getElementById('astar-quiz');
+  const fb      = document.getElementById('dfs-feedback');
+  const quiz    = document.getElementById('dfs-quiz');
   const coding  = document.getElementById('coding-activity');
   const quizBtn = document.getElementById('take-quiz-btn');
   const h1      = document.querySelector('h1');
   const pseudo  = document.getElementById('pseudocodePanel');
+  const app     = document.getElementById('application-activity');
   const qzInstr = document.getElementById('quiz-instructions');
   const cdInstr = document.getElementById('coding-instructions');
 
+  // helpers
   const show = (el) => { if (el) el.style.display = 'block'; };
   const hide = (el) => { if (el) el.style.display = 'none'; };
 
-  // default hide
-  hide(exInstr); hide(itInstr); hide(viz); hide(fb); hide(quiz); hide(coding); hide(qzInstr); hide(cdInstr);
+  // default: hide everything
+  hide(exInstr); hide(itInstr); hide(viz); hide(fb); hide(quiz); hide(coding); hide(app); hide(qzInstr); hide(cdInstr);
 
-  // close pseudocode if open
+  // close pseudocode if open (optional; keep UX simple when switching modes)
   if (pseudo && pseudo.classList.contains('show')) {
     pseudo.classList.remove('show');
     pseudo.setAttribute('aria-hidden', 'true');
@@ -153,56 +84,244 @@ function setUIMode(mode) {
 
   if (mode === 'example') {
     show(viz); show(exInstr); show(fb);
-    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example A*';
-    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive A*';
+    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
     if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
-    if (h1) h1.textContent = 'A* Search (A*) — Interactive Tutorial';
-    runExample();
+    if (h1) h1.textContent = '🧠 Example DFS Tutorial';
   } else if (mode === 'interactive') {
     show(viz); show(itInstr); show(fb);
-    if (runExampleBtn)       runExampleBtn.textContent       = 'Return to A* Example';
-    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Try another A* activity';
+    if (runExampleBtn)       runExampleBtn.textContent       = 'Return to DFS Example';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Try another DFS';
     if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
-    if (h1) h1.textContent = 'A* Search (A*) — Interactive Tutorial';
-    resetGraph();
-    startInteractive();
+    if (h1) h1.textContent = '🧠 Interactive DFS Tutorial';
   } else if (mode === 'quiz') {
-    show(quiz); show(qzInstr);
-    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example A*';
-    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive A*';
+    show(quiz); show(qzInstr)
+    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
     if (quizBtn)             quizBtn.textContent             = 'Retake Quiz';
-    if (h1) h1.textContent = 'A* Quiz';
+    if (h1) h1.textContent = '🧠 DFS Quiz';
   } else if (mode === 'coding') {
     show(coding); show(cdInstr);
-    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example A*';
-    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive A*';
+    if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
+    if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
     if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
-    if (h1) h1.textContent = 'A* Coding Activity';
+    if (h1) h1.textContent = '🧠 DFS Coding Activity';
+  
+  } else if (mode === 'application') {
+  show(app);
+  if (runExampleBtn)       runExampleBtn.textContent       = 'Run Example DFS';
+  if (startInteractiveBtn) startInteractiveBtn.textContent = 'Start Interactive DFS';
+  if (quizBtn)             quizBtn.textContent             = 'Take a Quiz';
+  if (h1) h1.textContent = '🧩 Maze Application';
+  const appPanel = document.getElementById('application-activity');
+  if (appPanel) appPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+}
+
+
+
+// --- EXAMPLE ACTIVITY ---
+// RUN DFS AND ANIMATE ON GRAPH
+// interactive.js — replace startDFS() ONLY
+// interactive.js — ONLY the function body changed
+function startDFS() {
+  setUIMode('example');
+  endInteractiveSession();
+
+  const graph = (typeof aStarGraph !== 'undefined') ? aStarGraph
+               : (typeof sampleGraph !== 'undefined') ? sampleGraph
+               : null;
+
+  if (!graph) return; // guard
+
+  loadGraph(graph);
+  resetGraph();
+
+  if (typeof cy !== 'undefined') {
+    cy.resize();
+    cy.layout({
+      name: 'breadthfirst',
+      directed: true,
+      roots: ['A'],
+      orientation: 'vertical',
+      spacingFactor: 1.75,
+      padding: 10
+    }).run();
+  }
+
+  // Run A*: A → G. If weights/heuristic missing, it falls back to uniform costs / 0 heuristic.
+  const result = (typeof aStarGraph !== 'undefined' && typeof astar === 'function')
+    ? astar(graph, 'A', 'G', (window.aStarWeights||{}), (window.aStarHeuristic||{}))
+    : { path: [], order: [] };
+
+  const path = result.path || [];
+  const delay = 600;
+  path.forEach((nodeId, i) => {
+    trackTimeout(() => {
+      cy.getElementById(nodeId).animate(
+        { style: { 'background-color': '#28a745' } },
+        { duration: 300 }
+      );
+    }, i * delay);
+  });
+}
+
+
+
+
+// EXAMPLE TRAVERSAL ANIMATION
+function animateDFSTraversal(order) {
+  const delay = 600;
+  order.forEach((nodeId, i) => {
+    trackTimeout(() => {
+      cy.getElementById(nodeId).animate({
+        style: { 'background-color': 'orange' }
+      }, { duration: 300 });
+    }, i * delay);
+  });
+}
+
+// TRAVERSAL VISUALIZED VIA HIGHLIGHTING
+function highlightNode(nodeId, correct) {
+  cy.getElementById(nodeId).animate({
+    style: { 'background-color': correct ? '#28a745' : '#dc3545' }
+  }, { duration: 300 });
+}
+
+// HIGHLIGHT TIMING AND DISPLAY
+let _animTimers = [];
+function trackTimeout(fn, ms) {
+  const id = setTimeout(fn, ms);
+  _animTimers.push(id);
+  return id;
+}
+
+function clearAnimTimers() {
+  _animTimers.forEach(clearTimeout);
+  _animTimers = [];
+}
+
+// --- INTERACTIVE ACTIVITY ---
+// START ACTIVITY
+function startInteractiveDFS() {
+  setUIMode('interactive');
+  interactiveActive = true;
+  renderResult(null);
+  const graph = getRandomGraph();
+  loadGraph(graph);
+  resetGraph();
+  if (typeof cy !== 'undefined') {
+    cy.resize();
+    cy.layout({
+      name: 'breadthfirst',
+      directed: true,
+      roots: ['A'],
+      orientation: 'vertical',
+      spacingFactor: 1.75,
+      padding: 10
+    }).run();
+  }
+  if (typeof cy !== 'undefined') cy.off('tap');
+  userInput     = [];
+  correctAnswer = dfs(graph, 'A');
+  console.log('Correct DFS Order:', correctAnswer);
+  cy.on('tap', 'node', (evt) => {
+    if (!interactiveActive) return;
+    const clicked = evt.target.id();
+    if (userInput.includes(clicked)) return;
+    const expected = correctAnswer[userInput.length];
+    if (clicked === expected) {
+      userInput.push(clicked);
+      highlightNode(clicked, true);
+      renderResult('step-correct');
+      if (userInput.length === correctAnswer.length) {
+        renderResult(true);
+        endInteractiveSession();
+      }
+    } else {
+      highlightNode(clicked, false);
+      renderResult(false);
+    }
+  });
+}
+
+function hideStartInteractive() {
+  const btn = document.getElementById('start-interactive-btn');
+  if (btn) btn.classList.remove('revealed');
+}
+
+// TEXT BOX FOR FEEDBACK
+function renderResult(state) {
+  const fb = document.getElementById('dfs-feedback');
+  if (!fb) return;
+
+  const modal = document.getElementById('dfs-modal');
+  const modalMsg = document.getElementById('dfs-modal-message');
+  const modalClose = document.getElementById('dfs-modal-close');
+
+  if (state === false) {
+    fb.className = 'feedback wrong';
+    if (modal && modalMsg && modalClose) {
+      modalMsg.textContent = '❌ Incorrect choice!';
+      modalClose.textContent = 'Try Again';
+      modal.style.display = 'flex';
+      modalClose.onclick = () => { modal.style.display = 'none'; };
+    }
+  } else if (state === true) {
+    fb.className = 'feedback correct';
+    if (modal && modalMsg && modalClose) {
+      modalMsg.textContent = '🎉 Traversal complete!';
+      modalClose.textContent = 'Close';
+      modal.style.display = 'flex';
+      modalClose.onclick = () => { modal.style.display = 'none'; };
+    }
+  } else {
+    // neutral / step-correct: keep fb visible but don't modal
+    fb.className = 'feedback';
   }
 }
 
-// --- BUTTONS / INIT ---
-window.addEventListener('DOMContentLoaded', () => {
+// ENDING INTERACTIVE ACTIVITY
+function endInteractiveSession() {
+  interactiveActive = false;
+  if (typeof cy !== 'undefined') cy.off('tap');
+}
+
+// --- PAGE LOGISTICS ---
+
+// ALLOW BUTTONS TO CALL ACTIVITY FUNCTIONS
+window.startInteractiveDFS = startInteractiveDFS;
+window.startDFS = startDFS;
+window.resetGraph = resetGraph;
+
+// INITIALIZE ITEMS ON PAGE
+document.addEventListener('DOMContentLoaded', () => {
   cacheButtons();
   setUIMode('example');
 
-  const runExampleBtn = document.getElementById('run-example-btn');
-  const startInteractiveBtn = document.getElementById('start-interactive-btn');
-  const quizBtn = document.getElementById('take-quiz-btn');
+  // unify top buttons via the single state machine
   const codingBtn = document.getElementById('start-coding-btn');
-  const togglePseudo = document.getElementById('togglePseudocodeBtn');
-  const closePseudo  = document.getElementById('closePseudocodeBtn');
+  const quizBtn   = document.getElementById('take-quiz-btn');
+  const appBtn = document.getElementById('start-application-btn');
 
   if (runExampleBtn) {
     runExampleBtn.addEventListener('click', () => {
-      if (uiMode === 'interactive') setUIMode('example'); else setUIMode('example');
+      setUIMode('example');
+      startDFS();
     });
   }
   if (startInteractiveBtn) {
-    startInteractiveBtn.addEventListener('click', () => setUIMode('interactive'));
+    startInteractiveBtn.addEventListener('click', () => {
+      setUIMode('interactive');
+      startInteractiveDFS();
+    });
   }
   if (quizBtn) {
-    quizBtn.addEventListener('click', () => setUIMode('quiz'));
+    quizBtn.addEventListener('click', () => {
+      setUIMode('quiz');
+      const selected = getRandomQuestions(dfsQuestions, 5);
+      renderQuiz(selected);
+    });
   }
   if (codingBtn) {
     codingBtn.addEventListener('click', () => {
@@ -211,25 +330,45 @@ window.addEventListener('DOMContentLoaded', () => {
       if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
-  if (togglePseudo) {
-    togglePseudo.addEventListener('click', () => {
-      const panel = document.getElementById('pseudocodePanel');
-      const pressed = togglePseudo.getAttribute('aria-pressed') === 'true';
-      const now = !pressed;
-      togglePseudo.setAttribute('aria-pressed', now ? 'true' : 'false');
-      togglePseudo.textContent = now ? 'Hide pseudocode' : 'Show pseudocode';
-      if (panel) {
-        if (now) { panel.classList.add('show'); panel.setAttribute('aria-hidden', 'false'); }
-        else     { panel.classList.remove('show'); panel.setAttribute('aria-hidden', 'true'); }
-      }
+
+  
+  if (appBtn) {
+    appBtn.addEventListener('click', () => {
+      setUIMode('application');
     });
   }
-  if (closePseudo) {
-    closePseudo.addEventListener('click', () => {
-      const panel = document.getElementById('pseudocodePanel');
-      const btn = document.getElementById('togglePseudocodeBtn');
-      if (panel) { panel.classList.remove('show'); panel.setAttribute('aria-hidden', 'true'); }
-      if (btn)   { btn.setAttribute('aria-pressed', 'false'); btn.textContent = 'Show pseudocode'; }
-    });
-  }
+  // One-time top-down reveal on initial load
+(function runInitialRevealOnce() {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || window._dfsRevealDone) return;  // do not re-run
+
+  // Which description is currently visible?
+  const desc = [
+    document.getElementById('example-instructions'),
+    document.getElementById('interactive-instructions'),
+    document.getElementById('coding-instructions')
+  ].find(el => el && getComputedStyle(el).display !== 'none');
+
+  const header   = document.querySelector('h1');
+  const controls = document.querySelector('.controls');
+  const vis      = document.getElementById('visualization');
+
+  // Set delays (header → desc → buttons → panel)
+  if (header)   header.style.setProperty('--reveal-delay', '80ms');
+  if (desc)     desc.style.setProperty('--reveal-delay',   '140ms');
+  if (controls) controls.style.setProperty('--reveal-delay','200ms');
+  if (vis)      vis.style.setProperty('--reveal-delay',    '260ms');
+
+  // Add the class that enables the CSS animations
+  document.documentElement.classList.add('reveal-dfs');
+
+  // After the LAST animation ends (the panel), remove the class + inline vars
+  const finalize = () => {
+    document.documentElement.classList.remove('reveal-dfs');
+    [header, desc, controls, vis].forEach(el => el && el.style.removeProperty('--reveal-delay'));
+    window._dfsRevealDone = true;   // prevent any future re-runs this session
+    vis && vis.removeEventListener('animationend', finalize);
+  };
+  vis && vis.addEventListener('animationend', finalize);
+})();
 });
