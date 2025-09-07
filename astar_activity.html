@@ -39,7 +39,6 @@
 
     <p id="interactive-instructions" class="instructions" style="display:none;">
       <strong>Click the next node on the A* path</strong> to follow the optimal route from start to goal.
-      You’ll get instant feedback at each step.
     </p>
 
     <p id="quiz-instructions" class="instructions" style="display:none;">
@@ -63,20 +62,15 @@
     <!-- VISUALIZATION -->
     <section id="visualization" class="viz" aria-label="Graph visualization"></section>
 
-    <!-- OPTIONAL APP PANEL (hidden by default, kept for parity) -->
-    <section id="application-activity" class="app-activity" style="display:none;">
-      <h2>Apply A*</h2>
-      <p class="muted">Mini scenarios mirroring real-world pathfinding (coming soon).</p>
-    </section>
-
     <!-- QUIZ -->
     <section id="astar-quiz" class="quiz" style="display:none;" aria-live="polite"></section>
 
-    <!-- CODING ACTIVITY -->
-    <section id="coding-activity" style="display:none;">
-      <h2>Start Coding: A* (Fill in the Blanks)</h2>
-      <div class="py-editor">
-<pre>
+    <!-------------------- CODING ACTIVITY PANEL (A*) -------------------->
+<section id="coding-activity-astar" class="coding-panel" style="display:none;">
+  <!-- READ-ONLY SCAFFOLD + BLANKS -->
+  <pre class="code">
+from collections import defaultdict
+
 def astar(graph, start, goal, h):
     open_set = { start }
     came_from = {}
@@ -87,31 +81,35 @@ def astar(graph, start, goal, h):
     f[start] = h(start)
 
     while open_set:
-        # Blank #1: select node with smallest f-score from open_set
-        current = &lt;select_min_f_from_open_set&gt;
+        # choose node in open_set with the smallest f-score
+        current = <input class="blank" id="astar-blank1" size="32" aria-label="select min f from open_set">   # blank #1
 
         if current == goal:
             return reconstruct_path(came_from, current)
 
         open_set.remove(current)
         for nb in graph[current]:
-            # cost(current, nb) assumed 1 if not provided
+            # assume unit edge cost if not otherwise provided
             tentative = g[current] + cost(current, nb)
-            if tentative &lt; g[nb]:
+            if tentative < g[nb]:
                 came_from[nb] = current
                 g[nb] = tentative
-                # Blank #2: update f[nb] with g + h
-                f[nb] = &lt;update_f_using_g_plus_h&gt;
+                # update f with g + h
+                f[nb] = <input class="blank" id="astar-blank2" size="18" aria-label="g plus h for neighbor">   # blank #2
                 open_set.add(nb)
-</pre>
-        <div class="controls">
-          <button id="run-py" class="primary">Check Solution</button>
-          <button id="clear-py" class="secondary">Clear Output</button>
-          <button id="exit-coding-activity" class="secondary">Exit</button>
-        </div>
-        <div id="py-output" class="feedback" aria-live="polite"></div>
-      </div>
-    </section>
+  </pre>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button id="run-astar">Run</button>
+  </div>
+
+  <!-- OUTPUT / FEEDBACK -->
+  <div id="py-output-astar" class="feedback" aria-live="polite"></div>
+</section>
+
+<!-- FEEDBACK BAR -->
+<div id="astar-feedback" class="feedback"></div>
 
     <!-- FEEDBACK BAR -->
     <div id="astar-feedback" class="feedback"></div>
