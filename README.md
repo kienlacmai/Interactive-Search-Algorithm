@@ -127,4 +127,4 @@ python -m http.server 5500
 
 ## 📚 Attribution
 
-Built by **Benny Lu & ** as an interactive learning aid for search algorithms.
+Built by **Benny Lu & Kienlac Mai** as an interactive learning aid for search algorithms.
