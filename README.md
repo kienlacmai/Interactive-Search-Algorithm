@@ -39,7 +39,7 @@ Animate traversals, compare strategies, and practice with quiz-style activities 
 ### Option A — Open directly
 1. Clone the repo:
    ```bash
-   git clone https://github.com/Bennyluwho/Interactive-Search-Alorgithm.git
+   git clone https://github.com/kienlacmai/Interactive-Search-Alorgithm.git
    cd Interactive-Search-Alorgithm
    ```
 2. Double-click `index.html` (or any of the `*_activity.html` pages) to open in your browser.
@@ -127,4 +127,4 @@ python -m http.server 5500
 
 ## 📚 Attribution
 
-Built by **Benny Lu & Kienlac Mai** as an interactive learning aid for search algorithms.
+Built by **Kienlac Mai & Benny Lu** as an interactive learning aid for search algorithms.
