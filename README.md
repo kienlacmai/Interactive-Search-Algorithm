@@ -1,101 +1,97 @@
-# 🧭 Interactive Search Algorithm — DFS • BFS • A* (with Maze Lab)
+# Interactive Search Algorithm Visualization
 
-An interactive, browser-based playground to **learn, visualize, and practice** classic graph search algorithms:
-- **Depth-First Search (DFS)**
-- **Breadth-First Search (BFS)**
-- **A\*** (with **edge weights**, **heuristics**, and live **g/h/f** cost display)
+## Overview
+The **Interactive Search Algorithm** project is a web-based educational platform designed to teach and visualize core graph traversal algorithms, including **Depth-First Search (DFS)**, **Breadth-First Search (BFS)**, and **A\***.  
+Users can explore algorithmic concepts through interactive demonstrations, quizzes, coding exercises, and a maze-based pathfinding lab, each providing a dynamic and guided learning experience.
 
----
-
-## 🎯 What you can do
-
-### 1) Watch the algorithm think (Example Mode)
-- Step through DFS, BFS, or A* on curated graphs.
-- See the **current node**, **frontier/stack/queue**, and **visited set** evolve.
-- A **pseudocode panel** highlights the exact line corresponding to each step.
-
-### 2) Try it yourself (Interactive Mode)
-- You predict the next step (which node gets chosen next).
-- The app validates your choice and gives **instant feedback** (modals/messages).
-- Great for building intuition about LIFO (DFS), FIFO (BFS), and A*'s f-score priorities.
-
-### 3) Check your understanding (Quiz Mode)
-- Short, focused questions about traversal order and decisions.
-- Immediate grading to reinforce the concepts.
-
-### 4) Fill in the blanks (Coding Activity)
-- A minimal **teaching checker** asks you to complete key lines of DFS/BFS/A* logic.
-- Validates canonical patterns (e.g., stack/queue handling, neighbor exploration).
-
-### 5) Explore the Maze Lab
-- Generate a **grid maze** and visualize pathfinding.
-- Toggle **Auto** vs **Manual**: watch it run or step through carefully.
-- Switch algorithms (DFS/BFS/A*) to compare their behavior on the same maze.
+The application is entirely client-side, requiring no installation or dependencies, and can be accessed directly at:  
+**[https://kienlacmai.github.io/Interactive-Search-Algorithm/](https://kienlacmai.github.io/Interactive-Search-Algorithm/)**
 
 ---
 
-## 🖥️ UI & Visualization
+## Objectives
+This project was developed to create an engaging and intuitive learning environment for computer science students to:
+- Understand the operational logic of classical search algorithms.
+- Visualize step-by-step traversal and node exploration processes.
+- Compare algorithmic strategies across different problem contexts.
+- Reinforce understanding through guided practice and interactive exercises.
 
-- **Cytoscape.js** renders the graph, animates traversals, and lays out nodes cleanly.
-- Visual layers:
-  - **Current** node, **frontier** (stack/queue/open set), **visited**, **path** highlighting
-  - For **A\***, live **g(n)**, **h(n)**, **f(n) = g + h** display influences the chosen node.
-- **Theme toggle** (light/dark) with localStorage persistence.
-- **Keyboard-friendly** step/run/reset controls.
-
-> Pages:
-> - `index.html` (hub / landing)
-> - `dfs_activity.html`
-> - `bfs_activity.html`
-> - `astar_activity.html`
-> - `maze.html`
+By integrating algorithmic explanation with interactivity, the platform helps bridge the gap between conceptual understanding and hands-on experimentation.
 
 ---
 
-## 🚀 Quick Start
+## Algorithms Implemented
+The platform features three major search algorithms, each with unique instructional modules:
 
-### Option A — Open locally
-1. Download or clone the repo.
-2. Double-click one of:
-   - `dfs_activity.html`
-   - `bfs_activity.html`
-   - `astar_activity.html`
-   - `maze.html`
-3. Start clicking: Example → Interactive → Quiz → Coding.
+- **Depth-First Search (DFS)**  
+  Explores nodes through a stack-based approach, illustrating recursive exploration and backtracking behavior.
 
-> If your browser restricts local file scripts, run a tiny static server:
-> ```bash
-> # Python 3
-> python -m http.server 5173
-> # then visit http://localhost:5173
-> ```
+- **Breadth-First Search (BFS)**  
+  Traverses level by level using a queue-based implementation, emphasizing shortest path discovery in unweighted graphs.
 
-### Option B — Deploy to GitHub Pages
-1. Push to a public repo.
-2. In **Settings → Pages**, set the **branch** to `main` and **root** to `/ (root)`.
-3. Open the published URL and share it!
+- **A\***  
+  Introduces pathfinding with weighted edges and heuristic functions. The visualization dynamically displays `g(n)`, `h(n)`, and `f(n) = g + h` values, enabling users to observe how heuristic estimation influences node selection.
 
 ---
 
-## 🧪 How A* is shown here
+## Functionality and Design
+Each algorithm contains multiple interactive modules, guiding users through increasing levels of engagement and mastery:
 
-- Graph has **edge weights** and a **heuristic** map.
-- Open set = nodes being considered; we always pick the node with **lowest f(n)**.
-- Live tables/pills show:
-  - `g(n)` — cost so far
-  - `h(n)` — heuristic to goal
-  - `f(n) = g + h` — priority score driving selection
-- When the goal is reached, the app reconstructs and highlights the **optimal path**.
+### 1. Example Activity
+A pre-built graph visualization demonstrates the algorithm in motion.  
+Each step highlights the current node, frontier, and visited nodes, synchronized with pseudocode execution.
+
+### 2. Interactive Mode
+Users actively participate by predicting the algorithm’s next move.  
+The interface provides real-time feedback, allowing learners to correct misconceptions about traversal order and data structure behavior.
+
+### 3. Quiz Mode
+Short conceptual quizzes test comprehension of the algorithm’s structure and properties.  
+Immediate feedback reinforces learning outcomes.
+
+### 4. Coding Activity
+Users complete fill-in-the-blank code segments that represent canonical algorithm patterns (e.g., stack operations for DFS, queue logic for BFS, open-set updates for A\*).  
+The system automatically validates answers against accepted logic templates.
+
+### 5. Maze Lab
+A dynamic grid-based maze environment enables users to:
+- Compare DFS, BFS, and A\* performance on identical maps.
+- Observe differences in traversal strategy, path cost, and optimality.
+- Switch between automatic and manual stepping modes.
 
 ---
 
-## 🧩 Learning flow we recommend
+## Technical Implementation
+The project is implemented using **HTML**, **CSS**, and **JavaScript**, with visualization powered by **Cytoscape.js**.  
+Key design components include:
 
-1. **Start with DFS**: see recursive structure + stack behavior.
-2. **Compare with BFS**: feel the queue and level-by-level expansion.
-3. **Move to A\***: watch how weights + heuristics change node priority.
-4. **Maze Lab**: try all three on the same grid; observe path differences.
+- **Graph Rendering:**  
+  Cytoscape.js provides interactive graph visualization, node highlighting, and animation control.
+
+- **Algorithm Modules:**  
+  Each algorithm is structured within dedicated directories (DFS, BFS, AStar), containing:
+  - `interactive.js` – mode control and user interaction handling.  
+  - `visualization.js` – traversal animation and pseudocode synchronization.  
+  - `quiz.js` and `codingActivity.js` – assessment and code validation logic.  
+
+- **User Interface:**  
+  Each activity page shares a consistent layout with navigation buttons, pseudocode panels, and a theme toggle supporting light/dark modes.
+
+- **Extensibility:**  
+  The modular JavaScript architecture allows future integration of additional algorithms or visualization modes with minimal refactoring.
 
 ---
 
-Contributors: Kienlac Mai & Benny Lu
+## Usage and Deployment
+
+### Accessing the Application
+The application is hosted publicly on **GitHub Pages** and can be accessed at:  
+**[https://kienlacmai.github.io/Interactive-Search-Algorithm/](https://kienlacmai.github.io/Interactive-Search-Algorithm/)**
+
+### Local Execution
+To run locally:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/kienlacmai/Interactive-Search-Algorithm.git
+   cd Interactive-Search-Algorithm
+
