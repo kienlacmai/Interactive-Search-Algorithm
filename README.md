@@ -96,4 +96,4 @@ To run locally:
    cd Interactive-Search-Algorithm
    
 ## Contributors
-Kienlac Mai & Benny Lu
+**Kienlac Mai & Benny Lu**
