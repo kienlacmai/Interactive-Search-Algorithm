@@ -94,4 +94,6 @@ To run locally:
    ```bash
    git clone https://github.com/kienlacmai/Interactive-Search-Algorithm.git
    cd Interactive-Search-Algorithm
-
+   
+## Contributors
+Kienlac Mai & Benny Lu
