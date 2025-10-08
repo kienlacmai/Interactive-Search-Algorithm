@@ -1,113 +1,112 @@
-// ---------------- CODING ACTIVITY (Fill-in-the-blank) ----------------
+// ---------------- CODING ACTIVITY (Fill-in-the-blank) — A* ----------------
 //
 // Note: This is a *teaching* checker, not a Python runner.
-// We validate the two blanks for a canonical iterative DFS pattern.
-// Accepts a few common variants for the neighbor push.
+// We validate two blanks for a canonical A* pattern:
+//
+//   Blank #1: current = min(open_set, key=lambda n: f[n])
+//   Blank #2: f[nb] = g[nb] + h(nb)        (also accepts g[nb] + h[nb])
+//
+// Accepts small formatting variations (whitespace, lambda var name).
 //
 
 (function () {
+  // ----- helpers -----
   function $(id) { return document.getElementById(id); }
+  const CLEAN = s => (s || '').replace(/#.*$/gm, '').replace(/\s+/g, '').trim();
 
+  // Show/hide so it behaves like the DFS panel
   function showCoding() {
-    // Hide other activities
-    $('dfs-quiz').style.display = 'none';
+    // Hide other activities/panels if they exist
+    const quiz = $('dfs-quiz'); if (quiz) quiz.style.display = 'none';
+    const viz  = $('visualization'); if (viz) viz.style.display = 'none';
 
-    // Hide the visualization
-    const viz = $('visualization');
-    viz.style.display = 'none';
-
-    // Show coding panel
-    $('coding-activity').style.display = 'block';
+    // Show this panel
+    const panel = $('coding-activity-astar');
+    if (panel) panel.style.display = 'block';
   }
 
   function hideCoding() {
-    $('coding-activity').style.display = 'none';
-    // Re-show the visualization
-    const viz = $('visualization');
-    viz.style.display = '';
+    const panel = $('coding-activity-astar');
+    if (panel) panel.style.display = 'none';
+
+    const viz = $('visualization'); if (viz) viz.style.display = '';
   }
 
   function readBlanks() {
-    const blanks = document.querySelectorAll('#coding-activity input.blank');
+    // Only read inputs inside the A* panel
+    const blanks = document.querySelectorAll('#coding-activity-astar input.blank');
     const values = Array.from(blanks).map(b => (b.value || '').trim());
     return {
-      startPush: values[0] || '',
-      neighborExpr: values[1] || '',
+      minExpr: values[0] || '',  // current = [here]
+      fExpr:   values[1] || ''   // f[nb] = [here]
     };
   }
 
-  function checkAnswers(startPush, neighborExpr) {
-    // Accept common correct answers
-    const okStart = ['start'];
-    const okNeighbors = new Set([
-      'reversed(graph[node])',
-      'list(reversed(graph[node]))',
-      'graph[node][::-1]',
-      'sorted(graph[node], reverse=True)', // acceptable variant
-    ]);
+  // Return booleans for correctness; allow common variants
+  function checkAnswers(minExpr, fExpr) {
+    const m = CLEAN(minExpr);
+    const f = CLEAN(fExpr);
 
-    const startCorrect = okStart.includes(startPush);
-    const neighborCorrect = okNeighbors.has(neighborExpr.replace(/\s+/g, ''));
+    // Accept: min(open_set, key=lambda <var>: f[<var>])
+    // Regex is on the cleaned string (no spaces).
+    const minOK = /^min\(open_set,key=lambda[a-zA-Z_]\w*:f\[[a-zA-Z_]\w*\]\)$/.test(m);
 
-    return { startCorrect, neighborCorrect };
+    // Accept g[nb] + h(nb) and g[nb] + h[nb]
+    const fOK = /^g\[nb\]\+h\(nb\)$/.test(f) || /^g\[nb\]\+h\[nb\]$/.test(f);
+
+    return { minOK, fOK };
   }
 
-  function runHiddenTests(startPush, neighborExpr) {
-    // Lightweight, illustrative checks
-    const { startCorrect, neighborCorrect } = checkAnswers(startPush, neighborExpr);
-
+  function runHiddenTests(minExpr, fExpr) {
+    const { minOK, fOK } = checkAnswers(minExpr, fExpr);
     const messages = [];
-    if (!startCorrect) {
-      messages.push('❌ Blank #1: push the *start* node onto the stack first.');
+
+    if (!minOK) {
+      messages.push('❌ Blank #1: pick the node with the smallest f-score — try: min(open_set, key=lambda n: f[n])');
     } else {
       messages.push('✅ Blank #1 looks good.');
     }
 
-    if (!neighborCorrect) {
-      messages.push('❌ Blank #2: push neighbors in reverse order so the left-most is popped first.');
+    if (!fOK) {
+      messages.push('❌ Blank #2: f combines path cost and heuristic — use: g[nb] + h(nb)');
     } else {
       messages.push('✅ Blank #2 looks good.');
     }
 
-    const passed = startCorrect && neighborCorrect;
-    return { passed, messages };
+    return { passed: (minOK && fOK), messages };
   }
 
   function writeOutput(lines, passed) {
-    const out = $('py-output');
+    const out = $('py-output-astar');
+    if (!out) return;
     out.className = 'feedback ' + (passed ? 'correct' : 'wrong');
     out.innerHTML = lines.map(l => `<div>${l}</div>`).join('');
   }
 
   function clearOutput() {
-    const out = $('py-output');
+    const out = $('py-output-astar');
+    if (!out) return;
     out.className = 'feedback';
     out.textContent = '';
   }
 
+  // ----- wire up -----
   document.addEventListener('DOMContentLoaded', () => {
-    const startCodingBtn = $('start-coding-btn');
-    const runBtn = $('run-python');
-    const clearBtn = $('clear-output');
-    const exitBtn = $('exit-coding-activity');
+    const startBtn = $('start-coding-astar-btn'); // optional “Start Coding” trigger
+    const runBtn   = $('run-astar');
 
-    if (startCodingBtn) {
-      startCodingBtn.addEventListener('click', showCoding);
-    }
-    if (runBtn) {
-      runBtn.addEventListener('click', () => {
-        const { startPush, neighborExpr } = readBlanks();
-        const { passed, messages } = runHiddenTests(startPush, neighborExpr);
-        writeOutput(messages, passed);
+    if (startBtn) {
+      startBtn.addEventListener('click', () => {
+        clearOutput();
+        showCoding();
       });
     }
-    if (clearBtn) {
-      clearBtn.addEventListener('click', clearOutput);
-    }
-    if (exitBtn) {
-      exitBtn.addEventListener('click', () => {
-        clearOutput();
-        hideCoding();
+
+    if (runBtn) {
+      runBtn.addEventListener('click', () => {
+        const { minExpr, fExpr } = readBlanks();
+        const { passed, messages } = runHiddenTests(minExpr, fExpr);
+        writeOutput(messages, passed);
       });
     }
   });
